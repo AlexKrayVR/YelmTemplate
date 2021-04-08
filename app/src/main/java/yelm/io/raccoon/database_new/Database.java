@@ -16,7 +16,7 @@ import yelm.io.raccoon.database_new.user_addresses.UserAddress;
 
 @androidx.room.Database(entities =
         {UserAddress.class, BasketCart.class},
-        version = 4,
+        version = 1,
         exportSchema = false)
 @TypeConverters({ModifiersConverter.class})
 
