@@ -1,0 +1,113 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/mainThemeColor</item>
+        <item name="colorPrimaryDark">@color/mainThemeColor</item>
+        <item name="colorAccent">@color/mainThemeColor</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:itemTextAppearance">@style/itemTextStyle.AppTheme</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:statusBarColor" tools:targetApi="m">@color/white</item>
+    </style>
+
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:dropDownHorizontalOffset">2dp</item>
+        <item name="android:dropDownVerticalOffset">2dp</item>
+        <item name="android:layout_height">200dp</item>
+        <item name="android:popupBackground">@drawable/background_main_button</item>
+    </style>
+
+    <style name="itemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="ProDisplayTextStyle" parent="">
+        <item name="android:fontFamily">@font/sf_prodisplay_regular</item>
+    </style>
+
+    <!--for coordinator layout in NewsActivity -->
+    <style name="CollapsingTextAppearance" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <item name="android:textSize">22sp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:theme">@style/ProDisplayTextStyle</item>
+    <item name="android:fontFamily">@font/sf_prodisplay_regular</item>
+    <item name="android:textColor">@color/mainThemeColor</item>
+    </style>
+
+    <style name="CollapsingTextAppearance.Inverse" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title" >
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:theme">@style/ProDisplayTextStyle</item>
+        <item name="android:fontFamily">@font/sf_prodisplay_regular</item>
+        <item name="android:textColor">@color/mainThemeColor</item>
+    </style>
+
+    <style name="ProgressBarAddress">
+        <item name="colorAccent">@color/whiteColor</item>
+    </style>
+
+    <style name="ToolBarWithNavigationBack" >
+        <item name="navigationIcon">@drawable/ic_arrow_back_24</item>
+    </style>
+
+    <!--MyRatingBar -->
+    <style name="MyRatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">#FDCD02</item>
+        <item name="colorControlActivated">#FDCD02</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme"  parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AddressesBottomSheetRoundedStyle</item>
+    </style>
+    <style name="AddressesBottomSheetRoundedStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_bottom_sheet_addresses</item>
+    </style>
+
+    <style name="ProductCardNewMenuStyle" parent="Theme.MaterialComponents.Light">
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">220dp</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
+    <style name="ProductCardNewMenuSquareImageStyle" parent="Theme.MaterialComponents.Light">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
+    <style name="ProgressBarTheme">
+        <item name="colorAccent">@color/mainThemeColor</item>
+    </style>
+
+    <style name="SplashTheme" parent="@style/AppTheme">
+        <item name="android:windowBackground">@drawable/splashscreen_bg</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="colorPrimaryDark">@color/mainThemeColor</item>
+        <item name="android:statusBarColor">@color/mainThemeColor</item>
+    </style>
+
+    <style name="newsCardStyle" parent="Theme.MaterialComponents.Light">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">6dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
+    <style name="choicePaymentTypeCardStyle" parent="Theme.AppCompat.Light">
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/colorBackgroundGray</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">35dp</item>
+    </style>
+
+</resources>

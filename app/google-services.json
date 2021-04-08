@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "414625349088",
+    "project_id": "raccoon-f60b4",
+    "storage_bucket": "raccoon-f60b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:414625349088:android:c00ef197f4700af89c7f85",
+        "android_client_info": {
+          "package_name": "yelm.io.raccoon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "414625349088-o4l0qb0hjrt75a3q9amltsjk3sn8i2c5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCilI5FxIvmtJJOrzA7Hqp7NbFyqxszm1Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "414625349088-o4l0qb0hjrt75a3q9amltsjk3sn8i2c5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".basket.controller.BasketActivity">
+
+    <LinearLayout
+        android:id="@+id/paymentResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layoutTop"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:textAlignment="center"
+        android:visibility="gone">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lotti"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:visibility="visible"
+            app:lottie_autoPlay="false"
+            app:lottie_rawRes="@raw/bought" />
+
+        <TextView
+            android:id="@+id/paymentResultText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:gravity="center|center_horizontal"
+            android:text="@string/order_is_accepted_by_google_pay"
+            android:textAlignment="center"
+            android:textColor="@color/mainThemeColor"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:theme="@style/ProDisplayTextStyle" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layoutTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/circle_button_selector"
+            android:padding="6dp"
+
+            android:scaleType="fitCenter"
+            app:layout_collapseMode="pin"
+            app:srcCompat="@drawable/ic_arrow_back_24" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:text="@string/basket"
+            android:textColor="@color/colorText"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:theme="@style/ProDisplayTextStyle" />
+
+        <TextView
+            android:id="@+id/cleanBasket"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/clean_basket"
+            android:textSize="16sp"
+            android:theme="@style/ProDisplayTextStyle" />
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-20dp"
+        app:cardBackgroundColor="@color/whiteColor"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="16dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/layoutFinalCost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:gravity="center|center_vertical"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/finalPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="total"
+                    android:textColor="@color/mainThemeColor"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:theme="@style/ProDisplayTextStyle" />
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_clock"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="time"
+                    android:textSize="14sp"
+                    android:theme="@style/ProDisplayTextStyle" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/ordering"
+                style="@style/ProDisplayTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/main_button_selector"
+                android:enabled="false"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:text="@string/basket_checkout"
+                android:textColor="@color/whiteColor"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/paymentResult"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/emptyBasket"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="32dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="@string/empty_basket"
+                    android:textColor="@color/colorText"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:theme="@style/ProDisplayTextStyle"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerCart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/basket_cart_item" />
+
+                <LinearLayout
+                    android:id="@+id/layoutDeliveryInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/layoutDeliveryPickupButtons">
+
+
+                    <LinearLayout
+                        android:id="@+id/layoutDelivery"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layoutCutlery"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/iconCutlery"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginBottom="12dp"
+                                app:layout_constraintBottom_toTopOf="@+id/separator"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:srcCompat="@drawable/ic_cutlery" />
+
+                            <ImageButton
+                                android:id="@+id/removeCutlery"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
+                                android:layout_marginEnd="10dp"
+                                android:adjustViewBounds="true"
+                                android:background="@drawable/circle_button_selector"
+                                android:padding="4dp"
+                                android:scaleType="centerInside"
+                                android:theme="@style/ProDisplayTextStyle"
+                                app:layout_constraintBottom_toBottomOf="@+id/cutleryTitle"
+                                app:layout_constraintEnd_toStartOf="@+id/cutleryCount"
+                                app:layout_constraintTop_toTopOf="@+id/cutleryTitle"
+                                app:srcCompat="@drawable/ic_remove_24_white" />
+
+                            <TextView
+                                android:id="@+id/cutleryCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="10dp"
+                                android:gravity="center|center_vertical"
+                                android:text="1"
+                                android:textColor="@color/colorText"
+                                android:textSize="14sp"
+                                android:theme="@style/ProDisplayTextStyle"
+                                app:layout_constraintBottom_toBottomOf="@+id/removeCutlery"
+                                app:layout_constraintEnd_toStartOf="@+id/addCutlery"
+                                app:layout_constraintTop_toTopOf="@+id/removeCutlery" />
+
+                            <ImageButton
+                                android:id="@+id/addCutlery"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
+                                android:adjustViewBounds="true"
+                                android:background="@drawable/circle_button_selector"
+                                android:padding="4dp"
+                                android:scaleType="centerInside"
+                                android:theme="@style/ProDisplayTextStyle"
+                                app:layout_constraintBottom_toBottomOf="@+id/cutleryCount"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/cutleryCount"
+                                app:srcCompat="@drawable/ic_add_24_white" />
+
+
+                            <TextView
+                                android:id="@+id/cutleryTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:includeFontPadding="false"
+                                android:text="@string/basketActivityCutlery"
+                                android:textColor="@color/colorText"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:theme="@style/ProDisplayTextStyle"
+                                app:layout_constraintBottom_toBottomOf="@+id/iconCutlery"
+                                app:layout_constraintEnd_toStartOf="@+id/removeCutlery"
+                                app:layout_constraintStart_toEndOf="@+id/iconCutlery"
+                                app:layout_constraintTop_toTopOf="@+id/iconCutlery" />
+
+                            <View
+                                android:id="@+id/separator"
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/colorSeparator"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <View
+                                android:id="@+id/separatorTotal"
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginTop="8dp"
+                                android:background="@color/colorSeparator"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textView"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:layout_marginBottom="12dp"
+                                android:includeFontPadding="false"
+                                android:text="@string/basketActivityTotal"
+                                android:textColor="@color/colorText"
+                                android:textSize="18sp"
+
+                                android:textStyle="bold"
+                                android:theme="@style/ProDisplayTextStyle"
+                                app:layout_constraintBottom_toTopOf="@+id/separatorTotal"
+                                app:layout_constraintEnd_toStartOf="@+id/total"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/total"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:includeFontPadding="false"
+                                android:textColor="@color/mainThemeColor"
+                                android:textSize="16sp"
+                                android:theme="@style/ProDisplayTextStyle"
+
+
+                                app:layout_constraintBottom_toTopOf="@+id/separatorTotal"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="12dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/deliveryTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="false"
+                                android:text="@string/basket_delivery"
+                                android:textColor="@color/colorText"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:theme="@style/ProDisplayTextStyle" />
+
+                            <TextView
+                                android:id="@+id/deliveryCost"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:includeFontPadding="false"
+                                android:textColor="@color/mainThemeColor"
+                                android:textSize="16sp"
+                                android:theme="@style/ProDisplayTextStyle" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/freeDelivery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="4dp"
+                            android:textSize="14sp"
+                            android:textStyle="normal"
+                            android:theme="@style/ProDisplayTextStyle" />
+
+                        <View
+                            android:id="@+id/separatorDelivery"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:background="@color/colorSeparator"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutDeliveryNotAvailable"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/deliveryNotAvailable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:drawableStart="@drawable/ic_delivery_not_available_24"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:includeFontPadding="false"
+                            android:text="@string/basketActivityDeliveryNotAvailable"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:theme="@style/ProDisplayTextStyle" />
+
+                        <View
+                            android:id="@+id/separatorDeliveryNotAnable"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorSeparator"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutMinOrderPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/orderMinPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+
+                            android:layout_marginBottom="12dp"
+                            android:drawableStart="@drawable/ic_delivery_not_available_24"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:includeFontPadding="false"
+                            android:text="@string/basketActivityOrderMinPrice"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:theme="@style/ProDisplayTextStyle" />
+
+                        <View
+                            android:id="@+id/separatorOrderMinPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorSeparator"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:layout_height="120dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/workingTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="@string/basketActivityWorkingTime"
+        android:textColor="@color/colorText"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:theme="@style/ProDisplayTextStyle"
+        android:visibility="gone" />
+
+
+</RelativeLayout>
