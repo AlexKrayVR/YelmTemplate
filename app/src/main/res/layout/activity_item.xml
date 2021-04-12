@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_height="match_parent" android:layout_width="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
@@ -37,6 +38,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lotti"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_above="@id/newsTitle"
+                        android:layout_alignParentEnd="true"
+                        android:visibility="visible"
+                        app:lottie_autoPlay="false"
+                        app:lottie_rawRes="@raw/pulsar" />
 
                     <ImageView
                         android:id="@+id/image"
@@ -99,9 +110,9 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/address_back_view_blue"
+                        android:contentDescription="@string/app_name"
                         android:padding="10dp"
-                        app:srcCompat="@drawable/ic_percent"
-                        android:contentDescription="@string/app_name" />
+                        app:srcCompat="@drawable/ic_percent" />
 
                     <TextView
                         android:id="@+id/discount"
@@ -273,11 +284,11 @@
                         android:layout_marginEnd="14dp"
                         android:adjustViewBounds="true"
                         android:background="@drawable/circle_button_selector"
+                        android:contentDescription="@string/app_name"
                         android:padding="4dp"
                         android:scaleType="centerInside"
                         android:theme="@style/ProDisplayTextStyle"
-                        app:srcCompat="@drawable/ic_remove_24_white"
-                        android:contentDescription="@string/app_name" />
+                        app:srcCompat="@drawable/ic_remove_24_white" />
 
                     <TextView
                         android:id="@+id/countProducts"
@@ -297,11 +308,11 @@
                         android:layout_marginStart="14dp"
                         android:adjustViewBounds="true"
                         android:background="@drawable/circle_button_selector"
+                        android:contentDescription="@string/app_name"
                         android:padding="4dp"
                         android:scaleType="centerInside"
                         android:theme="@style/ProDisplayTextStyle"
-                        app:srcCompat="@drawable/ic_add_24_white"
-                        android:contentDescription="@string/app_name" />
+                        app:srcCompat="@drawable/ic_add_24_white" />
 
 
                 </LinearLayout>

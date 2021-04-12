@@ -135,4 +135,9 @@ dependencies {
 
     //socket io
     implementation 'com.github.nkzawa:socket.io-client:0.6.0'
+
+    //image increase
+    implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
+
+
 }

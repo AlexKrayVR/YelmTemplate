@@ -1,16 +1,27 @@
 package yelm.io.raccoon.item;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.decoder.DecoderFactory;
+import com.davemorrissey.labs.subscaleview.decoder.ImageDecoder;
+import com.davemorrissey.labs.subscaleview.decoder.ImageRegionDecoder;
 import com.google.android.material.appbar.AppBarLayout;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
@@ -20,13 +31,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
 import yelm.io.raccoon.R;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.databinding.ActivityItemBinding;
+import yelm.io.raccoon.item.decoder.PicassoDecoder;
+import yelm.io.raccoon.item.decoder.PicassoRegionDecoder;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.model.Modifier;
+import yelm.io.raccoon.order.controller.OrderActivity;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.Logging;
 
@@ -65,7 +80,7 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 startActivity(Intent.createChooser(intent, getResources().getString(R.string.newsActivityShare)));
             });
         } else {
-            Logging.logError( "Method onCreate() in ItemActivity: by some reason item==null");
+            Logging.logError("Method onCreate() in ItemActivity: by some reason item==null");
         }
     }
 
@@ -102,7 +117,7 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
             } else {
                 modifiers.remove(modifier.getName());
             }
-            Logging.logDebug( "modifiers: " + modifiers.toString());
+            Logging.logDebug("modifiers: " + modifiers.toString());
             BigDecimal costCurrent = new BigDecimal(finalPrice.toString());
             for (Map.Entry<String, String> modifierEntry : modifiers.entrySet()) {
                 costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
@@ -127,6 +142,12 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
         binding.description.setText(item.getDescription());
         binding.discount.setText(String.format("%s %s %%", getText(R.string.product_discount), item.getDiscount()));
         binding.ratingBar.setRating(Float.parseFloat(item.getRating()));
+
+        binding.lotti.playAnimation();
+        binding.image.setOnClickListener(v -> {
+            showImage(item.getImages().get(0));
+        });
+
         Picasso.get()
                 .load(item.getImages().get(0))
                 .noPlaceholder()
@@ -134,6 +155,59 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 .resize(800, 0)
                 .into(binding.image);
     }
+
+    private void showImage(String imageUrl) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ItemActivity.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(ItemActivity.this)
+                .inflate(R.layout.layout_image_details,
+                        findViewById(R.id.layoutDialogContainer));
+        builder.setView(view);
+
+        com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView image = view.findViewById(R.id.imageView);
+        ProgressBar progressBar = view.findViewById(R.id.progressBar);
+        android.app.AlertDialog alertDialog = builder.create();
+
+        image.setBitmapDecoderFactory(new DecoderFactory<ImageDecoder>() {
+            @NonNull
+            public ImageDecoder make() {
+                return new PicassoDecoder(imageUrl, Picasso.get());
+            }
+        });
+
+        image.setRegionDecoderFactory(new DecoderFactory<ImageRegionDecoder>() {
+            @NonNull
+            @Override
+            public ImageRegionDecoder make() throws IllegalAccessException, InstantiationException {
+                return new PicassoRegionDecoder(new OkHttpClient());
+            }
+        });
+
+        image.setImage(ImageSource.uri(imageUrl));
+
+
+//        Picasso.get()
+//                .load(imageUrl)
+//                .noPlaceholder()
+//                //.centerCrop()
+//                //.resize(1000, 0)
+//                .into(imageView, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        progressBar.setVisibility(View.GONE);
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//
+//                    }
+//                });
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+    }
+
 
     private void bindingAddSubtractProductCount() {
         binding.addProduct.setOnClickListener(v -> {
@@ -230,7 +304,7 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
             cartItem.isExist = true;
             cartItem.quantityType = product.getUnitType();
             Common.basketCartRepository.insertToBasketCart(cartItem);
-            Logging.logDebug( "Method add Product to Basket. listCartsByID == null:  " + cartItem.toString());
+            Logging.logDebug("Method add Product to Basket. listCartsByID == null:  " + cartItem.toString());
         });
     }
 
