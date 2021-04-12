@@ -239,7 +239,6 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
             toast.cancel();
         }
         toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-        //toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 

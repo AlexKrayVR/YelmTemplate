@@ -1,4 +1,4 @@
-package yelm.io.raccoon.order.user_order;
+package yelm.io.raccoon.order.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,8 +27,9 @@ import yelm.io.raccoon.R;
 import yelm.io.raccoon.constants.Constants;
 import yelm.io.raccoon.databinding.ActivityOrderByIDBinding;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
-import yelm.io.raccoon.order.user_order.model.OrderItemPOJO;
-import yelm.io.raccoon.order.user_order.model.UserOrderPOJO;
+import yelm.io.raccoon.order.model.OrderItemPOJO;
+import yelm.io.raccoon.order.model.UserOrderPOJO;
+import yelm.io.raccoon.order.adapter.OrderProductAdapter;
 import yelm.io.raccoon.rest.rest_api.RestAPI;
 import yelm.io.raccoon.rest.client.RetrofitClient;
 import yelm.io.raccoon.support_stuff.Logging;

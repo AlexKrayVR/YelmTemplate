@@ -58,11 +58,14 @@ public class LoaderActivity extends AppCompatActivity {
     public static final String DISCOUNT_AMOUNT = "DISCOUNT_AMOUNT";
     public static final String DISCOUNT_NAME = "DISCOUNT_NAME";
 
+    public static final String PAYMENT_CARD = "PAYMENT_CARD";
+    public static final String PAYMENT_MOBILE = "PAYMENT_MOBILE";
+    public static final String PAYMENT_CASH = "PAYMENT_CASH";
+
     public static SharedPreferences settings;
     private static final String APP_PREFERENCES = "settings";
 
     private static final int INTERNET_SETTINGS_CODE = 91;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +107,6 @@ public class LoaderActivity extends AppCompatActivity {
         return jsonData;
     }
 
-
     //if user does not exist then we pull request to create it
     private void checkUser() {
         if (settings.contains(USER_NAME)) {
@@ -130,23 +132,23 @@ public class LoaderActivity extends AppCompatActivity {
                                     getChatSettings(settings.getString(USER_NAME, ""));
                                     getApplicationSettings();
                                 } else {
-                                    Logging.logError( "Method checkUser() - by some reason response is null!");
+                                    Logging.logError("Method checkUser() - by some reason response is null!");
                                 }
                             } else {
-                                Logging.logError( "Method checkUser() - response is not successful. " +
+                                Logging.logError("Method checkUser() - response is not successful. " +
                                         "Code: " + response.code() + "Message: " + response.message());
                             }
                         }
 
                         @Override
                         public void onFailure(@NotNull Call<UserLoginResponse> call, @NotNull Throwable t) {
-                            Logging.logError( "Method checkUser() - failure: " + t.toString());
+                            Logging.logError("Method checkUser() - failure: " + t.toString());
                         }
                     });
         }
     }
 
-    //we get main settings of app
+    //get main settings of app
     private void getApplicationSettings() {
         RetrofitClient.
                 getClient(RestAPI.URL_API_MAIN).
@@ -160,8 +162,6 @@ public class LoaderActivity extends AppCompatActivity {
                     public void onResponse(@NotNull Call<ApplicationSettings> call, @NotNull final Response<ApplicationSettings> response) {
                         if (response.isSuccessful()) {
                             if (response.body() != null) {
-//                                Log.d(Logging.debug, "Method getApplicationSettings() - MERCHANT_PUBLIC_ID: " +
-//                                        " " + response.body().getSettings().getPublicId());
                                 Constants.MERCHANT_PUBLIC_ID = response.body().getSettings().getPublicId();
                                 SharedPreferences.Editor editor = settings.edit();
                                 editor.putString(MIN_PRICE_FOR_FREE_DELIVERY, response.body().getSettings().getMinDeliveryPrice());
@@ -170,13 +170,18 @@ public class LoaderActivity extends AppCompatActivity {
                                 editor.putString(COLOR, response.body().getSettings().getTheme());
                                 editor.putString(PRICE_IN, response.body().getSymbol());
                                 editor.putString(COUNTRY_CODE, response.body().getSettings().getRegionCode());
+
+                                editor.putBoolean(PAYMENT_CARD, response.body().getSettings().getPayment().getCard());
+                                editor.putBoolean(PAYMENT_MOBILE, response.body().getSettings().getPayment().getApplepay());
+                                editor.putBoolean(PAYMENT_CASH, response.body().getSettings().getPayment().getPlaceorder());
+
                                 editor.apply();
                                 launchMain();
                             } else {
                                 Logging.logError("Method getApplicationSettings(): by some reason response is null!");
                             }
                         } else {
-                            Logging.logError( "Method getApplicationSettings() response is not successful." +
+                            Logging.logError("Method getApplicationSettings() response is not successful." +
                                     " Code: " + response.code() + "Message: " + response.message());
                         }
                     }
@@ -205,13 +210,13 @@ public class LoaderActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             } else {
-                Logging.logDebug( "LoaderActivity - id: " + args.getString("id"));
-                Logging.logDebug( "LoaderActivity - name: " + args.getString("name"));
+                Logging.logDebug("LoaderActivity - id: " + args.getString("id"));
+                Logging.logDebug("LoaderActivity - name: " + args.getString("name"));
                 intent.putExtra("id", args.getString("id"));
                 intent.putExtra("name", args.getString("name"));
             }
         } else {
-            Logging.logDebug( "LoaderActivity - args is NULL");
+            Logging.logDebug("LoaderActivity - args is NULL");
         }
         startActivity(intent);
         finish();
@@ -225,11 +230,9 @@ public class LoaderActivity extends AppCompatActivity {
 
     private void init() {
         if (StaticRepository.isNetworkConnected(this)) {
-            Logging.logDebug("Method init() - NetworkConnected successfully");
             RestMethods.sendStatistic("open_app");
             checkUser();
         } else {
-            Logging.logDebug("Method init() - NetworkConnected not successful");
             Snackbar snackbar = Snackbar.make(
                     findViewById(R.id.layout),
                     R.string.loaderActivityNoNetworkConnection,
@@ -249,11 +252,7 @@ public class LoaderActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if (data == null) {
-//            return;
-//        }
         if (requestCode == INTERNET_SETTINGS_CODE) {
-            Logging.logDebug("INTERNET_SETTINGS_CODE");
             init();
         }
     }
@@ -279,14 +278,14 @@ public class LoaderActivity extends AppCompatActivity {
                                 Logging.logError("Method getChatSettings(): by some reason response is null!");
                             }
                         } else {
-                            Logging.logError( "Method getChatSettings() response is not successful." +
+                            Logging.logError("Method getChatSettings() response is not successful." +
                                     " Code: " + response.code() + "Message: " + response.message());
                         }
                     }
 
                     @Override
                     public void onFailure(@NotNull Call<ChatSettingsClass> call, @NotNull Throwable t) {
-                        Logging.logError( "Method getChatSettings() failure: " + t.toString());
+                        Logging.logError("Method getChatSettings() failure: " + t.toString());
                     }
                 });
     }

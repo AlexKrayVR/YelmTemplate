@@ -5,7 +5,7 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".order.OrderActivity">
+    tools:context=".order.controller.OrderActivity">
 
     <ProgressBar
         android:id="@+id/progress"
@@ -106,6 +106,22 @@
                 </FrameLayout>
 
                 <TextView
+                    android:id="@+id/paymentCash"
+                    style="@style/ProDisplayTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/main_button_selector"
+                    android:gravity="center"
+                    android:paddingBottom="2dp"
+                    android:text="@string/checkout_cash"
+                    android:textColor="@color/whiteColor"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+
+
+                <TextView
                     android:id="@+id/paymentCard"
                     style="@style/ProDisplayTextStyle"
                     android:layout_width="match_parent"
@@ -118,7 +134,23 @@
                     android:text="@string/checkout_payment"
                     android:textColor="@color/whiteColor"
                     android:textSize="18sp"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/paymentUnavailable"
+                    style="@style/ProDisplayTextStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/main_button_selector"
+                    android:gravity="center"
+                    android:paddingBottom="2dp"
+                    android:text="@string/payment_unavailable"
+                    android:textColor="@color/whiteColor"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -492,6 +524,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cashPay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1"
+                    android:visibility="visible"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp">
+
+                    <TextView
+                        android:id="@+id/cashPayText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        android:gravity="center_horizontal|center_vertical"
+                        android:text="@string/orderActivityCash"
+                        android:textColor="@color/colorText"
+                        android:textSize="16sp"
+                        android:theme="@style/ProDisplayTextStyle" />
+                </androidx.cardview.widget.CardView>
+
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardPay"

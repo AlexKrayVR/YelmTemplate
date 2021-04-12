@@ -231,9 +231,12 @@
     <string name="bonus">Бонусы</string>
     <string name="pickup_point">Пункт самовывоза</string>
     <string name="card">Карта</string>
-    <string name="cash">Наличные</string>
+    <string name="orderActivityCash">Наличные</string>
+    <string name="orderActivityConfirmOrder">Подтверждение заказа</string>
+    <string name="orderActivityConfirm">Подтверждаю</string>
+    <string name="orderActivityConfirmDecription">Нажимая \"Подтвердить\" Вы соглашаетесь на получение заказа и оплаты наличными при получении</string>
+    <string name="orderActivityCheckoutCash">Оформить наличными</string>
     <string name="bonus_point">Бонусные баллы:</string>
-
     <string name="overview">Обзор</string>
 
     <string name="my_orders">Мои заказы</string>
@@ -277,6 +280,7 @@
     <string name="checkout_card_cvc">CVC</string>
     <string name="checkout_card_holder">Владелец карты</string>
     <string name="checkout_payment">Оплатить</string>
+    <string name="payment_unavailable">Оплата недоступна</string>
     <string name="main_rub">Руб.</string>
     <string name="payment2">Оплата: </string>
     <string name="checkout_cash">Оформить наличными</string>
@@ -289,7 +293,7 @@
 
     <!-- firebase FCM -->
     <string name="default_notification_channel_id">fcm_default_channel</string>
-    <string name="default_notification_channel_name">yelm</string>
+    <string name="default_notification_channel_name">@string/app_name</string>
 
     <string name="call">Позвонить</string>
     <string name="mail">Почта</string>

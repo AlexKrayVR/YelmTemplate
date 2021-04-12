@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
         getAppToken();
         getCategories();
         getLocationPermission();
-
         Bundle args = getIntent().getExtras();
         if (args != null) {
             Logging.logDebug("MainActivity - Notification data: " + args.getString("id"));
@@ -117,6 +116,9 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                 startActivity(new Intent(MainActivity.this, ChatActivity.class));
             }
         }
+
+
+
     }
 
     private void checkIfGPSEnabled() {

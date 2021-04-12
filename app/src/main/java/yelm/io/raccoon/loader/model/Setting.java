@@ -41,6 +41,11 @@ public class Setting {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("payment")
+    @Expose
+    private Payment payment;
+
+
 
     public String getId() {
         return id;
@@ -137,4 +142,13 @@ public class Setting {
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
 }

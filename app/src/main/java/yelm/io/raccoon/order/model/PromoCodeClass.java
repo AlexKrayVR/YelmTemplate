@@ -1,7 +1,9 @@
-package yelm.io.raccoon.order.promocode;
+package yelm.io.raccoon.order.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import yelm.io.raccoon.order.model.PromoCode;
 
 public class PromoCodeClass {
 

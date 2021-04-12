@@ -1,18 +1,18 @@
-package yelm.io.raccoon.order;
+package yelm.io.raccoon.order.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
@@ -47,7 +47,9 @@ import retrofit2.Response;
 import ru.cloudpayments.sdk.three_ds.ThreeDSDialogListener;
 import ru.cloudpayments.sdk.three_ds.ThreeDsDialogFragment;
 import yelm.io.raccoon.constants.Constants;
-import yelm.io.raccoon.order.promocode.PromoCodeClass;
+import yelm.io.raccoon.order.model.PriceConverterResponse;
+import yelm.io.raccoon.order.model.PromoCodeClass;
+import yelm.io.raccoon.order.text_watcher.CustomTextWatcher;
 import yelm.io.raccoon.payment.PayApi;
 import yelm.io.raccoon.payment.PaymentActivity;
 import yelm.io.raccoon.payment.models.Transaction;
@@ -85,7 +87,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
 
     private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 991;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private String transactionID = "0";
+    private String transactionID = "-1";
     private String order = "";
     private String userID = LoaderActivity.settings.getString(LoaderActivity.USER_NAME, "");
     private String currency = LoaderActivity.settings.getString(LoaderActivity.CURRENCY, "");
@@ -115,13 +117,13 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
             currentAddress = (UserAddress) args.getSerializable(UserAddress.class.getSimpleName());
             countCutlery = args.getString("countCutlery");
 
-            Logging.logDebug( "countCutlery: " + countCutlery);
+            Logging.logDebug("countCutlery: " + countCutlery);
             Logging.logDebug("startCost: " + startCost);
-            Logging.logDebug( "finalCost: " + finalCost);
+            Logging.logDebug("finalCost: " + finalCost);
             Logging.logDebug("paymentCost: " + paymentCost);
             Logging.logDebug("deliveryCost: " + discountPromo);
-            Logging.logDebug( "deliveryPrice: " + deliveryCostStart);
-            Logging.logDebug( "deliveryTime: " + deliveryTime);
+            Logging.logDebug("deliveryPrice: " + deliveryCostStart);
+            Logging.logDebug("deliveryTime: " + deliveryTime);
             Logging.logDebug("currentAddress: " + currentAddress.toString());
         }
         binding();
@@ -140,39 +142,13 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         binding.phone.addTextChangedListener(new CustomTextWatcher(binding.phone, this));
     }
 
-    private static class CustomTextWatcher implements TextWatcher {
-        private EditText editText;
-        private Context context;
-
-        public CustomTextWatcher(EditText e, Context context) {
-            this.editText = e;
-            this.context = context;
-        }
-
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().trim().length() == 0) {
-                editText.setBackground(ContextCompat.getDrawable(context, R.drawable.back_edittext_red));
-            } else {
-                editText.setBackground(ContextCompat.getDrawable(context, R.drawable.back_edittext_green));
-            }
-        }
-
-        public void afterTextChanged(Editable s) {
-        }
-    }
-
-
     private void getPromoIfExist() {
         String type = LoaderActivity.settings.getString(LoaderActivity.DISCOUNT_TYPE, "");
         String amount = LoaderActivity.settings.getString(LoaderActivity.DISCOUNT_AMOUNT, "0");
         String name = LoaderActivity.settings.getString(LoaderActivity.DISCOUNT_NAME, "");
-        Logging.logDebug( "type: " + type);
+        Logging.logDebug("type: " + type);
         Logging.logDebug("amount: " + amount);
-        Logging.logDebug( "name: " + name);
-
+        Logging.logDebug("name: " + name);
 
         if (type != null) {
             if (!type.isEmpty()) {
@@ -197,7 +173,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 public void onResponse(@NotNull Call<PromoCodeClass> call, @NotNull Response<PromoCodeClass> response) {
                     if (response.isSuccessful()) {
                         if (response.body() != null) {
-                            Logging.logDebug( " " + Constants.ShopID);
+                            Logging.logDebug(" " + Constants.ShopID);
                             if (response.body().getStatus().equals("200")) {
                                 setPromoCode(response.body().getPromocode().getType(),
                                         response.body().getPromocode().getAmount(),
@@ -205,7 +181,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                             }
                             showToast(response.body().getMessage());
                         } else {
-                            Logging.logError( "Method getPromoCode() - by some reason response is null!");
+                            Logging.logError("Method getPromoCode() - by some reason response is null!");
                         }
 
                     } else {
@@ -216,7 +192,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
 
                 @Override
                 public void onFailure(@NotNull Call<PromoCodeClass> call, @NotNull Throwable t) {
-                    Logging.logError( "Method getPromoCode() - failure: " + t.toString());
+                    Logging.logError("Method getPromoCode() - failure: " + t.toString());
                 }
             });
         }
@@ -274,11 +250,11 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         }
         paymentCost = finalCost.add(deliveryCostFinal);
         binding.finalPrice.setText(String.format("%s %s", finalCost.add(deliveryCostFinal), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
-        Logging.logDebug( "finalCost: " + finalCost);
-        Logging.logDebug( "paymentCost: " + paymentCost);
+        Logging.logDebug("finalCost: " + finalCost);
+        Logging.logDebug("paymentCost: " + paymentCost);
     }
 
-    private void sendOrder() {
+    private void sendOrder(String payment) {
         List<BasketCart> basketCarts = Common.basketCartRepository.getBasketCartsList();
         JSONArray jsonObjectItems = new JSONArray();
         try {
@@ -292,11 +268,11 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Logging.logDebug( "jsonObjectItems: " + jsonObjectItems.toString());
+        Logging.logDebug("jsonObjectItems: " + jsonObjectItems.toString());
         RetrofitClient.
                 getClient(RestAPI.URL_API_MAIN)
                 .create(RestAPI.class)
-                .sendOrder("3.1",
+                .sendOrder(Constants.VERSION,
                         getResources().getConfiguration().locale.getCountry(),
                         getResources().getConfiguration().locale.getLanguage(),
                         RestAPI.PLATFORM_NUMBER,
@@ -308,7 +284,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                         transactionID,
                         userID,
                         currentAddress.address,
-                        "googlepay",
+                        payment,
                         binding.floor.getText().toString(),
                         binding.entrance.getText().toString(),
                         paymentCost.toString(),
@@ -325,28 +301,28 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
             @Override
             public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Logging.logDebug( "Method sendOrder() - response.code(): " + response.code());
+                    Logging.logDebug("Method sendOrder() - response.code(): " + response.code());
                     Common.basketCartRepository.emptyBasketCart();
                     Intent intentGP = new Intent();
-                    intentGP.putExtra("success", "googlePay");
+                    intentGP.putExtra("success", payment);
                     setResult(RESULT_OK, intentGP);
                     finish();
                 } else {
-                    Logging.logError( "Method sendOrder() - response is not successful. " +
+                    Logging.logError("Method sendOrder() - response is not successful. " +
                             "Code: " + response.code() + "Message: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
-                Logging.logError( "Method sendOrder() - failure: " + t.toString());
+                Logging.logError("Method sendOrder() - failure: " + t.toString());
             }
         });
     }
 
     private boolean preparePayment() {
         String phone = binding.phone.getText().toString();
-        Logging.logDebug( "phone: " + phone);
+        Logging.logDebug("phone: " + phone);
         phone = phone.replaceAll("\\D", "");
         Logging.logDebug("phone after replacement: " + phone);
         if (phone.trim().equals("") || phone.length() != 11) {
@@ -375,22 +351,75 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     }
 
     private void bindingChosePaymentType() {
-        binding.cardPay.setOnClickListener(view -> {
+        if (!LoaderActivity.settings.getBoolean(LoaderActivity.PAYMENT_CARD, false) &&
+                !LoaderActivity.settings.getBoolean(LoaderActivity.PAYMENT_CASH, false)) {
+            binding.paymentUnavailable.setVisibility(View.VISIBLE);
+            binding.layoutPaymentType.setVisibility(View.GONE);
+            return;
+        }
+
+        if (LoaderActivity.settings.getBoolean(LoaderActivity.PAYMENT_CARD, false)) {
             binding.cardPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
             binding.cardPayText.setTextColor(getResources().getColor(R.color.whiteColor));
-            binding.googlepayPay.setCardBackgroundColor(Color.TRANSPARENT);
-            binding.googlePayText.setTextColor(getResources().getColor(R.color.colorText));
             binding.paymentCard.setVisibility(View.VISIBLE);
-            binding.googlePay.setVisibility(View.GONE);
-        });
+            binding.cardPay.setOnClickListener(view -> {
+                binding.cardPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
+                binding.cardPayText.setTextColor(getResources().getColor(R.color.whiteColor));
+
+                binding.googlepayPay.setCardBackgroundColor(Color.TRANSPARENT);
+                binding.googlePayText.setTextColor(getResources().getColor(R.color.colorText));
+
+                binding.cashPay.setCardBackgroundColor(Color.TRANSPARENT);
+                binding.cashPayText.setTextColor(getResources().getColor(R.color.colorText));
+
+                binding.googlePay.setVisibility(View.GONE);
+                binding.paymentCash.setVisibility(View.GONE);
+                binding.paymentCard.setVisibility(View.VISIBLE);
+            });
+        } else {
+            binding.cashPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
+            binding.cashPayText.setTextColor(getResources().getColor(R.color.whiteColor));
+
+            binding.cardPay.setVisibility(View.GONE);
+            binding.googlepayPay.setVisibility(View.GONE);
+
+            binding.paymentCash.setVisibility(View.VISIBLE);
+            binding.paymentCard.setVisibility(View.GONE);
+        }
+
         binding.googlepayPay.setOnClickListener(view -> {
             binding.googlepayPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
             binding.googlePayText.setTextColor(getResources().getColor(R.color.whiteColor));
+
             binding.cardPay.setCardBackgroundColor(Color.TRANSPARENT);
             binding.cardPayText.setTextColor(getResources().getColor(R.color.colorText));
+
+            binding.cashPay.setCardBackgroundColor(Color.TRANSPARENT);
+            binding.cashPayText.setTextColor(getResources().getColor(R.color.colorText));
+
             binding.paymentCard.setVisibility(View.GONE);
+            binding.paymentCash.setVisibility(View.GONE);
             binding.googlePay.setVisibility(View.VISIBLE);
         });
+
+        if (LoaderActivity.settings.getBoolean(LoaderActivity.PAYMENT_CASH, false)) {
+            binding.cashPay.setOnClickListener(view -> {
+                binding.cashPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
+                binding.cashPayText.setTextColor(getResources().getColor(R.color.whiteColor));
+
+                binding.cardPay.setCardBackgroundColor(Color.TRANSPARENT);
+                binding.cardPayText.setTextColor(getResources().getColor(R.color.colorText));
+
+                binding.googlepayPay.setCardBackgroundColor(Color.TRANSPARENT);
+                binding.googlePayText.setTextColor(getResources().getColor(R.color.colorText));
+
+                binding.paymentCard.setVisibility(View.GONE);
+                binding.googlePay.setVisibility(View.GONE);
+                binding.paymentCash.setVisibility(View.VISIBLE);
+            });
+        } else {
+            binding.cashPay.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -418,11 +447,11 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                         // Nothing to here normally - the user simply cancelled without selecting a payment method.
                         break;
                     case AutoResolveHelper.RESULT_ERROR:
-                        Logging.logDebug( "Method payment with GooglePay(): RESULT_ERROR");
+                        Logging.logDebug("Method payment with GooglePay(): RESULT_ERROR");
                         Status status = AutoResolveHelper.getStatusFromIntent(data);
                         if (status != null) {
                             handlePaymentError(status.getStatusCode());
-                            Logging.logDebug( "Method - status.getStatusMessage(): " + status.getStatusMessage());
+                            Logging.logDebug("Method - status.getStatusMessage(): " + status.getStatusMessage());
                         } else {
                             Logging.logDebug("Method - status.getStatusMessage(): status is null");
                         }
@@ -467,6 +496,37 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 startActivityForResult(intent, PAYMENT_SUCCESS);
             }
         });
+
+        binding.paymentCash.setOnClickListener(v -> {
+            if (preparePayment()) {
+                showDialogNewOrder();
+            }
+        });
+
+
+    }
+
+    private void showDialogNewOrder() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(OrderActivity.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(OrderActivity.this)
+                .inflate(R.layout.layout_dialog_confirm_order,
+                        findViewById(R.id.layoutDialogContainer));
+        builder.setView(view);
+
+        TextView message = view.findViewById(R.id.message);
+        message.setText(String.format("%s", getText(R.string.orderActivityConfirmDecription)));
+
+        TextView buttonOk = view.findViewById(R.id.buttonOk);
+        android.app.AlertDialog alertDialog = builder.create();
+        buttonOk.setOnClickListener(v -> {
+            sendOrder("placeorder");
+            alertDialog.dismiss();
+        });
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 
     private void checkIsReadyToPay() {
@@ -479,7 +539,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                         boolean result = task.getResult(ApiException.class);
                         setPwgAvailable(result);
                     } catch (ApiException exception) {
-                        Logging.logDebug( exception.toString());
+                        Logging.logDebug(exception.toString());
                     }
                 });
     }
@@ -514,7 +574,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     public void requestPayment(PaymentsClient paymentsClient) {
         // Disables the button to prevent multiple clicks.
         //pwg_button.setClickable(false);
-        Logging.logDebug( "requestPayment");
+        Logging.logDebug("requestPayment");
 
         // The price provided to the API should include taxes and shipping.
         // This price is not displayed to the user.
@@ -556,7 +616,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
             public void onResponse(@NotNull Call<PriceConverterResponse> call, @NotNull Response<PriceConverterResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        Logging.logDebug( "Method convertPrice() - paymentCost: " + response.body().getPrice());
+                        Logging.logDebug("Method convertPrice() - paymentCost: " + response.body().getPrice());
                         paymentCost = new BigDecimal(response.body().getPrice());
                         requestPayment(paymentsClient);
                     } else {
@@ -588,7 +648,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
             String billingName = paymentData.getCardInfo().getBillingAddress().getName();
             Toast.makeText(this, getString(R.string.payments_show_name, billingName), Toast.LENGTH_LONG).show();
             // Use token.getToken() to get the token string.
-            Logging.logDebug( "token.getToken()" + token.getToken());
+            Logging.logDebug("token.getToken()" + token.getToken());
             Logging.logDebug("Method handlePaymentSuccess() - paymentCost: " + paymentCost);
             charge(token.getToken(), "Google Pay", paymentCost, order);
         }
@@ -599,7 +659,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         // Normally, only logging is required.
         // statusCode will hold the value of any constant from CommonStatusCode or one of the
         // WalletConstants.ERROR_CODE_* constants.
-        Logging.logDebug( String.format("Error code: %d", statusCode));
+        Logging.logDebug(String.format("Error code: %d", statusCode));
     }
 
     // Запрос на проведение одностадийного платежа
@@ -622,18 +682,18 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
             show3DS(transaction);
         } else {
             // Показываем результат
-            Logging.logDebug( "transaction result: " + transaction.getCardHolderMessage());
-            Logging.logDebug( "transaction.getReasonCode(): " + transaction.getReasonCode());
+            Logging.logDebug("transaction result: " + transaction.getCardHolderMessage());
+            Logging.logDebug("transaction.getReasonCode(): " + transaction.getReasonCode());
             showToast(transaction.getCardHolderMessage());
             if (transaction.getReasonCode() == 0) {
                 transactionID = transaction.getId();
-                Logging.logDebug( "transaction.getId(): " + transaction.getId());
+                Logging.logDebug("transaction.getId(): " + transaction.getId());
                 SharedPreferences.Editor editor = LoaderActivity.settings.edit();
                 editor.putString(LoaderActivity.DISCOUNT_TYPE, "");
                 editor.putString(LoaderActivity.DISCOUNT_AMOUNT, "0");
                 editor.putString(LoaderActivity.DISCOUNT_NAME, "");
                 editor.apply();
-                sendOrder();
+                sendOrder("googlepay");
             }
         }
     }
@@ -646,7 +706,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     @Override
     public void onAuthorizationFailed(String html) {
         Toast.makeText(this, "AuthorizationFailed: " + html, Toast.LENGTH_SHORT).show();
-        Logging.logDebug( "onAuthorizationFailed: " + html);
+        Logging.logDebug("onAuthorizationFailed: " + html);
     }
 
     private void show3DS(Transaction transaction) {
@@ -678,13 +738,13 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         if (throwable instanceof PayApiError) {
             PayApiError apiError = (PayApiError) throwable;
             String message = apiError.getMessage();
-            Logging.logDebug("apiError.getMessage(): " + apiError.getMessage());
+            Logging.logError("handleError() - message: " + message);
             showToast(message);
         } else if (throwable instanceof UnknownHostException) {
-            Logging.logDebug( "UnknownHostException: " + getString(R.string.common_no_internet_connection));
+            Logging.logError("UnknownHostException: " + getString(R.string.common_no_internet_connection));
             showToast(getString(R.string.common_no_internet_connection));
         } else {
-            Logging.logDebug("handleError: " + throwable.getMessage());
+            Logging.logError("handleError: " + throwable.getMessage());
             showToast(throwable.getMessage());
         }
     }
@@ -697,12 +757,10 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     @Override
     protected void onStart() {
         super.onStart();
-        if (userSettings.contains(ENTRANCE)) {
-            binding.entrance.setText(userSettings.getString(ENTRANCE, ""));
-            binding.floor.setText(userSettings.getString(FLOOR, ""));
-            binding.flat.setText(userSettings.getString(FLAT, ""));
-            binding.phone.setText(userSettings.getString(PHONE, ""));
-        }
+        binding.entrance.setText(userSettings.getString(ENTRANCE, ""));
+        binding.floor.setText(userSettings.getString(FLOOR, ""));
+        binding.flat.setText(userSettings.getString(FLAT, ""));
+        binding.phone.setText(userSettings.getString(PHONE, ""));
     }
 
     @Override

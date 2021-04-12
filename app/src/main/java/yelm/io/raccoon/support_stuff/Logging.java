@@ -5,8 +5,8 @@ import android.util.Log;
 import yelm.io.raccoon.BuildConfig;
 
 public class Logging {
-    private static String error = "AlexError";
-    private static String debug = "AlexDebug";
+    private static String error = "ErrorYelm";
+    private static String debug = "DebugYelm";
 
     public static void logDebug(String message) {
         if (BuildConfig.DEBUG) {

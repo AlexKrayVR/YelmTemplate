@@ -21,14 +21,14 @@ import yelm.io.raccoon.main.categories.CategoriesPOJO;
 import yelm.io.raccoon.main.model.CategoriesWithProductsClass;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.news.NewNews;
-import yelm.io.raccoon.order.PriceConverterResponse;
-import yelm.io.raccoon.order.promocode.PromoCodeClass;
-import yelm.io.raccoon.order.user_order.model.UserOrderPOJO;
+import yelm.io.raccoon.order.model.PriceConverterResponse;
+import yelm.io.raccoon.order.model.PromoCodeClass;
+import yelm.io.raccoon.order.model.UserOrderPOJO;
 
 public interface RestAPI {
 
     String URL_API_MAIN = "https://rest.yelm.io/api/mobile/";
-    String PLATFORM_NUMBER = "6065b5d49e4d05.24918769";
+    String PLATFORM_NUMBER = "5f86b4672f0dc9.24104173";
 
     @FormUrlEncoded
     @POST("user?")

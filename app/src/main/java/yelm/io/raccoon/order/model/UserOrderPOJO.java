@@ -1,4 +1,4 @@
-package yelm.io.raccoon.order.user_order.model;
+package yelm.io.raccoon.order.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import yelm.io.raccoon.main.model.Item;
+import yelm.io.raccoon.order.model.OrderItemPOJO;
 
 public class UserOrderPOJO {
     @SerializedName("id")

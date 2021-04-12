@@ -51,7 +51,7 @@ import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.user_addresses.UserAddress;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
-import yelm.io.raccoon.order.PriceConverterResponse;
+import yelm.io.raccoon.order.model.PriceConverterResponse;
 import yelm.io.raccoon.payment.models.Transaction;
 import yelm.io.raccoon.payment.response.PayApiError;
 import yelm.io.raccoon.rest.rest_api.RestAPI;

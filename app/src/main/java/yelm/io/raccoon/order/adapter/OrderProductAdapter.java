@@ -1,4 +1,4 @@
-package yelm.io.raccoon.order.user_order;
+package yelm.io.raccoon.order.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -39,7 +39,7 @@ import yelm.io.raccoon.database_new.user_addresses.UserAddress;
 import yelm.io.raccoon.databinding.ActivityBasketOnlyDeliveryBinding;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Modifier;
-import yelm.io.raccoon.order.OrderActivity;
+import yelm.io.raccoon.order.controller.OrderActivity;
 import yelm.io.raccoon.rest.rest_api.RestAPI;
 import yelm.io.raccoon.rest.client.RetrofitClient;
 import yelm.io.raccoon.support_stuff.Logging;
@@ -71,7 +71,7 @@ public class BasketActivity extends AppCompatActivity {
         if (currentAddress != null && !Constants.ShopID.equals("0")) {
             checkBasket(currentAddress.latitude, currentAddress.longitude);
         } else {
-            Logging.logDebug( "Method onCreate() - currentAddress is null or ShopID equals 0");
+            Logging.logDebug("Method onCreate() - currentAddress is null or ShopID equals 0");
             binding.layoutFinalCost.setVisibility(View.GONE);
             binding.layoutDeliveryNotAvailable.setVisibility(View.VISIBLE);
             binding.layoutDelivery.setVisibility(View.GONE);
@@ -100,7 +100,7 @@ public class BasketActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        Logging.logDebug( "Method checkBasket() - jsonObjectItems: " + jsonObjectItems.toString());
+        Logging.logDebug("Method checkBasket() - jsonObjectItems: " + jsonObjectItems.toString());
 
         RetrofitClient.
                 getClient(RestAPI.URL_API_MAIN).
@@ -137,7 +137,7 @@ public class BasketActivity extends AppCompatActivity {
                                 }
 
                             } else {
-                                Logging.logError( "Method checkBasket() - by some reason response is null!");
+                                Logging.logError("Method checkBasket() - by some reason response is null!");
                                 showToast(getString(R.string.errorConnectedToServer));
                             }
                         } else {
@@ -199,7 +199,7 @@ public class BasketActivity extends AppCompatActivity {
                 allowOrdering = false;
             }
         }
-        Logging.logDebug( "Method updateBasket() - finalCost: " + finalCost.toString());
+        Logging.logDebug("Method updateBasket() - finalCost: " + finalCost.toString());
 
         if (finalCost.compareTo(new BigDecimal(LoaderActivity.settings.getString(LoaderActivity.MIN_ORDER_PRICE, "0"))) < 0) {
             binding.layoutMinOrderPrice.setVisibility(View.VISIBLE);
@@ -307,6 +307,8 @@ public class BasketActivity extends AppCompatActivity {
             Log.d("AlexDebug", "PAYMENT_SUCCESS " + data.getStringExtra("success"));
             if (Objects.equals(data.getStringExtra("success"), "card")) {
                 binding.paymentResultText.setText(getText(R.string.order_is_accepted_by_card));
+            } else if (Objects.equals(data.getStringExtra("success"), "placeorder")) {
+                binding.paymentResultText.setText(getText(R.string.order_is_accepted));
             } else {
                 binding.paymentResultText.setText(getText(R.string.order_is_accepted_by_google_pay));
             }
