@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import yelm.io.raccoon.item.ItemActivity;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.R;
@@ -121,7 +122,8 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
         //calculate final price depending on the discount
         BigDecimal bd = new BigDecimal(current.getPrice());
         if (current.getDiscount().equals("0")) {
-            holder.binding.priceFinal.setText(String.format("%s %s", bd.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            holder.binding.priceFinal.setText(String.format("%s %s", bd.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
             holder.binding.priceStart.setVisibility(View.GONE);
         } else {
             holder.binding.discountProcent.setVisibility(View.VISIBLE);
@@ -133,8 +135,10 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
             if (bd.compareTo(new BigDecimal(String.valueOf(bd.setScale(0, BigDecimal.ROUND_HALF_UP)))) == 0) {
                 bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
             }
-            holder.binding.priceFinal.setText(String.format("%s %s", bd.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
-            holder.binding.priceStart.setText(String.format("%s %s", current.getPrice(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            holder.binding.priceFinal.setText(String.format("%s %s", bd.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
+            holder.binding.priceStart.setText(String.format("%s %s", current.getPrice(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
             holder.binding.priceStart.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
@@ -227,24 +231,12 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
             }
         });
 
-        holder.binding.image.setAlpha(0f);
-        String imageUrl = current.getPreviewImage();
         Picasso.get()
-                .load(imageUrl)
+                .load(current.getPreviewImage())
                 .noPlaceholder()
                 .centerCrop()
-                .resize(300, 0)
-                .into(holder.binding.image, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        holder.binding.image.animate().setDuration(300).alpha(1f).start();
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-
-                    }
-                });
+                .resize(400, 0)
+                .into(holder.binding.image);
     }
 
     //if product have modifiers then we show bottomSheetDialog for its choice
@@ -264,7 +256,7 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
         TextView textName = view.findViewById(R.id.name);
         textName.setText(current.getName());
         TextView textCost = view.findViewById(R.id.cost);
-        textCost.setText(String.format("%s %s", bd.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        textCost.setText(String.format("%s %s", bd.toString(), SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         TextView countProducts = view.findViewById(R.id.countProducts);
         countProducts.setText("1");
 
@@ -283,7 +275,8 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
                 costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
             }
             costCurrent = costCurrent.multiply(new BigDecimal(countProducts.getText().toString()));
-            textCost.setText(String.format("%s %s", costCurrent.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            textCost.setText(String.format("%s %s", costCurrent.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         });
 
         view.findViewById(R.id.addProduct).setOnClickListener(v -> {
@@ -295,7 +288,8 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
                 costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
             }
             costCurrent = costCurrent.multiply(new BigDecimal(counter.toString()));
-            textCost.setText(String.format("%s %s", costCurrent.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            textCost.setText(String.format("%s %s", costCurrent.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         });
 
         view.findViewById(R.id.removeProduct).setOnClickListener(v -> {
@@ -308,7 +302,8 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
                     costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
                 }
                 costCurrent = costCurrent.multiply(new BigDecimal(counter.toString()));
-                textCost.setText(String.format("%s %s", costCurrent.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                textCost.setText(String.format("%s %s", costCurrent.toString(),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
             }
         });
 
@@ -396,6 +391,5 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
-
 
 }

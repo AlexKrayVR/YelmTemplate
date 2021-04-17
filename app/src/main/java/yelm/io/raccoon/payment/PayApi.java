@@ -3,6 +3,7 @@ package yelm.io.raccoon.payment;
 import java.math.BigDecimal;
 
 import io.reactivex.Observable;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.payment.models.PayRequestArgs;
 import yelm.io.raccoon.payment.models.Post3dsRequestArgs;
@@ -24,7 +25,7 @@ public class PayApi {
         args.setCardCryptogramPacket(cardCryptogramPacket); // Криптограмма платежных данных (Обязательный)
         args.setInvoiceId(""); // Номер счета или заказа в вашей системе (необязательный)
         args.setDescription(""); // Описание оплаты в свободной форме (необязательный)
-        args.setAccountId(LoaderActivity.settings.getString(LoaderActivity.USER_NAME, "")); // Идентификатор пользователя в вашей системе (необязательный)
+        args.setAccountId(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME)); // Идентификатор пользователя в вашей системе (необязательный)
         args.setJsonData(order); // Любые другие данные, которые будут связаны с транзакцией (необязательный)
         args.setType(type); // Payment Type
 
@@ -41,13 +42,13 @@ public class PayApi {
         // Параметры:
         PayRequestArgs args = new PayRequestArgs();
         args.setAmount(amount.toString());  // Сумма платежа (Обязательный)
-        args.setCurrency(LoaderActivity.settings.getString(LoaderActivity.CURRENCY, "RUB")); // Валюта (Обязательный)
+        args.setCurrency(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY)); // Валюта (Обязательный)
         args.setName(cardHolderName); // Имя держателя карты в латинице (Обязательный для всех платежей кроме Apple Pay и Google Pay)
         args.setCardCryptogramPacket(cardCryptogramPacket); // Криптограмма платежных данных (Обязательный)
 
         args.setInvoiceId(""); // Номер счета или заказа в вашей системе (необязательный)
         args.setDescription(""); // Описание оплаты в свободной форме (необязательный)
-        args.setAccountId(LoaderActivity.settings.getString(LoaderActivity.USER_NAME, "")); // Идентификатор пользователя в вашей системе (необязательный)
+        args.setAccountId(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME)); // Идентификатор пользователя в вашей системе (необязательный)
         args.setJsonData(order); // Любые другие данные, которые будут связаны с транзакцией (необязательный)
         args.setType(type); // Payment Type
 

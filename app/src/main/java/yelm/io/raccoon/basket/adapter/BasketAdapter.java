@@ -18,6 +18,7 @@ import yelm.io.raccoon.R;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.databinding.BasketCartItemBinding;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Modifier;
 
@@ -38,7 +39,7 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketHold
         holder.binding.description.setText(String.format("%s\n%s %s / %s %s",
                 current.name,
                 current.finalPrice,
-                LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, ""),
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN),
                 current.quantityType,
                 current.type));
 
@@ -64,7 +65,7 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketHold
             currentStartFinal = currentStartFinal.add(new BigDecimal(modifier.getValue()));
         }
         currentStartFinal = currentStartFinal.multiply(new BigDecimal(current.count));
-        holder.binding.priceFinal.setText(String.format("%s %s", currentStartFinal, LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        holder.binding.priceFinal.setText(String.format("%s %s", currentStartFinal, SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
 
         holder.binding.addProduct.setOnClickListener(view -> {
             BigDecimal tempBD = new BigDecimal(current.count);

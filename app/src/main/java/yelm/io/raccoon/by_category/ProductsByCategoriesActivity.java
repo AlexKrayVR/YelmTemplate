@@ -23,6 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import yelm.io.raccoon.basket.controller.BasketActivity;
 import yelm.io.raccoon.database_new.user_addresses.UserAddress;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.Common;
@@ -151,14 +152,14 @@ public class ProductsByCategoriesActivity extends AppCompatActivity {
                 .subscribe(carts -> {
                     if (carts.size() == 0) {
                         binding.basket.setVisibility(View.GONE);
-                        binding.basket.setText(String.format("0 %s", LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                        binding.basket.setText(String.format("0 %s", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
                     } else {
                         binding.basket.setVisibility(View.VISIBLE);
                         BigDecimal basketPrice = new BigDecimal("0");
                         for (BasketCart cart : carts) {
                             basketPrice = basketPrice.add(new BigDecimal(cart.finalPrice).multiply(new BigDecimal(cart.count)));
                         }
-                        binding.basket.setText(String.format("%s %s", basketPrice.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                        binding.basket.setText(String.format("%s %s", basketPrice.toString(), SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
                         Logging.logDebug( "Method updateCost() - carts.size(): " + carts.size() + "\n" +
                                 "basketPrice.toString(): " + basketPrice.toString());
                     }

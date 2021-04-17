@@ -3,6 +3,8 @@ package yelm.io.raccoon.loader.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Payment {
     @SerializedName("card")
     @Expose
@@ -38,4 +40,13 @@ public class Payment {
         this.placeorder = placeorder;
     }
 
+    @NotNull
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "card=" + card +
+                ", applepay=" + applepay +
+                ", placeorder=" + placeorder +
+                '}';
+    }
 }

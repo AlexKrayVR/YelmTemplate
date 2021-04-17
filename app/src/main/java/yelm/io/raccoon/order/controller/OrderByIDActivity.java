@@ -26,6 +26,7 @@ import retrofit2.Response;
 import yelm.io.raccoon.R;
 import yelm.io.raccoon.constants.Constants;
 import yelm.io.raccoon.databinding.ActivityOrderByIDBinding;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.order.model.OrderItemPOJO;
 import yelm.io.raccoon.order.model.UserOrderPOJO;
@@ -99,10 +100,10 @@ public class OrderByIDActivity extends AppCompatActivity implements AppBarLayout
                                         response.body().getId(),
                                         getText(R.string.orderByIDActivityOrderPrice),
                                         response.body().getEndTotal(),
-                                        LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, ""),
+                                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN),
                                         getText(R.string.orderByIDActivityDelivery),
                                         response.body().getDeliveryPrice(),
-                                        LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, ""),
+                                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN),
                                         getText(R.string.orderByIDActivityOrderData),
                                         printedFormatterDate.format(date.getTime()),
                                         getText(R.string.orderByIDActivityOrderAddress),

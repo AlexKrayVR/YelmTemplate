@@ -47,6 +47,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import yelm.io.raccoon.basket.controller.BasketActivity;
 import yelm.io.raccoon.item.ItemFromNotificationActivity;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.categories.CategoriesAdapter;
 import yelm.io.raccoon.main.categories.CategoriesPOJO;
 import yelm.io.raccoon.main.news.NewNews;
@@ -116,9 +117,6 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                 startActivity(new Intent(MainActivity.this, ChatActivity.class));
             }
         }
-
-
-
     }
 
     private void checkIfGPSEnabled() {
@@ -460,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                 .subscribe(carts -> {
                     if (carts.size() == 0) {
                         binding.basket.setVisibility(View.GONE);
-                        binding.basket.setText(String.format("0 %s", LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                        binding.basket.setText(String.format("0 %s", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
                         binding.footer.setVisibility(View.GONE);
                     } else {
                         binding.basket.setVisibility(View.VISIBLE);
@@ -475,7 +473,8 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                             basketPrice = basketPrice.add(costCurrentCart);
                         }
 
-                        binding.basket.setText(String.format("%s %s", basketPrice.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                        binding.basket.setText(String.format("%s %s", basketPrice.toString(),
+                                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
                         Logging.logDebug("Method updateCost() - carts.size(): " + carts.size() + "\n" +
                                 "basketPrice.toString(): " + basketPrice.toString());
                     }

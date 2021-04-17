@@ -55,6 +55,7 @@ import yelm.io.raccoon.chat.model.ChatContent;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.item.ItemActivity;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.order.controller.OrderByIDActivity;
 import yelm.io.raccoon.rest.query.RestMethods;
@@ -190,7 +191,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         //calculate final price depending on the discount
         BigDecimal bd = new BigDecimal(chatContent.getItem().getPrice());
         if (chatContent.getItem().getDiscount().equals("0")) {
-            holder.priceFinal.setText(String.format("%s %s", bd.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            holder.priceFinal.setText(String.format("%s %s", bd.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
             holder.priceStart.setVisibility(View.GONE);
         } else {
             holder.discountProcent.setVisibility(View.VISIBLE);
@@ -202,8 +204,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (bd.compareTo(new BigDecimal(String.valueOf(bd.setScale(0, BigDecimal.ROUND_HALF_UP)))) == 0) {
                 bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
             }
-            holder.priceFinal.setText(String.format("%s %s", bd.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
-            holder.priceStart.setText(String.format("%s %s", chatContent.getItem().getPrice(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            holder.priceFinal.setText(String.format("%s %s", bd.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
+            holder.priceStart.setText(String.format("%s %s", chatContent.getItem().getPrice(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
             holder.priceStart.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
@@ -680,13 +684,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case "order":
                 return MSG_TYPE_ORDER;
             case "message":
-                if (chatContentList.get(position).getFrom_whom().equals(LoaderActivity.settings.getString(LoaderActivity.CLIENT_CHAT_ID, ""))) {
+                if (chatContentList.get(position).getFrom_whom().equals(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID))) {
                     return MSG_TYPE_MESSAGE_RIGHT;
                 } else {
                     return MSG_TYPE_MESSAGE_LEFT;
                 }
             case "images":
-                if (chatContentList.get(position).getFrom_whom().equals(LoaderActivity.settings.getString(LoaderActivity.CLIENT_CHAT_ID, ""))) {
+                if (chatContentList.get(position).getFrom_whom().equals(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID))) {
                     return MSG_TYPE_PICTURE_RIGHT;
                 } else {
                     return MSG_TYPE_PICTURE_LEFT;

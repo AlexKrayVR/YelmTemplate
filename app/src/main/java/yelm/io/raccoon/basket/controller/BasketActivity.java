@@ -37,6 +37,7 @@ import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.user_addresses.UserAddress;
 import yelm.io.raccoon.databinding.ActivityBasketOnlyDeliveryBinding;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Modifier;
 import yelm.io.raccoon.order.controller.OrderActivity;
@@ -201,13 +202,13 @@ public class BasketActivity extends AppCompatActivity {
         }
         Logging.logDebug("Method updateBasket() - finalCost: " + finalCost.toString());
 
-        if (finalCost.compareTo(new BigDecimal(LoaderActivity.settings.getString(LoaderActivity.MIN_ORDER_PRICE, "0"))) < 0) {
+        if (finalCost.compareTo(new BigDecimal(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.MIN_ORDER_PRICE))) < 0) {
             binding.layoutMinOrderPrice.setVisibility(View.VISIBLE);
             allowOrdering = false;
             binding.orderMinPrice.setText(String.format("%s %s %s",
                     getString(R.string.basketActivityOrderMinPrice),
-                    LoaderActivity.settings.getString(LoaderActivity.MIN_ORDER_PRICE, "0"),
-                    LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "0")));
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.MIN_ORDER_PRICE),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         } else {
             binding.layoutMinOrderPrice.setVisibility(View.GONE);
         }
@@ -220,14 +221,14 @@ public class BasketActivity extends AppCompatActivity {
 
         //show a note about possible free shipping
         //if finalCost of basket more than minimum value for free delivery
-        if (finalCost.compareTo(new BigDecimal(LoaderActivity.settings.getString(LoaderActivity.MIN_PRICE_FOR_FREE_DELIVERY, "0"))) < 0) {
+        if (finalCost.compareTo(new BigDecimal(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.MIN_PRICE_FOR_FREE_DELIVERY))) < 0) {
             deliveryCostFinal = deliveryCostStart;
-            BigDecimal freeDelivery = new BigDecimal(LoaderActivity.settings.getString(LoaderActivity.MIN_PRICE_FOR_FREE_DELIVERY, "0"));
+            BigDecimal freeDelivery = new BigDecimal(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.MIN_PRICE_FOR_FREE_DELIVERY));
             freeDelivery = freeDelivery.subtract(finalCost);
             binding.freeDelivery.setText(String.format("%s %s %s %s",
                     getString(R.string.basketActivityFreeDelivery1),
                     freeDelivery,
-                    LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, ""),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN),
                     getString(R.string.basketActivityFreeDelivery2)));
             binding.freeDelivery.setVisibility(View.VISIBLE);
         } else {
@@ -239,13 +240,13 @@ public class BasketActivity extends AppCompatActivity {
 
         binding.total.setText(String.format("%s %s",
                 finalCost,
-                LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         binding.deliveryCost.setText(String.format("%s %s",
                 deliveryCostFinal,
-                LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         binding.finalPrice.setText(String.format("%s %s",
                 finalCost.add(deliveryCostFinal),
-                LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
     }
 
     private void cutleryLogic() {

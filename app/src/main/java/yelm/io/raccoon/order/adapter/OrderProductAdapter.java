@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import yelm.io.raccoon.databinding.ProductItemOrderBinding;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Item;
 
@@ -58,7 +59,8 @@ public class OrderProductAdapter extends RecyclerView.Adapter<OrderProductAdapte
 
         bd = bd.multiply(new BigDecimal(currentCount));
 
-        holder.binding.price.setText(String.format("%s %s", bd.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        holder.binding.price.setText(String.format("%s %s", bd.toString(),
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
 
         holder.binding.description.setText(current.getName());
 //

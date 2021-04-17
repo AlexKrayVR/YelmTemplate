@@ -6,8 +6,10 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 public class StaticRepository {
+    Toast toast;
 
     public static boolean isLocationEnabledOldVersion(Context context) {
         int locationMode = 0;
@@ -30,6 +32,15 @@ public class StaticRepository {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
+
+    private void showToast(Context context, String message) {
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
 
 
 }

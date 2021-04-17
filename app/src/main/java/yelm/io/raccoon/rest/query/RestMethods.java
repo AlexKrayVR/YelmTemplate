@@ -6,6 +6,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.rest.rest_api.RestAPI;
@@ -20,7 +21,7 @@ public class RestMethods {
                 create(RestAPI.class).
                 sendStatistic(
                         RestAPI.PLATFORM_NUMBER,
-                        LoaderActivity.settings.getString(LoaderActivity.USER_NAME, ""),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME),
                         type).
                 enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -39,7 +40,7 @@ public class RestMethods {
     }
 
     public static void sendRegistrationToServer(String s) {
-        String user = LoaderActivity.settings.getString(LoaderActivity.USER_NAME, "");
+        String user = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME);
         Logging.logDebug( "Method sendRegistrationToServer()");
         RetrofitClient
                 .getClient(RestAPI.URL_API_MAIN)

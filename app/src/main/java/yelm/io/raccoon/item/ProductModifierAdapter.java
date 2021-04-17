@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.databinding.ModifierProductItemBinding;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
@@ -44,7 +45,8 @@ public class ProductModifierAdapter extends RecyclerView.Adapter<ProductModifier
     public void onBindViewHolder(@NonNull ProductHolder holder, int position) {
         Modifier current = modifiers.get(position);
         holder.binding.name.setText(current.getName());
-        holder.binding.value.setText(String.format("+%s %s", current.getValue(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        holder.binding.value.setText(String.format("+%s %s", current.getValue(),
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
 
         holder.binding.selector.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (holder.binding.selector.isChecked()) {

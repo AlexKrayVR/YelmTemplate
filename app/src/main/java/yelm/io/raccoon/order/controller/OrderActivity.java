@@ -47,6 +47,7 @@ import retrofit2.Response;
 import ru.cloudpayments.sdk.three_ds.ThreeDSDialogListener;
 import ru.cloudpayments.sdk.three_ds.ThreeDsDialogFragment;
 import yelm.io.raccoon.constants.Constants;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.order.model.PriceConverterResponse;
 import yelm.io.raccoon.order.model.PromoCodeClass;
 import yelm.io.raccoon.order.text_watcher.CustomTextWatcher;
@@ -62,7 +63,6 @@ import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.user_addresses.UserAddress;
 import yelm.io.raccoon.databinding.ActivityOrderNewBinding;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.payment.googleplay.PaymentsUtil;
 import yelm.io.raccoon.support_stuff.PhoneTextFormatter;
 
@@ -89,8 +89,8 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private String transactionID = "-1";
     private String order = "";
-    private String userID = LoaderActivity.settings.getString(LoaderActivity.USER_NAME, "");
-    private String currency = LoaderActivity.settings.getString(LoaderActivity.CURRENCY, "");
+    private String userID = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME);
+    private String currency = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY);
     private String countCutlery = "1";
     private static final String ENTRANCE = "ENTRANCE";
     private static final String FLOOR = "FLOOR";
@@ -143,9 +143,9 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     }
 
     private void getPromoIfExist() {
-        String type = LoaderActivity.settings.getString(LoaderActivity.DISCOUNT_TYPE, "");
-        String amount = LoaderActivity.settings.getString(LoaderActivity.DISCOUNT_AMOUNT, "0");
-        String name = LoaderActivity.settings.getString(LoaderActivity.DISCOUNT_NAME, "");
+        String type = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.DISCOUNT_TYPE);
+        String amount = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.DISCOUNT_AMOUNT);
+        String name = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.DISCOUNT_NAME);
         Logging.logDebug("type: " + type);
         Logging.logDebug("amount: " + amount);
         Logging.logDebug("name: " + name);
@@ -167,7 +167,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                     .create(RestAPI.class)
                     .getPromoCode(binding.promoCode.getText().toString().trim(),
                             RestAPI.PLATFORM_NUMBER,
-                            LoaderActivity.settings.getString(LoaderActivity.USER_NAME, "")
+                            SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME)
                     ).enqueue(new Callback<PromoCodeClass>() {
                 @Override
                 public void onResponse(@NotNull Call<PromoCodeClass> call, @NotNull Response<PromoCodeClass> response) {
@@ -206,18 +206,17 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         discountPromo = new BigDecimal(amount);
         discountType = type;
 
-        SharedPreferences.Editor editor = LoaderActivity.settings.edit();
-        editor.putString(LoaderActivity.DISCOUNT_TYPE, type);
-        editor.putString(LoaderActivity.DISCOUNT_AMOUNT, amount);
-        editor.putString(LoaderActivity.DISCOUNT_NAME, name);
-        editor.apply();
+        SharedPreferencesSetting.setData(SharedPreferencesSetting.DISCOUNT_TYPE, type);
+        SharedPreferencesSetting.setData(SharedPreferencesSetting.DISCOUNT_AMOUNT, amount);
+        SharedPreferencesSetting.setData(SharedPreferencesSetting.DISCOUNT_NAME, name);
+
 
         switch (type) {
             case "full":
                 binding.discountPercent.setText(String.format("%s",
                         getText(R.string.orderDiscount)));
                 binding.discountPrice.setText(String.format("%s %s", discountPromo,
-                        LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
                 if (discountPromo.compareTo(finalCost) >= 0) {
                     finalCost = new BigDecimal("1");
                 } else {
@@ -233,7 +232,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 BigDecimal discountDelivery = discountPromo.divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
                 discountDelivery = discountDelivery.multiply(deliveryCostFinal).setScale(2, BigDecimal.ROUND_HALF_UP);
                 binding.discountPrice.setText(String.format("%s %s", discountDelivery,
-                        LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
                 deliveryCostFinal = deliveryCostFinal.subtract(discountDelivery);
                 break;
             case "percent":
@@ -241,7 +240,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 BigDecimal discount = discountPromo.divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
                 discount = discount.multiply(finalCost).setScale(2, BigDecimal.ROUND_HALF_UP);
                 binding.discountPrice.setText(String.format("%s %s", discount,
-                        LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
                 finalCost = finalCost.subtract(discount);
                 if (finalCost.compareTo(new BigDecimal("0")) == 0) {
                     finalCost = new BigDecimal("1");
@@ -249,7 +248,8 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 break;
         }
         paymentCost = finalCost.add(deliveryCostFinal);
-        binding.finalPrice.setText(String.format("%s %s", finalCost.add(deliveryCostFinal), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        binding.finalPrice.setText(String.format("%s %s", finalCost.add(deliveryCostFinal),
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         Logging.logDebug("finalCost: " + finalCost);
         Logging.logDebug("paymentCost: " + paymentCost);
     }
@@ -351,14 +351,13 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     }
 
     private void bindingChosePaymentType() {
-        if (!LoaderActivity.settings.getBoolean(LoaderActivity.PAYMENT_CARD, false) &&
-                !LoaderActivity.settings.getBoolean(LoaderActivity.PAYMENT_CASH, false)) {
+        if (!SharedPreferencesSetting.getDataBoolean(SharedPreferencesSetting.PAYMENT_CARD) &&
+                !SharedPreferencesSetting.getDataBoolean(SharedPreferencesSetting.PAYMENT_CASH)) {
             binding.paymentUnavailable.setVisibility(View.VISIBLE);
             binding.layoutPaymentType.setVisibility(View.GONE);
             return;
         }
-
-        if (LoaderActivity.settings.getBoolean(LoaderActivity.PAYMENT_CARD, false)) {
+        if (SharedPreferencesSetting.getDataBoolean(SharedPreferencesSetting.PAYMENT_CARD)) {
             binding.cardPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
             binding.cardPayText.setTextColor(getResources().getColor(R.color.whiteColor));
             binding.paymentCard.setVisibility(View.VISIBLE);
@@ -402,7 +401,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
             binding.googlePay.setVisibility(View.VISIBLE);
         });
 
-        if (LoaderActivity.settings.getBoolean(LoaderActivity.PAYMENT_CASH, false)) {
+        if (SharedPreferencesSetting.getDataBoolean(SharedPreferencesSetting.PAYMENT_CASH)) {
             binding.cashPay.setOnClickListener(view -> {
                 binding.cashPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
                 binding.cashPayText.setTextColor(getResources().getColor(R.color.whiteColor));
@@ -462,10 +461,13 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     }
 
     private void binding() {
-        binding.startPrice.setText(String.format("%s %s", startCost, LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
-        binding.finalPrice.setText(String.format("%s %s", finalCost.add(deliveryCostStart), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        binding.startPrice.setText(String.format("%s %s", startCost,
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
+        binding.finalPrice.setText(String.format("%s %s", finalCost.add(deliveryCostStart),
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         binding.back.setOnClickListener(v -> finish());
-        binding.deliveryPrice.setText(String.format("%s %s", deliveryCostStart, LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        binding.deliveryPrice.setText(String.format("%s %s", deliveryCostStart,
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         binding.userAddress.setText(currentAddress.address);
 
         //set amount of products
@@ -561,7 +563,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         binding.pwgButton.getRoot().setVisibility(View.VISIBLE);
         binding.pwgButton.getRoot().setOnClickListener(v -> {
             if (preparePayment()) {
-                if (Objects.equals(LoaderActivity.settings.getString(LoaderActivity.CURRENCY, ""), "RUB")) {
+                if (Objects.equals(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY), "RUB")) {
                     requestPayment(paymentsClient);
                 } else {
                     convertPrice();
@@ -610,7 +612,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 .create(RestAPI.class)
                 .convertPrice(
                         paymentCost.toString(),
-                        LoaderActivity.settings.getString(LoaderActivity.CURRENCY, "")
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY)
                 ).enqueue(new Callback<PriceConverterResponse>() {
             @Override
             public void onResponse(@NotNull Call<PriceConverterResponse> call, @NotNull Response<PriceConverterResponse> response) {
@@ -676,23 +678,22 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
 
     // Проверяем необходимо ли подтверждение с использованием 3DS
     private void checkResponse(Transaction transaction) {
+        Logging.logDebug("Method checkResponse()");
         if (transaction.getPaReq() != null && transaction.getAcsUrl() != null) {
             // Показываем 3DS форму
             Logging.logDebug("show3DS");
             show3DS(transaction);
         } else {
             // Показываем результат
-            Logging.logDebug("transaction result: " + transaction.getCardHolderMessage());
+            Logging.logDebug("transaction.getCardHolderMessage(): " + transaction.getCardHolderMessage());
             Logging.logDebug("transaction.getReasonCode(): " + transaction.getReasonCode());
+            Logging.logDebug("transaction.getId(): " + transaction.getId());
             showToast(transaction.getCardHolderMessage());
             if (transaction.getReasonCode() == 0) {
                 transactionID = transaction.getId();
-                Logging.logDebug("transaction.getId(): " + transaction.getId());
-                SharedPreferences.Editor editor = LoaderActivity.settings.edit();
-                editor.putString(LoaderActivity.DISCOUNT_TYPE, "");
-                editor.putString(LoaderActivity.DISCOUNT_AMOUNT, "0");
-                editor.putString(LoaderActivity.DISCOUNT_NAME, "");
-                editor.apply();
+                SharedPreferencesSetting.setData(SharedPreferencesSetting.DISCOUNT_TYPE, "");
+                SharedPreferencesSetting.setData(SharedPreferencesSetting.DISCOUNT_AMOUNT, "0");
+                SharedPreferencesSetting.setData(SharedPreferencesSetting.DISCOUNT_NAME, "");
                 sendOrder("googlepay");
             }
         }

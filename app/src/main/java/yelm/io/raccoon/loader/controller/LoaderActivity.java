@@ -2,13 +2,7 @@ package yelm.io.raccoon.loader.controller;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -23,6 +17,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import yelm.io.raccoon.R;
+import yelm.io.raccoon.loader.app_settings.DeviceInfo;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.model.ApplicationSettings;
 import yelm.io.raccoon.loader.model.ChatSettingsClass;
 import yelm.io.raccoon.rest.query.RestMethods;
@@ -42,36 +38,13 @@ import yelm.io.raccoon.support_stuff.StaticRepository;
 
 public class LoaderActivity extends AppCompatActivity {
 
-    public static final String USER_NAME = "USER_NAME";
-    public static final String MIN_PRICE_FOR_FREE_DELIVERY = "MIN_PRICE_FOR_FREE_DELIVERY";
-    public static final String COLOR = "COLOR";
-    public static final String MIN_ORDER_PRICE = "MIN_ORDER_PRICE";
-    public static final String PRICE_IN = "PRICE_IN";
-    public static final String CURRENCY = "CNT";
-    public static final String COUNTRY_CODE = "COUNTRY_CODE";
-    public static final String API_TOKEN = "API_TOKEN";
-    public static final String ROOM_CHAT_ID = "ROOM_ID";
-    public static final String SHOP_CHAT_ID = "SHOP_ID";
-    public static final String CLIENT_CHAT_ID = "CLIENT_ID";
-
-    public static final String DISCOUNT_TYPE = "DISCOUNT_TYPE";
-    public static final String DISCOUNT_AMOUNT = "DISCOUNT_AMOUNT";
-    public static final String DISCOUNT_NAME = "DISCOUNT_NAME";
-
-    public static final String PAYMENT_CARD = "PAYMENT_CARD";
-    public static final String PAYMENT_MOBILE = "PAYMENT_MOBILE";
-    public static final String PAYMENT_CASH = "PAYMENT_CASH";
-
-    public static SharedPreferences settings;
-    private static final String APP_PREFERENCES = "settings";
-
     private static final int INTERNET_SETTINGS_CODE = 91;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loader);
-        settings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferencesSetting.initSharedPreferencesSettings(this);
 
 //        Log.d(Logging.debug, "Locale.getDefault().getDisplayLanguage(): " + Locale.getDefault().getDisplayLanguage());
 //        Log.d(Logging.debug, "Locale.getDefault().getLanguage(): " + Locale.getDefault().getLanguage());
@@ -79,40 +52,18 @@ public class LoaderActivity extends AppCompatActivity {
         //Log.d("AlexDebug", "getResources().getConfiguration().locale.getLanguage(): " + getResources().getConfiguration().locale.getLanguage());
         // Log.d("AlexDebug", "getResources().getConfiguration().locale.getCountry() " + getResources().getConfiguration().locale.getCountry());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = getString(R.string.default_notification_channel_id);
-            String channelName = getString(R.string.default_notification_channel_name);
-            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            manager.createNotificationChannel(new NotificationChannel(channelId,
-                    channelName, NotificationManager.IMPORTANCE_HIGH));
-        }
         initRoom();
     }
 
-    private JSONObject getDeviceInfo() {
-        BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
-        int percentage = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-        JSONObject jsonData = new JSONObject();
-        try {
-            jsonData.put("percentage", Integer.toString(percentage));
-            jsonData.put("device", Build.DEVICE);
-            jsonData.put("model", Build.MODEL);
-            jsonData.put("product", Build.PRODUCT);
-            jsonData.put("display", Build.DISPLAY);
-            jsonData.put("brand", Build.BRAND);
-            jsonData.put("user", Build.USER);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonData;
-    }
-
-    //if user does not exist then we pull request to create it
+    /**
+     * at the first start of app we check if user exist - if not we create user by pull request, otherwise continue collect app info
+     */
     private void checkUser() {
-        if (settings.contains(USER_NAME)) {
-            Logging.logDebug("Method checkUser() - user exist: " + settings.getString(USER_NAME, ""));
+        if (SharedPreferencesSetting.getSettings().contains(SharedPreferencesSetting.USER_NAME)) {
+            Logging.logDebug("Method checkUser() - user exist: "
+                    + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME));
             getApplicationSettings();
-            getChatSettings(settings.getString(USER_NAME, ""));
+            getChatSettings(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME));
         } else {
             RetrofitClient.
                     getClient(RestAPI.URL_API_MAIN)
@@ -120,16 +71,15 @@ public class LoaderActivity extends AppCompatActivity {
                     .createUser(getResources().getConfiguration().locale.getLanguage(),
                             getResources().getConfiguration().locale.getCountry(),
                             RestAPI.PLATFORM_NUMBER,
-                            getDeviceInfo())
+                            DeviceInfo.getDeviceInfo(this))
                     .enqueue(new Callback<UserLoginResponse>() {
                         @Override
                         public void onResponse(@NotNull Call<UserLoginResponse> call, @NotNull Response<UserLoginResponse> response) {
                             if (response.isSuccessful()) {
                                 if (response.body() != null) {
-                                    SharedPreferences.Editor editor = settings.edit();
-                                    editor.putString(USER_NAME, response.body().getLogin()).apply();
-                                    Logging.logDebug("Method checkUser() - created user: " + settings.getString(USER_NAME, ""));
-                                    getChatSettings(settings.getString(USER_NAME, ""));
+                                    Logging.logDebug("Method checkUser() - created user: " + response.body().getLogin());
+                                    SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_NAME, response.body().getLogin());
+                                    getChatSettings(response.body().getLogin());
                                     getApplicationSettings();
                                 } else {
                                     Logging.logError("Method checkUser() - by some reason response is null!");
@@ -148,7 +98,10 @@ public class LoaderActivity extends AppCompatActivity {
         }
     }
 
-    //get main settings of app
+    /**
+     * get main settings of application such as: MERCHANT_PUBLIC_ID, MIN_ORDER_PRICE, CURRENCY, etc
+     * and after all launch MainActivity
+     */
     private void getApplicationSettings() {
         RetrofitClient.
                 getClient(RestAPI.URL_API_MAIN).
@@ -162,20 +115,17 @@ public class LoaderActivity extends AppCompatActivity {
                     public void onResponse(@NotNull Call<ApplicationSettings> call, @NotNull final Response<ApplicationSettings> response) {
                         if (response.isSuccessful()) {
                             if (response.body() != null) {
+                                Logging.logDebug("ApplicationSettings: " + response.body().toString());
                                 Constants.MERCHANT_PUBLIC_ID = response.body().getSettings().getPublicId();
-                                SharedPreferences.Editor editor = settings.edit();
-                                editor.putString(MIN_PRICE_FOR_FREE_DELIVERY, response.body().getSettings().getMinDeliveryPrice());
-                                editor.putString(MIN_ORDER_PRICE, response.body().getSettings().getMinOrderPrice());
-                                editor.putString(CURRENCY, response.body().getCurrency());
-                                editor.putString(COLOR, response.body().getSettings().getTheme());
-                                editor.putString(PRICE_IN, response.body().getSymbol());
-                                editor.putString(COUNTRY_CODE, response.body().getSettings().getRegionCode());
-
-                                editor.putBoolean(PAYMENT_CARD, response.body().getSettings().getPayment().getCard());
-                                editor.putBoolean(PAYMENT_MOBILE, response.body().getSettings().getPayment().getApplepay());
-                                editor.putBoolean(PAYMENT_CASH, response.body().getSettings().getPayment().getPlaceorder());
-
-                                editor.apply();
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.MIN_PRICE_FOR_FREE_DELIVERY, response.body().getSettings().getMinDeliveryPrice());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.MIN_ORDER_PRICE, response.body().getSettings().getMinOrderPrice());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.CURRENCY, response.body().getCurrency());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.COLOR, response.body().getSettings().getTheme());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.PRICE_IN, response.body().getSymbol());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.COUNTRY_CODE, response.body().getSettings().getRegionCode());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_CARD, response.body().getSettings().getPayment().getCard());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_MOBILE, response.body().getSettings().getPayment().getApplepay());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_CASH, response.body().getSettings().getPayment().getPlaceorder());
                                 launchMain();
                             } else {
                                 Logging.logError("Method getApplicationSettings(): by some reason response is null!");
@@ -193,6 +143,9 @@ public class LoaderActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * launch MainActivity, if LoaderActivity was launched by notifications set its data to intent
+     */
     private void launchMain() {
         Bundle args = getIntent().getExtras();
         Intent intent = new Intent(LoaderActivity.this, MainActivity.class);
@@ -257,6 +210,11 @@ public class LoaderActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * get chat settings for socket connections such as: API_TOKEN, SHOP_CHAT_ID, ROOM_CHAT_ID, CLIENT_CHAT_ID
+     *
+     * @param login is the user login
+     */
     private void getChatSettings(String login) {
         RetrofitClient.
                 getClient(RestAPI.URL_API_MAIN).
@@ -268,12 +226,10 @@ public class LoaderActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             if (response.body() != null) {
                                 Logging.logDebug("ChatSettingsClass: " + response.body().toString());
-                                SharedPreferences.Editor editor = settings.edit();
-                                editor.putString(API_TOKEN, response.body().getApiToken());
-                                editor.putString(SHOP_CHAT_ID, response.body().getShop());
-                                editor.putString(ROOM_CHAT_ID, response.body().getRoomId());
-                                editor.putString(CLIENT_CHAT_ID, response.body().getClient());
-                                editor.apply();
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.API_TOKEN, response.body().getApiToken());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.SHOP_CHAT_ID, response.body().getShop());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.ROOM_CHAT_ID, response.body().getRoomId());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.CLIENT_CHAT_ID, response.body().getClient());
                             } else {
                                 Logging.logError("Method getChatSettings(): by some reason response is null!");
                             }

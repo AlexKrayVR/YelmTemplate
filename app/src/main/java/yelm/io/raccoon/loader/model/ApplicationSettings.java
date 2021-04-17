@@ -3,6 +3,8 @@ package yelm.io.raccoon.loader.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ApplicationSettings {
 
     @SerializedName("currency")
@@ -51,5 +53,14 @@ public class ApplicationSettings {
         this.settings = settings;
     }
 
-
+    @NotNull
+    @Override
+    public String toString() {
+        return "ApplicationSettings{" +
+                "currency='" + currency + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", shopId='" + shopId + '\'' +
+                ", settings=" + settings +
+                '}';
+    }
 }

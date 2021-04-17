@@ -38,6 +38,7 @@ import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.databinding.ActivityItemBinding;
 import yelm.io.raccoon.item.decoder.PicassoDecoder;
 import yelm.io.raccoon.item.decoder.PicassoRegionDecoder;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.model.Modifier;
@@ -94,7 +95,8 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
             }
         }
-        binding.cost.setText(String.format("%s %s", bd.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        binding.cost.setText(String.format("%s %s", bd.toString(),
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         return bd;
     }
 
@@ -123,7 +125,8 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
             }
             costCurrent = costCurrent.multiply(new BigDecimal(binding.countProducts.getText().toString()));
-            binding.cost.setText(String.format("%s %s", costCurrent.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            binding.cost.setText(String.format("%s %s", costCurrent.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         });
         binding.recyclerModifier.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerModifier.setAdapter(productModifierAdapter);
@@ -166,6 +169,8 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
         com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView image = view.findViewById(R.id.imageView);
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
         android.app.AlertDialog alertDialog = builder.create();
+
+        image.setMinimumDpi(60);
 
         image.setBitmapDecoderFactory(new DecoderFactory<ImageDecoder>() {
             @NonNull
@@ -219,7 +224,8 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
             }
             costCurrent = costCurrent.multiply(new BigDecimal(counter.toString()));
-            binding.cost.setText(String.format("%s %s", costCurrent.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            binding.cost.setText(String.format("%s %s", costCurrent.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         });
 
         binding.removeProduct.setOnClickListener(v -> {
@@ -232,7 +238,8 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
                 }
                 costCurrent = costCurrent.multiply(new BigDecimal(counter.toString()));
-                binding.cost.setText(String.format("%s %s", costCurrent.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                binding.cost.setText(String.format("%s %s", costCurrent.toString(),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
             }
         });
     }

@@ -25,6 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import yelm.io.raccoon.R;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
@@ -121,7 +122,7 @@ public class ItemFromNotificationActivity extends AppCompatActivity  implements 
                 bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
             }
         }
-        binding.cost.setText(String.format("%s %s", bd.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        binding.cost.setText(String.format("%s %s", bd.toString(), SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         return bd;
     }
 
@@ -150,7 +151,8 @@ public class ItemFromNotificationActivity extends AppCompatActivity  implements 
                 costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
             }
             costCurrent = costCurrent.multiply(new BigDecimal(binding.countProducts.getText().toString()));
-            binding.cost.setText(String.format("%s %s", costCurrent.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            binding.cost.setText(String.format("%s %s", costCurrent.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         });
         binding.recyclerModifier.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerModifier.setAdapter(productModifierAdapter);
@@ -180,7 +182,8 @@ public class ItemFromNotificationActivity extends AppCompatActivity  implements 
                 costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
             }
             costCurrent = costCurrent.multiply(new BigDecimal(counter.toString()));
-            binding.cost.setText(String.format("%s %s", costCurrent.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+            binding.cost.setText(String.format("%s %s", costCurrent.toString(),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         });
 
         binding.removeProduct.setOnClickListener(v -> {
@@ -193,7 +196,8 @@ public class ItemFromNotificationActivity extends AppCompatActivity  implements 
                     costCurrent = costCurrent.add(new BigDecimal(modifierEntry.getValue()));
                 }
                 costCurrent = costCurrent.multiply(new BigDecimal(counter.toString()));
-                binding.cost.setText(String.format("%s %s", costCurrent.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                binding.cost.setText(String.format("%s %s", costCurrent.toString(),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
             }
         });
     }

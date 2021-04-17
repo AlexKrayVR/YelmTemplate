@@ -60,7 +60,7 @@ import yelm.io.raccoon.chat.model.ChatContent;
 import yelm.io.raccoon.chat.model.ChatHistoryClass;
 import yelm.io.raccoon.constants.Constants;
 import yelm.io.raccoon.databinding.ActivityChatBinding;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.rest.rest_api.RestAPI;
 import yelm.io.raccoon.rest.rest_api.RestApiChat;
@@ -71,7 +71,6 @@ import yelm.io.raccoon.support_stuff.Logging;
 public class ChatActivity extends AppCompatActivity implements PickImageBottomSheet.BottomSheetShopListener, PickImageBottomSheet.CameraListener {
 
     ActivityChatBinding binding;
-    private String userID = LoaderActivity.settings.getString(LoaderActivity.USER_NAME, "");
     ChatAdapter chatAdapter;
 
     ArrayList<ChatContent> chatContentList = new ArrayList<>();
@@ -95,7 +94,6 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
 
     public static final String CHAT_SERVER_URL = "https://chat.yelm.io/";
     private Socket socket;
-    Uri imageUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,15 +110,12 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
     private void tuneSocketConnection() {
         try {
             IO.Options options = new IO.Options();
-            options.query = "token=" + LoaderActivity.settings.getString(LoaderActivity.API_TOKEN, "")
-                    + "&room_id=" + LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, "")
+            options.query = "token=" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.API_TOKEN)
+                    + "&room_id=" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID)
                     + "&user=Client";
             socket = IO.socket(CHAT_SERVER_URL, options);
-            socket.on("room." + LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""), onLogin);
+            socket.on("room." + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID), onLogin);
             socket.connect();
-
-            Log.d("AlexDebug", "room: " + LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""));
-            Log.d("AlexDebug", "connected!");
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Log.d("AlexDebug", "error: " + e.getMessage());
@@ -157,15 +152,15 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
 
                 try {
                     Log.d("AlexDebug", "data.toString(): " + data.toString());
-                    if (data.getString("from_whom").equals(LoaderActivity.settings.getString(LoaderActivity.CLIENT_CHAT_ID, ""))) {
+                    if (data.getString("from_whom").equals(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID))) {
                         return;
                     }
                     if (data.getString("type").equals("message")) {
                         String message = data.getString("message");
                         Calendar current = GregorianCalendar.getInstance();
                         ChatContent chatMessage = new ChatContent(
-                                LoaderActivity.settings.getString(LoaderActivity.SHOP_CHAT_ID, ""),
-                                LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""),
+                                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID),
+                                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID),
                                 message,
                                 printedFormatterDate.format(current.getTime()),
                                 "message",
@@ -186,8 +181,8 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                         for (String image : arrayImagesList) {
                             Calendar current = GregorianCalendar.getInstance();
                             ChatContent temp = new ChatContent(
-                                    LoaderActivity.settings.getString(LoaderActivity.SHOP_CHAT_ID, ""),
-                                    LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""),
+                                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID),
+                                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID),
                                     "",
                                     printedFormatterDate.format(current.getTime()),
                                     "images",
@@ -206,8 +201,8 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                         Item item = gson.fromJson(itemString, typeItem);
                         Calendar current = GregorianCalendar.getInstance();
                         ChatContent temp = new ChatContent(
-                                LoaderActivity.settings.getString(LoaderActivity.SHOP_CHAT_ID, ""),
-                                LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""),
+                                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID),
+                                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID),
                                 "",
                                 printedFormatterDate.format(current.getTime()),
                                 "items",
@@ -250,7 +245,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                 getClient(RestApiChat.URL_API_MAIN).
                 create(RestApiChat.class).
                 getChatHistory(RestAPI.PLATFORM_NUMBER,
-                        LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, "")).
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID)).
                 enqueue(new Callback<ArrayList<ChatHistoryClass>>() {
                     @Override
                     public void onResponse(@NotNull Call<ArrayList<ChatHistoryClass>> call, @NotNull final Response<ArrayList<ChatHistoryClass>> response) {
@@ -354,8 +349,8 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
             if (!message.isEmpty()) {
                 Calendar current = GregorianCalendar.getInstance();
                 ChatContent temp = new ChatContent(
-                        LoaderActivity.settings.getString(LoaderActivity.CLIENT_CHAT_ID, ""),
-                        LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID),
                         message,
                         printedFormatterDate.format(current.getTime()),
                         "message",
@@ -507,8 +502,8 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
 
                 Calendar current = GregorianCalendar.getInstance();
                 ChatContent temp = new ChatContent(
-                        LoaderActivity.settings.getString(LoaderActivity.CLIENT_CHAT_ID, ""),
-                        LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID),
                         "",
                         printedFormatterDate.format(current.getTime()),
                         "images",
@@ -539,8 +534,8 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
             Log.d("AlexDebug", "picture.getValue(): " + picture.getValue());
             Calendar current = GregorianCalendar.getInstance();
             chatContentList.add(new ChatContent(
-                    LoaderActivity.settings.getString(LoaderActivity.CLIENT_CHAT_ID, ""),
-                    LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID),
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID),
                     "",
                     printedFormatterDate.format(current.getTime()),
                     "images",
@@ -554,6 +549,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
         }
     }
 
+
     private void socketSendPictures(String image) {
         JSONObject jsonObjectItem = new JSONObject();
         JSONArray picturesArray = new JSONArray();
@@ -564,15 +560,15 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
             JSONObject pictureObject = new JSONObject();
             pictureObject.put("image", base64);
             picturesArray.put(pictureObject);
-            jsonObjectItem.put("room_id", LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""));
-            jsonObjectItem.put("from_whom", LoaderActivity.settings.getString(LoaderActivity.CLIENT_CHAT_ID, ""));
-            jsonObjectItem.put("to_whom", LoaderActivity.settings.getString(LoaderActivity.SHOP_CHAT_ID, ""));
+            jsonObjectItem.put("room_id", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID));
+            jsonObjectItem.put("from_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID));
+            jsonObjectItem.put("to_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID) );
             jsonObjectItem.put("message", "");
             jsonObjectItem.put("items", "{}");
             jsonObjectItem.put("type", "images");
             jsonObjectItem.put("platform", RestAPI.PLATFORM_NUMBER);
             jsonObjectItem.put("images", picturesArray.toString());
-            socket.emit("room." + LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""), jsonObjectItem);
+            socket.emit("room." + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID), jsonObjectItem);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -586,15 +582,15 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
             JSONObject pictureObject = new JSONObject();
             pictureObject.put("image", base64);
             picturesArray.put(pictureObject);
-            jsonObjectItem.put("room_id", LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""));
-            jsonObjectItem.put("from_whom", LoaderActivity.settings.getString(LoaderActivity.CLIENT_CHAT_ID, ""));
-            jsonObjectItem.put("to_whom", LoaderActivity.settings.getString(LoaderActivity.SHOP_CHAT_ID, ""));
+            jsonObjectItem.put("room_id", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID));
+            jsonObjectItem.put("from_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID));
+            jsonObjectItem.put("to_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID) );
             jsonObjectItem.put("message", "");
             jsonObjectItem.put("items", "{}");
             jsonObjectItem.put("type", "images");//"type"-"images/message"
             jsonObjectItem.put("platform", RestAPI.PLATFORM_NUMBER);
             jsonObjectItem.put("images", picturesArray.toString());
-            socket.emit("room." + LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""), jsonObjectItem);
+            socket.emit("room." + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID), jsonObjectItem);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -604,9 +600,9 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
     private void socketSendMessage(String message) {
         JSONObject jsonObjectItem = new JSONObject();
         try {
-            jsonObjectItem.put("room_id", LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""));
-            jsonObjectItem.put("from_whom", LoaderActivity.settings.getString(LoaderActivity.CLIENT_CHAT_ID, ""));
-            jsonObjectItem.put("to_whom", LoaderActivity.settings.getString(LoaderActivity.SHOP_CHAT_ID, ""));
+            jsonObjectItem.put("room_id", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID));
+            jsonObjectItem.put("from_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID));
+            jsonObjectItem.put("to_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID) );
             jsonObjectItem.put("message", message);
             jsonObjectItem.put("type", "message");//"type"-"images/message"
             jsonObjectItem.put("platform", RestAPI.PLATFORM_NUMBER);
@@ -615,7 +611,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        socket.emit("room." + LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""), jsonObjectItem);
+        socket.emit("room." + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID), jsonObjectItem);
     }
 
     @Override
@@ -639,7 +635,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
     @Override
     protected void onDestroy() {
         Constants.customerInChat = false;
-        socket.off("room." + LoaderActivity.settings.getString(LoaderActivity.ROOM_CHAT_ID, ""));
+        socket.off("room." + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID));
         socket.disconnect();
         super.onDestroy();
     }

@@ -50,6 +50,7 @@ import yelm.io.raccoon.R;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.user_addresses.UserAddress;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.order.model.PriceConverterResponse;
 import yelm.io.raccoon.payment.models.Transaction;
@@ -81,9 +82,10 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
     private BigDecimal discountPromo = new BigDecimal("0");
     private String order = "";
     private String discountType = "";
-    private String userID = LoaderActivity.settings.getString(LoaderActivity.USER_NAME, "");
+
+    private String userID = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME);
+    private String currency = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY);
     private String transactionID = "0";
-    private String currency = LoaderActivity.settings.getString(LoaderActivity.CURRENCY, "");
     UserAddress currentAddress;
     //private String deliveryTime = "";
     private String entrance = "";
@@ -165,8 +167,8 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
         }
 
         // Пример определения банка по номеру карты
-        api.getBinInfo(cardNumber, binInfo -> Logging.logDebug( "Bank name: " + binInfo.getBankName()),
-                message -> Logging.logError( "Bank name error: " + message));
+        api.getBinInfo(cardNumber, binInfo -> Logging.logDebug("Bank name: " + binInfo.getBankName()),
+                message -> Logging.logError("Bank name error: " + message));
 
         // После проверики, если все данные корректны, создаем объект CPCard, иначе при попытке создания объекта CPCard мы получим исключение.
         CPCard card = new CPCard(cardNumber, cardDate, cardCVC);
@@ -184,10 +186,10 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
         // Если данные карты введены корректно и криптограмма успешно созданна
         // используя методы API выполняем оплату по криптограмме
 
-        Logging.logDebug( "cardCryptogram: " + cardCryptogram);
+        Logging.logDebug("cardCryptogram: " + cardCryptogram);
 
         if (cardCryptogram != null) {
-            if (Objects.equals(LoaderActivity.settings.getString(LoaderActivity.CURRENCY, "RUB"), "RUB")) {
+            if (Objects.equals(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY), "RUB")) {
                 auth(cardCryptogram, cardHolderName, paymentCost, order);
             } else {
                 convertPrice(cardCryptogram, cardHolderName);
@@ -197,13 +199,13 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
 
     private void convertPrice(String cardCryptogram, String cardHolderName) {
         showLoading();
-        Logging.logDebug( "Method convertPrice()");
+        Logging.logDebug("Method convertPrice()");
         RetrofitClient.
                 getClient(RestAPI.URL_API_MAIN)
                 .create(RestAPI.class)
                 .convertPrice(
                         paymentCost.toString(),
-                        LoaderActivity.settings.getString(LoaderActivity.CURRENCY, "")
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY)
                 ).enqueue(new Callback<PriceConverterResponse>() {
             @Override
             public void onResponse(@NotNull Call<PriceConverterResponse> call, @NotNull Response<PriceConverterResponse> response) {
@@ -218,7 +220,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
                     }
                 } else {
                     hideLoading();
-                    Logging.logError( "Method convertPrice() - response is not successful. " +
+                    Logging.logError("Method convertPrice() - response is not successful. " +
                             "Code: " + response.code() + "Message: " + response.message());
                 }
             }
@@ -226,7 +228,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
             @Override
             public void onFailure(@NotNull Call<PriceConverterResponse> call, @NotNull Throwable t) {
                 hideLoading();
-                Logging.logError( "Method convertPrice() - failure: " + t.toString());
+                Logging.logError("Method convertPrice() - failure: " + t.toString());
             }
         });
     }
@@ -257,16 +259,16 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
             Logging.logDebug("deliveryCost: " + deliveryCost);
             Logging.logDebug("floor: " + floor);
             Logging.logDebug("entrance: " + entrance);
-            Logging.logDebug( "phone: " + phone);
+            Logging.logDebug("phone: " + phone);
             Logging.logDebug("flat: " + flat);
             Logging.logDebug("discountType: " + discountType);
-            Logging.logDebug( "currentAddress: " + currentAddress.toString());
+            Logging.logDebug("currentAddress: " + currentAddress.toString());
         }
 
         textViewTotal.setText(new StringBuilder()
                 .append(paymentCost)
                 .append(" ")
-                .append(LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+                .append(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
     }
 
     // Запрос на проведение двустадийного платежа
@@ -283,27 +285,23 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
 
     // Проверяем необходимо ли подтверждение с использованием 3DS
     private void checkResponse(Transaction transaction) {
-        Logging.logDebug( "Method checkResponse()");
-
+        Logging.logDebug("Method checkResponse()");
         if (transaction.getPaReq() != null && transaction.getAcsUrl() != null) {
             // Показываем 3DS форму
+            Logging.logDebug("show3DS");
             show3DS(transaction);
         } else {
             // Показываем результат:
-            //Log.d(Logging.debug, "transaction result: " + transaction.getCardHolderMessage());
-            // showToast(transaction.getCardHolderMessage());
+            Logging.logDebug("transaction.getCardHolderMessage(): " + transaction.getCardHolderMessage());
+            Logging.logDebug("transaction.getReasonCode(): " + transaction.getReasonCode());
+            Logging.logDebug("transaction.getId(): " + transaction.getId());
+            showToast(transaction.getCardHolderMessage());
             if (transaction.getReasonCode() == 0) {
                 transactionID = transaction.getId();
-                //Log.d(Logging.debug, "transaction.getId(): " + transaction.getId());
-                Logging.logDebug( "transaction successful ");
-                SharedPreferences.Editor editor = LoaderActivity.settings.edit();
-                editor.putString(LoaderActivity.DISCOUNT_TYPE, "");
-                editor.putString(LoaderActivity.DISCOUNT_AMOUNT, "0");
-                editor.putString(LoaderActivity.DISCOUNT_NAME, "");
-                editor.apply();
+                SharedPreferencesSetting.setData(SharedPreferencesSetting.DISCOUNT_TYPE, "");
+                SharedPreferencesSetting.setData(SharedPreferencesSetting.DISCOUNT_AMOUNT, "0");
+                SharedPreferencesSetting.setData(SharedPreferencesSetting.DISCOUNT_NAME, "");
                 sendOrder();
-            } else {
-                Logging.logDebug( "transaction not successful ");
             }
         }
     }
@@ -317,7 +315,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
     }
 
     public void handleError(Throwable throwable, Class... ignoreClasses) {
-        Logging.logError( "handleError");
+        Logging.logError("handleError");
         if (ignoreClasses.length > 0) {
             List<Class> classList = Arrays.asList(ignoreClasses);
             if (classList.contains(throwable.getClass())) {
@@ -377,7 +375,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
     }
 
     private void sendOrder() {
-        Logging.logDebug( "sendOrder()");
+        Logging.logDebug("sendOrder()");
         showLoading();
         List<BasketCart> basketCarts = Common.basketCartRepository.getBasketCartsList();
         JSONArray jsonObjectItems = new JSONArray();
@@ -432,7 +430,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
                     finish();
                 } else {
                     hideLoading();
-                    Logging.logError( "Method sendOrder() - response is not successful. " +
+                    Logging.logError("Method sendOrder() - response is not successful. " +
                             "Code: " + response.code() + "Message: " + response.message());
                 }
             }
@@ -440,7 +438,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
             @Override
             public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
                 hideLoading();
-                Logging.logError( "Method sendOrder() - failure: " + t.toString());
+                Logging.logError("Method sendOrder() - failure: " + t.toString());
             }
         });
     }

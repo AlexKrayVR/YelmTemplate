@@ -37,7 +37,7 @@ public class FcmMessageService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NotNull String s) {
         super.onNewToken(s);
-        //Log.d(Logging.debug, "Refreshed token: " + s);
+        NotificationChannelCreator.createNotificationChannel(this);
     }
 
     @Override
@@ -78,14 +78,15 @@ public class FcmMessageService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 333, i, PendingIntent.FLAG_UPDATE_CURRENT);
 //FLAG_ONE_SHOT       FLAG_UPDATE_CURRENT
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.raccoon_icon);
+        //Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.raccoon_icon);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,
+                getString(R.string.notificationChannelId))
                 .setAutoCancel(true)
                 .setContentTitle(Objects.requireNonNull(remoteMessage.getNotification()).getTitle())
                 .setContentText(remoteMessage.getNotification().getBody())
-                .setLargeIcon(bitmap)
+                //.setLargeIcon(bitmap)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setSmallIcon(R.drawable.ic_notify)
                 .setColor(getResources().getColor(R.color.mainThemeColor))

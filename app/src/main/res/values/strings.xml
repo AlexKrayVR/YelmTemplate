@@ -291,9 +291,9 @@
     <string name="checkout_error_card_date">Срок действитя некорректен либо истек</string>
     <string name="checkout_error_card_cvc">Некорректный CVC код</string>
 
-    <!-- firebase FCM -->
-    <string name="default_notification_channel_id">fcm_default_channel</string>
-    <string name="default_notification_channel_name">@string/app_name</string>
+    <!--Notification Channel -->
+    <string name="notificationChannelId">channel</string>
+    <string name="notificationChannelName">@string/app_name</string>
 
     <string name="call">Позвонить</string>
     <string name="mail">Почта</string>

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import yelm.io.raccoon.item.ItemActivity;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.Logging;
@@ -92,7 +93,8 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
             holder.binding.discountProcent.setVisibility(View.VISIBLE);
         }
 
-        holder.binding.priceFinal.setText(String.format("%s %s", bd.toString(), LoaderActivity.settings.getString(LoaderActivity.PRICE_IN, "")));
+        holder.binding.priceFinal.setText(String.format("%s %s", bd.toString(),
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
 
         holder.binding.description.setText(current.getName());
 
