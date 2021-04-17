@@ -9,7 +9,9 @@ public class SharedPreferencesSetting {
 
     //app settings
     public static final String MIN_PRICE_FOR_FREE_DELIVERY = "MIN_PRICE_FOR_FREE_DELIVERY";
-    public static final String COLOR = "COLOR";
+    public static final String APP_COLOR = "APP_COLOR";
+    public static final String APP_TEXT_COLOR = "APP_TEXT_COLOR";
+    public static final String CATEGORY_TEXT_COLOR = "CATEGORY_TEXT_COLOR";
     public static final String MIN_ORDER_PRICE = "MIN_ORDER_PRICE";
     public static final String PRICE_IN = "PRICE_IN";
     public static final String CURRENCY = "CNT";

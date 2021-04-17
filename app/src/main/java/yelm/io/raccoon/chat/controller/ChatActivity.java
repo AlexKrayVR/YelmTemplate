@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -100,11 +102,24 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setCustomColor();
+
         Constants.customerInChat = true;
         tuneChatRecycler();
         binding();
         tuneSocketConnection();
         getChatHistory();
+    }
+
+    private void setCustomColor() {
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.choosePicture.getBackground()
+                .setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.sendMessage.getBackground()
+                .setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.progress.getIndeterminateDrawable()
+                .setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
+
     }
 
     private void tuneSocketConnection() {

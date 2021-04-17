@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,7 +65,7 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
         super.onCreate(savedInstanceState);
         binding = ActivityItemBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        setCustomColor();
         Item item = getIntent().getParcelableExtra("item");
         if (item != null) {
             finalPrice = getPrice(item, new BigDecimal(item.getPrice()));
@@ -100,7 +101,18 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
         return bd;
     }
 
+    private void setCustomColor() {
+        binding.share.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.removeProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.addProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.addToCart.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+    }
+
+
     private void binding(Item item) {
+
+
         if (item.getModifier() != null && item.getModifier().size() == 0) {
             binding.modifierTitle.setVisibility(View.GONE);
         }

@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -66,6 +68,7 @@ public class BasketActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding();
+        setCustomColor();
         currentAddress = getDeliveryAddress();
         //check if there is user address in db and delivery available to it
         //if there is not we just show basket and disable ordering button
@@ -81,6 +84,16 @@ public class BasketActivity extends AppCompatActivity {
             basketAdapter = new BasketAdapter(this, Common.basketCartRepository.getBasketCartsList());
             binding.recyclerCart.setAdapter(basketAdapter);
         }
+    }
+
+    private void setCustomColor() {
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.ordering.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+
+
+
+        binding.progressBar.getIndeterminateDrawable()
+                .setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
     }
 
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -105,7 +106,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         binding = ActivityOrderNewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         userSettings = getSharedPreferences(USER_PREFERENCES, Context.MODE_PRIVATE);
-
+        setCustomColor();
         Bundle args = getIntent().getExtras();
         if (args != null) {
             finalCost = new BigDecimal(args.getString("finalPrice"));
@@ -134,6 +135,17 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         binding.applyPromocode.setOnClickListener(v -> getPromoCode());
         getPromoIfExist();
     }
+
+    private void setCustomColor() {
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.applyPromocode.getBackground()
+                .setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.paymentCard.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.paymentCash.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.progress.getIndeterminateDrawable()
+                .setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
+    }
+
 
     private void checkEditText() {
         binding.entrance.addTextChangedListener(new CustomTextWatcher(binding.entrance, this));
@@ -358,11 +370,11 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
             return;
         }
         if (SharedPreferencesSetting.getDataBoolean(SharedPreferencesSetting.PAYMENT_CARD)) {
-            binding.cardPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
+            binding.cardPay.setCardBackgroundColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
             binding.cardPayText.setTextColor(getResources().getColor(R.color.whiteColor));
             binding.paymentCard.setVisibility(View.VISIBLE);
             binding.cardPay.setOnClickListener(view -> {
-                binding.cardPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
+                binding.cardPay.setCardBackgroundColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
                 binding.cardPayText.setTextColor(getResources().getColor(R.color.whiteColor));
 
                 binding.googlepayPay.setCardBackgroundColor(Color.TRANSPARENT);
@@ -376,7 +388,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 binding.paymentCard.setVisibility(View.VISIBLE);
             });
         } else {
-            binding.cashPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
+            binding.cashPay.setCardBackgroundColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
             binding.cashPayText.setTextColor(getResources().getColor(R.color.whiteColor));
 
             binding.cardPay.setVisibility(View.GONE);
@@ -387,7 +399,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         }
 
         binding.googlepayPay.setOnClickListener(view -> {
-            binding.googlepayPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
+            binding.googlepayPay.setCardBackgroundColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
             binding.googlePayText.setTextColor(getResources().getColor(R.color.whiteColor));
 
             binding.cardPay.setCardBackgroundColor(Color.TRANSPARENT);
@@ -403,7 +415,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
 
         if (SharedPreferencesSetting.getDataBoolean(SharedPreferencesSetting.PAYMENT_CASH)) {
             binding.cashPay.setOnClickListener(view -> {
-                binding.cashPay.setCardBackgroundColor(getResources().getColor(R.color.mainThemeColor));
+                binding.cashPay.setCardBackgroundColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
                 binding.cashPayText.setTextColor(getResources().getColor(R.color.whiteColor));
 
                 binding.cardPay.setCardBackgroundColor(Color.TRANSPARENT);

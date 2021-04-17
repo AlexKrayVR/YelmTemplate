@@ -31,23 +31,38 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/addressLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/user_address_click_layout"
             android:clickable="true"
+            android:descendantFocusability="blocksDescendants"
             android:focusable="true"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:theme="@style/ProgressBarAddress"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <HorizontalScrollView
+                android:id="@+id/addressClicker"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:clickable="false"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:descendantFocusability="blocksDescendants"
                 android:duplicateParentState="true"
-                android:focusable="false"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:scrollbars="none"
+                android:focusable="true"
+                android:scrollbars="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,9 +72,7 @@
                     android:id="@+id/userCurrentAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:clickable="false"
-                    android:duplicateParentState="true"
-                    android:focusable="false"
+                    android:layout_gravity="center"
                     android:gravity="center"
                     android:includeFontPadding="false"
                     android:singleLine="true"
@@ -68,21 +81,6 @@
                     android:textStyle="bold"
                     android:theme="@style/ProDisplayTextStyle" />
             </HorizontalScrollView>
-
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
-                android:clickable="false"
-                android:duplicateParentState="true"
-                android:focusable="false"
-                android:theme="@style/ProgressBarAddress"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -149,7 +147,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:includeFontPadding="false"
                     android:text="@string/mainActivityCategories"
                     android:textColor="@color/colorText"
                     android:textSize="22sp"

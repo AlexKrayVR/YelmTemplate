@@ -1,6 +1,7 @@
 package yelm.io.raccoon.main.controller;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import yelm.io.raccoon.R;
 import yelm.io.raccoon.by_category.ProductsByCategoriesActivity;
 import yelm.io.raccoon.databinding.FragmentCategoryBinding;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.adapter.ProductsNewMenuAdapter;
 import yelm.io.raccoon.main.model.CategoriesWithProductsClass;
 import yelm.io.raccoon.support_stuff.ItemOffsetDecorationRight;
@@ -42,6 +44,7 @@ public class CategoryFragment extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentCategoryBinding.inflate(getLayoutInflater(), container, false);
+        binding.categoryExpand.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.title.setText(catalogsWithProductsClass.getName());
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.recycler.setHasFixedSize(false);

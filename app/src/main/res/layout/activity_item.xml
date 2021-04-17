@@ -110,6 +110,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:background="@drawable/address_back_view_blue"
+                        android:backgroundTint="@color/discountColor"
                         android:contentDescription="@string/app_name"
                         android:padding="10dp"
                         app:srcCompat="@drawable/ic_percent" />

@@ -120,12 +120,15 @@ public class LoaderActivity extends AppCompatActivity {
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.MIN_PRICE_FOR_FREE_DELIVERY, response.body().getSettings().getMinDeliveryPrice());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.MIN_ORDER_PRICE, response.body().getSettings().getMinOrderPrice());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.CURRENCY, response.body().getCurrency());
-                                SharedPreferencesSetting.setData(SharedPreferencesSetting.COLOR, response.body().getSettings().getTheme());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.APP_COLOR, response.body().getSettings().getTheme());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.PRICE_IN, response.body().getSymbol());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.COUNTRY_CODE, response.body().getSettings().getRegionCode());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_CARD, response.body().getSettings().getPayment().getCard());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_MOBILE, response.body().getSettings().getPayment().getApplepay());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_CASH, response.body().getSettings().getPayment().getPlaceorder());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.CATEGORY_TEXT_COLOR, response.body().getSettings().getThemeCategory());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.APP_TEXT_COLOR, response.body().getSettings().getForeground());
+
                                 launchMain();
                             } else {
                                 Logging.logError("Method getApplicationSettings(): by some reason response is null!");

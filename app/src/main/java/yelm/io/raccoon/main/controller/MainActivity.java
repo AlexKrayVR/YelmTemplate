@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -58,7 +60,6 @@ import yelm.io.raccoon.search.SearchActivity;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.user_addresses.UserAddress;
 import yelm.io.raccoon.databinding.ActivityMainBinding;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.CategoriesWithProductsClass;
 import yelm.io.raccoon.main.model.Modifier;
 import yelm.io.raccoon.rest.rest_api.RestAPI;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding();
+        setCustomColor();
         getCategoriesWithProducts("0", "0");
         initNews();
         getAppToken();
@@ -119,6 +121,16 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
         }
     }
 
+    private void setCustomColor() {
+        binding.addressLayout.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.categoryExpand.getBackground()
+                .setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.basket.getBackground()
+                .setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+
+
+    }
+
     private void checkIfGPSEnabled() {
         if (!StaticRepository.isLocationEnabled(this)) {
             Snackbar snackbar = Snackbar.make(
@@ -131,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
     }
 
     private void binding() {
+
         binding.chat.setOnClickListener(v -> startActivity(new Intent(this, ChatActivity.class)));
         binding.recyclerCards.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.recyclerCards.setHasFixedSize(false);

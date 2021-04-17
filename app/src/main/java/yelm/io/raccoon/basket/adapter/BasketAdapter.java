@@ -1,6 +1,7 @@
 package yelm.io.raccoon.basket.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +35,11 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketHold
 
     @Override
     public void onBindViewHolder(@NonNull final BasketAdapter.BasketHolder holder, final int position) {
-        BasketCart current = basket.get(position);
 
+        holder.binding.removeProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        holder.binding.addProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+
+        BasketCart current = basket.get(position);
         holder.binding.description.setText(String.format("%s\n%s %s / %s %s",
                 current.name,
                 current.finalPrice,
@@ -85,12 +89,14 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketHold
 
         if (new BigDecimal(current.count).compareTo(new BigDecimal(current.quantity)) == 0) {
             holder.binding.addProduct.setEnabled(false);
+            holder.binding.addProduct.getBackground().setTint(context.getResources().getColor(R.color.colorButtonOrderingDisable));
         }
 
         if (new BigDecimal(current.count).compareTo(new BigDecimal(current.quantity)) > 0) {
             holder.binding.textProductIsOver.setVisibility(View.VISIBLE);
             holder.binding.addProduct.setEnabled(false);
             holder.binding.textProductIsOver.setText(String.format("%s: %s %s", context.getText(R.string.basketActivityProductIsOver), current.quantity, context.getText(R.string.basketActivityPC)));
+            holder.binding.addProduct.getBackground().setTint(context.getResources().getColor(R.color.colorButtonOrderingDisable));
         }
     }
 
