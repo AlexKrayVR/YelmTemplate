@@ -94,11 +94,17 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Logging.logDebug("viewType: " + viewType);
+
+
+
         switch (viewType) {
             case MSG_TYPE_ITEM:
                 return new ItemHolder(LayoutInflater.from(context).inflate(R.layout.chat_type_item, parent, false));
             case MSG_TYPE_MESSAGE_RIGHT:
-                return new MessageHolder(LayoutInflater.from(context).inflate(R.layout.chat_type_message_right, parent, false));
+                MessageHolder messageHolder=new MessageHolder(LayoutInflater.from(context).inflate(R.layout.chat_type_message_right, parent, false));
+                messageHolder.message.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+                messageHolder.message.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+                return messageHolder;
             case MSG_TYPE_PICTURE_RIGHT:
                 return new PictureHolder(LayoutInflater.from(context).inflate(R.layout.chat_type_picture_right, parent, false));
             case MSG_TYPE_PICTURE_LEFT:
@@ -114,6 +120,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ChatContent chatContent = chatContentList.get(position);
         if (holder instanceof MessageHolder) {
+
             Logging.logDebug("MessageHolder");
             ((MessageHolder) holder).date.setText(chatContent.getCreated_at());
             ((MessageHolder) holder).nameSender.setText(context.getResources().getText(R.string.app_name));

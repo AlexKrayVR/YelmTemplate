@@ -2,10 +2,10 @@ package yelm.io.raccoon.chat.controller;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +25,7 @@ import yelm.io.raccoon.R;
 import yelm.io.raccoon.chat.adapter.PickImageAdapter;
 import yelm.io.raccoon.databinding.PickImageBottomSheetBinding;
 import yelm.io.raccoon.chat.model.ModelImages;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.support_stuff.Logging;
 
 public class PickImageBottomSheet extends BottomSheetDialogFragment {
@@ -35,8 +36,8 @@ public class PickImageBottomSheet extends BottomSheetDialogFragment {
 
     public ArrayList<ModelImages> allImages;
     boolean isFolder;
-    private static final int REQUEST_PERMISSIONS = 100;
-    private static final int REQUEST_TAKE_PHOTO = 11;
+    //private static final int REQUEST_PERMISSIONS = 100;
+    //private static final int REQUEST_TAKE_PHOTO = 11;
 
     PickImageAdapter pickImageAdapter;
     HashMap<Integer, String> picturesMap;
@@ -54,9 +55,12 @@ public class PickImageBottomSheet extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = PickImageBottomSheetBinding.inflate(inflater, container, false);
+        binding.done.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.done.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+
+
         picturesMap = new HashMap<>();
         binding.done.setText(String.format("%s: (%s)", getText(R.string.pickImageBottomSheetSend), "0"));
-
         binding.recyclerPickImages.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.HORIZONTAL));
         binding.done.setOnClickListener(v -> {
             if (listener != null) {
@@ -65,12 +69,11 @@ public class PickImageBottomSheet extends BottomSheetDialogFragment {
             dismiss();
         });
         getImagesFromStorage(binding.recyclerPickImages);
-
         return binding.getRoot();
     }
 
     private void getImagesFromStorage(RecyclerView recyclerPickImages) {
-        Logging.logDebug( "getImages()");
+        Logging.logDebug("getImages()");
 
         int positionIndex = 0;
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -78,7 +81,7 @@ public class PickImageBottomSheet extends BottomSheetDialogFragment {
         int columnIndexData, columnIndexFolderName;
 
         String absolutePathOfImage;
-        String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
+        String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Images.Media.DISPLAY_NAME};
 
         final String orderBy = MediaStore.Images.Media.DATE_ADDED;
         cursor = getContext().getApplicationContext().getContentResolver()
@@ -87,7 +90,7 @@ public class PickImageBottomSheet extends BottomSheetDialogFragment {
 //                    .query(uri, projection, null, null, orderBy + " DESC");  orderBy + " ASC"
 
         columnIndexData = cursor != null ? cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA) : 0;
-        columnIndexFolderName = cursor != null ? cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME) : 0;
+        columnIndexFolderName = cursor != null ? cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME) : 0;
 
         while (cursor.moveToNext()) {
 
@@ -122,7 +125,7 @@ public class PickImageBottomSheet extends BottomSheetDialogFragment {
         ArrayList<String> imagesList = new ArrayList<>();
 
         for (int i = 0; i < allImages.size(); i++) {
-            Logging.logDebug( allImages.get(i).getFolder());
+            Logging.logDebug(allImages.get(i).getFolder());
             imagesList.addAll(allImages.get(i).getAllImagesPath());
 //            for (int j = 0; j < allImages.get(i).getAllImagesPath().size(); j++) {
 //                Log.d(Logging.debug, allImages.get(i).getAllImagesPath().get(j));
@@ -133,7 +136,7 @@ public class PickImageBottomSheet extends BottomSheetDialogFragment {
         //obj_adapter = new Adapter_PhotosFolder(getApplicationContext(),al_images);
         //gv_folder.setAdapter(obj_adapter);
         //return al_images;
-        Logging.logDebug( "imagesList.size: " + imagesList.size());
+        Logging.logDebug("imagesList.size: " + imagesList.size());
 
         pickImageAdapter = new PickImageAdapter(getContext(), imagesList);
         pickImageAdapter.setListener((position, path, check) -> {

@@ -122,6 +122,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/layoutAddRemove"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:background="@drawable/address_back_view_blue"

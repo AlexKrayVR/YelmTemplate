@@ -1,6 +1,7 @@
 package yelm.io.raccoon.by_category;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import yelm.io.raccoon.R;
 import yelm.io.raccoon.databinding.FragmentProductsByCategoryBinding;
 import yelm.io.raccoon.item.ItemsOfOneCategoryActivity;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.adapter.ProductsNewMenuAdapter;
 import yelm.io.raccoon.main.adapter.ProductsNewMenuSquareImageAdapter;
 import yelm.io.raccoon.support_stuff.ItemOffsetDecorationRight;
@@ -58,7 +60,8 @@ public class ProductsByCategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentProductsByCategoryBinding.inflate(getLayoutInflater(), container, false);
-
+        binding.categoryExpand.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.categoryExpand.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         if (productsByCategory.getName().isEmpty()) {
             binding.title.setVisibility(View.GONE);
         } else {

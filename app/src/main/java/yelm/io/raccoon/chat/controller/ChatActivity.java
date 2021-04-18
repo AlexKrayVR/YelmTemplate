@@ -15,7 +15,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +25,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -91,8 +93,8 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
     private static final int REQUEST_PERMISSIONS_READ_WRITE_STORAGE = 100;
     private static final int REQUEST_PERMISSIONS_CAMERA = 10;
 
-    SimpleDateFormat currentFormatterDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    SimpleDateFormat printedFormatterDate = new SimpleDateFormat("HH:mm");
+    SimpleDateFormat currentFormatterDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    SimpleDateFormat printedFormatterDate = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
     public static final String CHAT_SERVER_URL = "https://chat.yelm.io/";
     private Socket socket;
@@ -120,6 +122,12 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
         binding.progress.getIndeterminateDrawable()
                 .setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
 
+
+        binding.back.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.choosePicture.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.sendMessage.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+
+
     }
 
     private void tuneSocketConnection() {
@@ -133,7 +141,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
             socket.connect();
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Log.d("AlexDebug", "error: " + e.getMessage());
+            Logging.logDebug("error: " + e.getMessage());
         }
     }
 
@@ -141,16 +149,15 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
         @Override
         public void call(final Object... args) {
             ChatActivity.this.runOnUiThread(() -> {
-                Log.d("AlexDebug", "received");
                 JSONObject data = (JSONObject) args[0];
-                Log.d("AlexDebug", "data: " + data.toString());
+                Logging.logDebug( "data: " + data.toString());
 
                 if (data.has("role")) {
                     try {
                         String role = data.getString("role");
-                        Log.d("AlexDebug", "role: " + role);
+                        Logging.logDebug( "role: " + role);
                         String type = data.getString("type");
-                        Log.d("AlexDebug", "type: " + type);
+                        Logging.logDebug( "type: " + type);
                         if (data.getString("type").equals("connected")) {
                             binding.chatStatus.setText(getText(R.string.chatActivityOnline));
                             binding.chatStatus.setTextColor(getResources().getColor(R.color.colorAcceptOrder));
@@ -160,13 +167,12 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Log.d("AlexDebug", "JSONException: " + e.getMessage());
+                        Logging.logDebug( "JSONException: " + e.getMessage());
                     }
                     return;
                 }
 
                 try {
-                    Log.d("AlexDebug", "data.toString(): " + data.toString());
                     if (data.getString("from_whom").equals(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID))) {
                         return;
                     }
@@ -185,14 +191,12 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                                 "0");
                         chatContentList.add(chatMessage);
                         chatAdapter.notifyDataSetChanged();
-                        Log.d("AlexDebug", "message " + message);
                     } else if (data.getString("type").equals("images")) {
                         String arrayImages = data.getString("images");
                         Gson gson = new Gson();
                         Type typeString = new TypeToken<ArrayList<String>>() {
                         }.getType();
                         ArrayList<String> arrayImagesList = gson.fromJson(arrayImages, typeString);
-                        Log.d("AlexDebug", "arrayImagesList " + arrayImagesList.toString());
                         for (String image : arrayImagesList) {
                             Calendar current = GregorianCalendar.getInstance();
                             ChatContent temp = new ChatContent(
@@ -230,21 +234,21 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d("AlexDebug", "JSONException: " + e.getMessage());
+                    Logging.logDebug( "JSONException: " + e.getMessage());
                 }
             });
         }
     };
 
     private String ConvertingImageToBase64(Bitmap bitmap) {
-        Log.d("AlexDebug", "ConvertingImageToBase64()");
+        Logging.logDebug( "ConvertingImageToBase64()");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
         byte[] imageBytes = baos.toByteArray();
         bitmap.recycle();
-        Log.d("AlexDebug", "imageBytes - length " + imageBytes.length);
+        Logging.logDebug( "imageBytes - length " + imageBytes.length);
         String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        Log.d("AlexDebug", "Base64.encodeToString - imageString.length " + imageString.length());
+        Logging.logDebug( "Base64.encodeToString - imageString.length " + imageString.length());
 
         //byte[] byteArray = Base64.decode(imageString, Base64.DEFAULT);
         //Log.d(Logging.debug, "Arrays.toString(byteArray) " + Arrays.toString(byteArray));
@@ -266,7 +270,6 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                     public void onResponse(@NotNull Call<ArrayList<ChatHistoryClass>> call, @NotNull final Response<ArrayList<ChatHistoryClass>> response) {
                         binding.progress.setVisibility(View.GONE);
                         if (response.isSuccessful()) {
-                            Logging.logDebug("isSuccessful");
                             if (response.body() != null) {
                                 Logging.logDebug("ChatSettingsClass: " + response.body().toString());
                                 for (ChatHistoryClass chat : response.body()) {
@@ -497,7 +500,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
-                String fileName = String.format("IMG_%d.jpg", System.currentTimeMillis());
+                String fileName = String.format(Locale.getDefault(),"IMG_%d.jpg", System.currentTimeMillis());
                 File outFile = new File(dir, fileName);
                 FileOutputStream fileOutputStream = null;
                 try {
@@ -545,8 +548,8 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
     public void onSendPictures(HashMap<Integer, String> picturesMap) {
         Logging.logDebug("onSendPictures()");
         for (Map.Entry<Integer, String> picture : picturesMap.entrySet()) {
-            Log.d("AlexDebug", "picture.getKey(): " + picture.getKey());
-            Log.d("AlexDebug", "picture.getValue(): " + picture.getValue());
+            Logging.logDebug( "picture.getKey(): " + picture.getKey());
+            Logging.logDebug( "picture.getValue(): " + picture.getValue());
             Calendar current = GregorianCalendar.getInstance();
             chatContentList.add(new ChatContent(
                     SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID),

@@ -76,6 +76,7 @@ public class BasketActivity extends AppCompatActivity {
             checkBasket(currentAddress.latitude, currentAddress.longitude);
         } else {
             Logging.logDebug("Method onCreate() - currentAddress is null or ShopID equals 0");
+            binding.ordering.getBackground().setTint(getResources().getColor(R.color.colorButtonOrderingDisable));
             binding.layoutFinalCost.setVisibility(View.GONE);
             binding.layoutDeliveryNotAvailable.setVisibility(View.VISIBLE);
             binding.layoutDelivery.setVisibility(View.GONE);
@@ -89,9 +90,6 @@ public class BasketActivity extends AppCompatActivity {
     private void setCustomColor() {
         binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.ordering.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-
-
-
         binding.progressBar.getIndeterminateDrawable()
                 .setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
     }
@@ -228,8 +226,10 @@ public class BasketActivity extends AppCompatActivity {
 
         if (carts.size() != 0 && allowOrdering && currentAddress != null && !Constants.ShopID.equals("0")) {
             binding.ordering.setEnabled(true);
+            binding.ordering.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         } else {
             binding.ordering.setEnabled(false);
+            binding.ordering.getBackground().setTint(getResources().getColor(R.color.colorButtonOrderingDisable));
         }
 
         //show a note about possible free shipping
@@ -318,7 +318,7 @@ public class BasketActivity extends AppCompatActivity {
         }
         if (requestCode == PAYMENT_SUCCESS) {
             Common.basketCartRepository.emptyBasketCart();
-            Log.d("AlexDebug", "PAYMENT_SUCCESS " + data.getStringExtra("success"));
+            Logging.logDebug("PAYMENT_SUCCESS " + data.getStringExtra("success"));
             if (Objects.equals(data.getStringExtra("success"), "card")) {
                 binding.paymentResultText.setText(getText(R.string.order_is_accepted_by_card));
             } else if (Objects.equals(data.getStringExtra("success"), "placeorder")) {

@@ -2,6 +2,7 @@ package yelm.io.raccoon.main.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
@@ -38,7 +38,6 @@ import yelm.io.raccoon.R;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.databinding.NewMenuProductItemBinding;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.model.Modifier;
 import yelm.io.raccoon.item.ProductModifierAdapter;
@@ -88,11 +87,15 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
         }
     };
 
-
     @NonNull
     @Override
     public ProductsNewMenuAdapter.ProductHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ProductHolder(NewMenuProductItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        ProductHolder productHolder = new ProductHolder(NewMenuProductItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        productHolder.binding.layoutAddRemove.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        productHolder.binding.priceFinal.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        productHolder.binding.removeProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        productHolder.binding.addProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        return productHolder;
     }
 
     @Override

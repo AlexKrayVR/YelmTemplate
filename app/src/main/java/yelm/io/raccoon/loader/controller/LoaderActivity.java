@@ -127,7 +127,9 @@ public class LoaderActivity extends AppCompatActivity {
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_MOBILE, response.body().getSettings().getPayment().getApplepay());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_CASH, response.body().getSettings().getPayment().getPlaceorder());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.CATEGORY_TEXT_COLOR, response.body().getSettings().getThemeCategory());
-                                SharedPreferencesSetting.setData(SharedPreferencesSetting.APP_TEXT_COLOR, response.body().getSettings().getForeground());
+                                //todo change getting colors
+                                //SharedPreferencesSetting.setData(SharedPreferencesSetting.APP_TEXT_COLOR, response.body().getSettings().getForeground());
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.APP_TEXT_COLOR, "18a7b5");
 
                                 launchMain();
                             } else {

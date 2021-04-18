@@ -82,7 +82,7 @@ public class PickImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (viewType == TYPE_HEADER) {
             return new PickImageAdapter.HeaderViewHolder(CameraPreviewLayoutBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
         } else {
-            return new PickImageAdapter.ItemViewHolder(PickStorageImageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+            return new ItemViewHolder(PickStorageImageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
         }
     }
 

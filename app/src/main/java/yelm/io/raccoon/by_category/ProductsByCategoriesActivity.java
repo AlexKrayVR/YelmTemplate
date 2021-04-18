@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -49,6 +51,11 @@ public class ProductsByCategoriesActivity extends AppCompatActivity {
         binding = ActivityProductsByCategoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.basket.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
+
+
         Bundle args = getIntent().getExtras();
         if (args != null) {
             Logging.logDebug("args.getString(catalogID): " + args.getString("catalogID"));
@@ -84,8 +91,8 @@ public class ProductsByCategoriesActivity extends AppCompatActivity {
                 if (userAddress.isChecked) {
                     latitude = userAddress.latitude;
                     longitude = userAddress.longitude;
-                    Logging.logDebug( "latitude: " + latitude);
-                    Logging.logDebug( "longitude: " + longitude);
+                    Logging.logDebug("latitude: " + latitude);
+                    Logging.logDebug("longitude: " + longitude);
                     break;
                 }
             }
@@ -111,10 +118,10 @@ public class ProductsByCategoriesActivity extends AppCompatActivity {
                                 productsByCategoryList = response.body();
                                 rewriteView();
                             } else {
-                                Logging.logError( "Method getProductByCategory() - by some reason response is null!");
+                                Logging.logError("Method getProductByCategory() - by some reason response is null!");
                             }
                         } else {
-                            Logging.logError( "Method getProductByCategory() - response is not successful." +
+                            Logging.logError("Method getProductByCategory() - response is not successful." +
                                     "Code: " + response.code() + "Message: " + response.message());
                         }
                     }
@@ -122,7 +129,7 @@ public class ProductsByCategoriesActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NotNull Call<ArrayList<ProductsByCategoryClass>> call, @NotNull Throwable t) {
                         binding.progress.setVisibility(View.GONE);
-                        Logging.logError( "Method getProductByCategory() - failure: " + t.toString());
+                        Logging.logError("Method getProductByCategory() - failure: " + t.toString());
                     }
                 });
     }
@@ -160,7 +167,7 @@ public class ProductsByCategoriesActivity extends AppCompatActivity {
                             basketPrice = basketPrice.add(new BigDecimal(cart.finalPrice).multiply(new BigDecimal(cart.count)));
                         }
                         binding.basket.setText(String.format("%s %s", basketPrice.toString(), SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
-                        Logging.logDebug( "Method updateCost() - carts.size(): " + carts.size() + "\n" +
+                        Logging.logDebug("Method updateCost() - carts.size(): " + carts.size() + "\n" +
                                 "basketPrice.toString(): " + basketPrice.toString());
                     }
                 }));

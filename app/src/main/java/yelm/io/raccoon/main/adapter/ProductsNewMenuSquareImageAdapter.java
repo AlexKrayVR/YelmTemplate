@@ -3,6 +3,7 @@ package yelm.io.raccoon.main.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -73,7 +74,7 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
             } else {
                 for (Item product : products) {
                     if (product.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
-                        Logging.logDebug( "Filter - request string: " + product.getName().toLowerCase());
+                        Logging.logDebug("Filter - request string: " + product.getName().toLowerCase());
                         filtered.add(product);
                     }
                 }
@@ -95,13 +96,17 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
     @NonNull
     @Override
     public ProductsNewMenuSquareImageAdapter.ProductHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ProductHolder(NewMenuProductItemSquareImageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        ProductHolder productHolder = new ProductHolder(NewMenuProductItemSquareImageBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        productHolder.binding.layoutAddRemove.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        productHolder.binding.priceFinal.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        productHolder.binding.removeProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        productHolder.binding.addProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        return productHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ProductsNewMenuSquareImageAdapter.ProductHolder holder, final int position) {
         Item current = productsSort.get(position);
-
         holder.binding.imageHolder.getLayoutParams().height = (int) (((screenDimensions.getWidthDP() - 48) / 2) * screenDimensions.getScreenDensity() + 0.5f);
 
         //set count of item in basket into layout
@@ -165,7 +170,7 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
 
                     if (countOfAllProducts.compareTo(new BigDecimal(listCartsByID.get(0).quantity)) >= 0) {
                         showToast(context.getString(R.string.productsNotAvailable) +
-                                " " + listCartsByID.get(0).quantity +" "+ context.getString(R.string.basketActivityPC));
+                                " " + listCartsByID.get(0).quantity + " " + context.getString(R.string.basketActivityPC));
                         return;
                     }
 
@@ -276,7 +281,7 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
             } else {
                 modifiers.remove(modifier.getName());
             }
-            Logging.logDebug( "modifiers: " + modifiers.toString());
+            Logging.logDebug("modifiers: " + modifiers.toString());
 
             BigDecimal costCurrent = new BigDecimal(bd.toString());
             for (Map.Entry<String, String> modifierEntry : modifiers.entrySet()) {
@@ -370,7 +375,7 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
                 BigInteger countOfProductsToShow = new BigInteger(cartItem.count).add(countOfAllProducts);
                 holder.binding.countItemInCart.setText(String.format("%s", countOfProductsToShow.toString()));
             }
-            Logging.logDebug( "Method add Product to Basket - not found similar!:  " + cartItem.toString());
+            Logging.logDebug("Method add Product to Basket - not found similar!:  " + cartItem.toString());
             productModifierSelectionBottomSheet.dismiss();
         });
 

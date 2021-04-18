@@ -12,6 +12,7 @@ import androidx.dynamicanimation.animation.SpringForce;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.R;
 import yelm.io.raccoon.database_new.Common;
@@ -95,6 +97,12 @@ public class AddressChooseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAddressChoiseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.currentButton.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.getLocation.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+
+
         binding.mapView.getMap().addCameraListener(cameraListener);
         setImageSpringAnimation();
         binding.mapView.setAlpha(0f);

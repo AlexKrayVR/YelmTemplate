@@ -2,10 +2,12 @@ package yelm.io.raccoon.payment;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -124,6 +126,9 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
     @BindView(R.id.edit_card_cvc)
     EditText editTextCardCVC;
 
+    @BindView(R.id.back)
+    ImageButton back;
+
     @OnTextChanged(value = R.id.edit_card_cvc, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
     protected void onCardCVCTextChanged(Editable s) {
         if (s.length() > CARD_CVC_TOTAL_SYMBOLS) {
@@ -197,6 +202,9 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
         }
     }
 
+    @BindView(R.id.button_payment)
+    TextView button_payment;
+
     private void convertPrice(String cardCryptogram, String cardHolderName) {
         showLoading();
         Logging.logDebug("Method convertPrice()");
@@ -238,6 +246,9 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment_main);
         ButterKnife.bind(this);
+
+        back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        button_payment.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
 
         Bundle args = getIntent().getExtras();
         if (args != null) {

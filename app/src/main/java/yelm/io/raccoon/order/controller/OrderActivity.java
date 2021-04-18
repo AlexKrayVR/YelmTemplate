@@ -516,8 +516,6 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 showDialogNewOrder();
             }
         });
-
-
     }
 
     private void showDialogNewOrder() {
@@ -530,7 +528,12 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         TextView message = view.findViewById(R.id.message);
         message.setText(String.format("%s", getText(R.string.orderActivityConfirmDecription)));
 
+        TextView textTitle = view.findViewById(R.id.textTitle);
+        textTitle.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+
         TextView buttonOk = view.findViewById(R.id.buttonOk);
+        buttonOk.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+
         android.app.AlertDialog alertDialog = builder.create();
         buttonOk.setOnClickListener(v -> {
             sendOrder("placeorder");

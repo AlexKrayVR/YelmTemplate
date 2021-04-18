@@ -2,6 +2,7 @@ package yelm.io.raccoon.user_address.controller;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.user_addresses.UserAddress;
 import yelm.io.raccoon.databinding.AdressesBottomSheepDialogBinding;
 
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.user_address.adapter.UserAddressesAdapter;
 
@@ -48,6 +50,7 @@ public class AddressesBottomSheet extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = AdressesBottomSheepDialogBinding.inflate(inflater, container, false);
+        binding.addressesDone.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.addressesDone.setOnClickListener(v -> this.dismiss());
         binding.addNewAddress.setOnClickListener(v -> startActivityForResult(new Intent(getContext(), AddressChooseActivity.class), USER_ADDRESS_CHOOSE_REQUEST_CODE));
         binding.recyclerUserAddresses.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));

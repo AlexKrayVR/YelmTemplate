@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 import yelm.io.raccoon.R;
 import yelm.io.raccoon.databinding.ActivityNewsBinding;
+import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.adapter.ProductsNewMenuSquareImageAdapter;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.rest.query.RestMethods;
@@ -33,6 +35,10 @@ public class NewsActivity extends AppCompatActivity implements AppBarLayout.OnOf
         super.onCreate(savedInstanceState);
         binding = ActivityNewsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.share.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+
         NewNews news = getIntent().getParcelableExtra("news");
         if (news != null) {
             binding(news);
