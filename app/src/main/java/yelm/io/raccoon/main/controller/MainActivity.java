@@ -23,11 +23,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.CalendarContract;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -56,7 +54,7 @@ import yelm.io.raccoon.item.ItemFromNotificationActivity;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.categories.CategoriesAdapter;
 import yelm.io.raccoon.main.categories.CategoriesPOJO;
-import yelm.io.raccoon.main.news.NewNews;
+import yelm.io.raccoon.main.news.News;
 import yelm.io.raccoon.main.news.NewsFromNotificationActivity;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.Logging;
@@ -129,20 +127,15 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
         binding.addressLayout.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.categoryExpand.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.basket.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-
         binding.userCurrentAddress.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
-
        binding.basket.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         for (Drawable drawable : binding.basket.getCompoundDrawablesRelative()) {
             if (drawable != null) {
                 drawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)), PorterDuff.Mode.SRC_IN));
             }
         }
-
         binding.progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)), PorterDuff.Mode.SRC_IN);
-
         binding.categoryExpand.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
-
     }
 
 
@@ -158,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
     }
 
     private void binding() {
-
         binding.chat.setOnClickListener(v -> startActivity(new Intent(this, ChatActivity.class)));
         binding.recyclerCards.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.recyclerCards.setHasFixedSize(false);
@@ -430,12 +422,12 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                         getResources().getConfiguration().locale.getLanguage(),
                         getResources().getConfiguration().locale.getCountry(),
                         RestAPI.PLATFORM_NUMBER).
-                enqueue(new Callback<ArrayList<NewNews>>() {
+                enqueue(new Callback<ArrayList<News>>() {
                     @Override
-                    public void onResponse(@NotNull Call<ArrayList<NewNews>> call, @NotNull final Response<ArrayList<NewNews>> response) {
+                    public void onResponse(@NotNull Call<ArrayList<News>> call, @NotNull final Response<ArrayList<News>> response) {
                         if (response.isSuccessful()) {
                             if (response.body() != null) {
-                                List<NewNews> newsList = response.body();
+                                List<News> newsList = response.body();
                                 binding.recyclerCards.setAdapter(new NewsAdapter(MainActivity.this, newsList));
                                 if (response.body().size() > 0) {
                                     binding.newsTitle.setVisibility(View.VISIBLE);
@@ -450,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                     }
 
                     @Override
-                    public void onFailure(@NotNull Call<ArrayList<NewNews>> call, @NotNull Throwable t) {
+                    public void onFailure(@NotNull Call<ArrayList<News>> call, @NotNull Throwable t) {
                         Logging.logError("Method initNews() - failure: " + t.toString());
                     }
                 });

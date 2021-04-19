@@ -12,9 +12,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -22,7 +20,6 @@ import com.davemorrissey.labs.subscaleview.decoder.DecoderFactory;
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecoder;
 import com.davemorrissey.labs.subscaleview.decoder.ImageRegionDecoder;
 import com.google.android.material.appbar.AppBarLayout;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
@@ -40,10 +37,9 @@ import yelm.io.raccoon.databinding.ActivityItemBinding;
 import yelm.io.raccoon.item.decoder.PicassoDecoder;
 import yelm.io.raccoon.item.decoder.PicassoRegionDecoder;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.model.Modifier;
-import yelm.io.raccoon.order.controller.OrderActivity;
+import yelm.io.raccoon.notification.CustomToast;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.Logging;
 
@@ -52,7 +48,6 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
     private int maxScrollSize;
     private static final int PERCENTAGE_TO_SHOW_IMAGE = 80;
     private boolean isImageHidden;
-    Toast toast;
     ProductSpecificationsAdapter productSpecificationsAdapter;
     ProductModifierAdapter productModifierAdapter;
 
@@ -107,12 +102,18 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
         binding.addProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.addToCart.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+
+        binding.addToCart.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.back.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.share.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.removeProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.addProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+
+
     }
 
 
     private void binding(Item item) {
-
-
         if (item.getModifier() != null && item.getModifier().size() == 0) {
             binding.modifierTitle.setVisibility(View.GONE);
         }
@@ -167,7 +168,7 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 .load(item.getImages().get(0))
                 .noPlaceholder()
                 .centerCrop()
-                .resize(800, 0)
+                .resize(1000, 0)
                 .into(binding.image);
     }
 
@@ -198,33 +199,12 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 return new PicassoRegionDecoder(new OkHttpClient());
             }
         });
-
         image.setImage(ImageSource.uri(imageUrl));
-
-
-//        Picasso.get()
-//                .load(imageUrl)
-//                .noPlaceholder()
-//                //.centerCrop()
-//                //.resize(1000, 0)
-//                .into(imageView, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        progressBar.setVisibility(View.GONE);
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//
-//                    }
-//                });
-
         if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
     }
-
 
     private void bindingAddSubtractProductCount() {
         binding.addProduct.setOnClickListener(v -> {
@@ -258,9 +238,7 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
 
     private void bindingAddProductToBasket(Item product) {
         binding.addToCart.setOnClickListener(v -> {
-
             List<BasketCart> listCartsByID = Common.basketCartRepository.getListBasketCartByItemID(product.getId());
-
             //cant add product if limit is over
             BigDecimal countOfProducts = new BigDecimal("0");
             if (listCartsByID != null && listCartsByID.size() != 0) {
@@ -268,20 +246,20 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
                     countOfProducts = countOfProducts.add(new BigDecimal(basketCart.count));
                 }
                 if (new BigDecimal(binding.countProducts.getText().toString()).add(countOfProducts).compareTo(new BigDecimal(listCartsByID.get(0).quantity)) > 0) {
-                    showToast(getString(R.string.productsNotAvailable) +
+                    CustomToast.showStatus(this, getString(R.string.productsNotAvailable) +
                             " " + listCartsByID.get(0).quantity + " " + getString(R.string.basketActivityPC));
                     return;
                 }
             } else {
                 if (new BigDecimal(binding.countProducts.getText().toString()).add(countOfProducts).compareTo(new BigDecimal(product.getQuantity())) > 0) {
-                    showToast(getString(R.string.productsNotAvailable) +
+                    CustomToast.showStatus(this, getString(R.string.productsNotAvailable) +
                             " " + product.getQuantity() + " " + getString(R.string.basketActivityPC));
                     return;
                 }
             }
 
             String added = (binding.countProducts.getText().toString().equals("1") ? getString(R.string.productNewActivityAddedOne) : getString(R.string.productNewActivityAddedMulti));
-            showToast("" +
+            CustomToast.showStatus(this, "" +
                     product.getName() + " " +
                     binding.countProducts.getText().toString() + " " +
                     getText(R.string.productNewActivityPC) + " " +
@@ -325,14 +303,6 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
             Common.basketCartRepository.insertToBasketCart(cartItem);
             Logging.logDebug("Method add Product to Basket. listCartsByID == null:  " + cartItem.toString());
         });
-    }
-
-    private void showToast(String message) {
-        if (toast != null) {
-            toast.cancel();
-        }
-        toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-        toast.show();
     }
 
     @Override

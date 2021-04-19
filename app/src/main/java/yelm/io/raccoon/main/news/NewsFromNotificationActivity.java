@@ -57,9 +57,9 @@ public class NewsFromNotificationActivity extends AppCompatActivity implements A
                         getResources().getConfiguration().locale.getLanguage(),
                         getResources().getConfiguration().locale.getCountry(),
                         id).
-                enqueue(new Callback<NewNews>() {
+                enqueue(new Callback<News>() {
                     @Override
-                    public void onResponse(@NotNull Call<NewNews> call, @NotNull final Response<NewNews> response) {
+                    public void onResponse(@NotNull Call<News> call, @NotNull final Response<News> response) {
                         if (response.isSuccessful()) {
                             if (response.body() != null) {
                                 seNews(response.body());
@@ -73,13 +73,13 @@ public class NewsFromNotificationActivity extends AppCompatActivity implements A
                     }
 
                     @Override
-                    public void onFailure(@NotNull Call<NewNews> call, @NotNull Throwable t) {
+                    public void onFailure(@NotNull Call<News> call, @NotNull Throwable t) {
                         Logging.logError("Method getNewsById() - failure: " + t.toString());
                     }
                 });
     }
 
-    private void seNews(NewNews news) {
+    private void seNews(News news) {
         List<Item> products = news.getItems();
         if (products.size() != 0) {
             binding.titleProducts.setVisibility(View.VISIBLE);

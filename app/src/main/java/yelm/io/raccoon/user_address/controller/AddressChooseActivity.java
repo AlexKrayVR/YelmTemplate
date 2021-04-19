@@ -97,11 +97,7 @@ public class AddressChooseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAddressChoiseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-        binding.currentButton.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-        binding.getLocation.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-
+        setCustomColor();
 
         binding.mapView.getMap().addCameraListener(cameraListener);
         setImageSpringAnimation();
@@ -133,14 +129,13 @@ public class AddressChooseActivity extends AppCompatActivity {
                             String.valueOf(cameraPositionCurrent.getTarget().getLongitude()),
                             userStreet, true);
                     Common.userAddressesRepository.insertToUserAddresses(userAddress);
-                    Logging.logDebug( "userAddress: " + userAddress.toString());
+                    Logging.logDebug("userAddress: " + userAddress.toString());
                 } else {
                     UserAddress userAddress = Common.userAddressesRepository.getUserAddressByName(userStreet);
                     userAddress.isChecked = true;
                     Common.userAddressesRepository.updateUserAddresses(userAddress);
                 }
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
+                setResult(RESULT_OK, new Intent());
                 finish();
             } else {
                 Toast.makeText(AddressChooseActivity.this, getText(R.string.waitForGeolocationetermination), Toast.LENGTH_SHORT).show();
@@ -155,6 +150,16 @@ public class AddressChooseActivity extends AppCompatActivity {
                         null);
             }
         });
+    }
+
+    private void setCustomColor() {
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.currentButton.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.getLocation.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.back.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.currentButton.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.getLocation.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+
     }
 
 

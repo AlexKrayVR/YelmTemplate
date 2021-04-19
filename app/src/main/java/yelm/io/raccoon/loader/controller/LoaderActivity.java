@@ -2,6 +2,7 @@ package yelm.io.raccoon.loader.controller;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -127,10 +128,7 @@ public class LoaderActivity extends AppCompatActivity {
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_MOBILE, response.body().getSettings().getPayment().getApplepay());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.PAYMENT_CASH, response.body().getSettings().getPayment().getPlaceorder());
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.CATEGORY_TEXT_COLOR, response.body().getSettings().getThemeCategory());
-                                //todo change getting colors
-                                //SharedPreferencesSetting.setData(SharedPreferencesSetting.APP_TEXT_COLOR, response.body().getSettings().getForeground());
-                                SharedPreferencesSetting.setData(SharedPreferencesSetting.APP_TEXT_COLOR, "18a7b5");
-
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.APP_TEXT_COLOR, response.body().getSettings().getForeground());
                                 launchMain();
                             } else {
                                 Logging.logError("Method getApplicationSettings(): by some reason response is null!");

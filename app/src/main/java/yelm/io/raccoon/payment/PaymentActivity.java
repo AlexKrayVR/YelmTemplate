@@ -1,7 +1,6 @@
 package yelm.io.raccoon.payment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -54,6 +53,7 @@ import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.user_addresses.UserAddress;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.loader.controller.LoaderActivity;
+import yelm.io.raccoon.notification.CustomToast;
 import yelm.io.raccoon.order.model.PriceConverterResponse;
 import yelm.io.raccoon.payment.models.Transaction;
 import yelm.io.raccoon.payment.response.PayApiError;
@@ -155,19 +155,19 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
 
         // Проверям номер карты.
         if (!CPCard.isValidNumber(cardNumber)) {
-            showToast(getString(R.string.checkout_error_card_number));
+            CustomToast.showStatus(this,getString(R.string.checkout_error_card_number));
             return;
         }
 
         // Проверям срок действия карты.
         if (!CPCard.isValidExpDate(cardDate)) {
-            showToast(getString(R.string.checkout_error_card_date));
+            CustomToast.showStatus(this,getString(R.string.checkout_error_card_date));
             return;
         }
 
         // Проверям cvc код карты.
         if (cardCVC.length() != 3) {
-            showToast(getString(R.string.checkout_error_card_cvc));
+            CustomToast.showStatus(this,getString(R.string.checkout_error_card_cvc));
             return;
         }
 
@@ -248,7 +248,9 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
         ButterKnife.bind(this);
 
         back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        back.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         button_payment.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        button_payment.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
 
         Bundle args = getIntent().getExtras();
         if (args != null) {

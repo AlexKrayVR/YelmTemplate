@@ -5,36 +5,39 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
+
 import java.util.List;
+
 import yelm.io.raccoon.databinding.NewsItemBinding;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.GradientTransformation;
-import yelm.io.raccoon.support_stuff.Logging;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     private Context context;
-    private List<NewNews> news;
+    private List<News> news;
     //boolean isMoving = false;
 
-    public NewsAdapter(Context context, List<NewNews> news) {
+    public NewsAdapter(Context context, List<News> news) {
         this.context = context;
         this.news = news;
     }
 
-    @NonNull    @Override
+    @NonNull
+    @Override
     public NewsAdapter.NewsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new NewsHolder(NewsItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull NewsAdapter.NewsHolder holder, int position) {
-        NewNews currentNews = news.get(position);
+        News currentNews = news.get(position);
         holder.binding.name.setText(currentNews.getTitle());
         if (currentNews.getTitle().trim().isEmpty()) {
             Picasso.get()
@@ -53,18 +56,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
                     .into(holder.binding.image);
         }
 
-        AnimatorSet animationSet = new AnimatorSet();
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(holder.binding.news, "scaleY", 1f, 0.9f);
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(holder.binding.news, "scaleX", 1f, 0.9f);
-        animationSet.setDuration(200).playTogether(scaleX, scaleY);
-
-        holder.binding.image.setOnClickListener(v->{
+        holder.binding.image.setOnClickListener(v -> {
             RestMethods.sendStatistic("open_news");
             Intent intent = new Intent(context, NewsActivity.class);
             intent.putExtra("news", currentNews);
             context.startActivity(intent);
         });
 
+
+
+
+//        AnimatorSet animationSet = new AnimatorSet();
+//        ObjectAnimator scaleY = ObjectAnimator.ofFloat(holder.binding.news, "scaleY", 1f, 0.9f);
+//        ObjectAnimator scaleX = ObjectAnimator.ofFloat(holder.binding.news, "scaleX", 1f, 0.9f);
+//        animationSet.setDuration(200).playTogether(scaleX, scaleY);
 
 //
 //        holder.binding.image.setOnTouchListener((view, motionEvent) -> {

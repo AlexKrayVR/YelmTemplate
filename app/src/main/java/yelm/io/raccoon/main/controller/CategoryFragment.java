@@ -45,6 +45,9 @@ public class CategoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentCategoryBinding.inflate(getLayoutInflater(), container, false);
         binding.categoryExpand.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.categoryExpand.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+
+
         binding.title.setText(catalogsWithProductsClass.getName());
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.recycler.setHasFixedSize(false);

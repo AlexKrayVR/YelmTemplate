@@ -241,8 +241,6 @@
 
     <string name="my_orders">Мои заказы</string>
 
-    <string name="ruble_sign" translatable="false">₽</string>
-
     <string name="description_product">Описание</string>
     <string name="specifications_product">Характеристики</string>
     <string name="add_to_cart">Добавить</string>

@@ -173,6 +173,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="end|bottom"
+                    android:singleLine="true"
                     android:textColor="@color/colorTextGray"
                     android:textSize="12sp"
                     android:theme="@style/ProDisplayTextStyle"
@@ -185,6 +186,7 @@
                     android:layout_weight="1"
 
                     android:gravity="center_vertical|end"
+                    android:singleLine="true"
                     android:textColor="@color/colorTextGray"
                     android:textSize="12sp"
                     android:theme="@style/ProDisplayTextStyle" />

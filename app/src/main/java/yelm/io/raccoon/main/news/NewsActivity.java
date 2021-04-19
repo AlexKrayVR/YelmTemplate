@@ -36,10 +36,9 @@ public class NewsActivity extends AppCompatActivity implements AppBarLayout.OnOf
         binding = ActivityNewsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-        binding.share.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        setCustomColor();
 
-        NewNews news = getIntent().getParcelableExtra("news");
+        News news = getIntent().getParcelableExtra("news");
         if (news != null) {
             binding(news);
             products = news.getItems();
@@ -47,7 +46,6 @@ public class NewsActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 binding.titleProducts.setVisibility(View.VISIBLE);
             }
             binding.recycler.setLayoutManager(new StaggeredGridLayoutManager(2, 1));
-            //binding.recycler.setAdapter(new ProductsNewMenuSquareImageAdapter(this, products));
             binding.share.setOnClickListener(v -> {
                 RestMethods.sendStatistic("share_news");
                 String sharingLink = "https://yelm.io/news/" + news.getId();
@@ -58,8 +56,15 @@ public class NewsActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 startActivity(Intent.createChooser(intent, getResources().getString(R.string.newsActivityShare)));
             });
         } else {
-            Logging.logError( "Method onCreate() in NewsActivity: by some reason news==null");
+            Logging.logError("Method onCreate() in NewsActivity: by some reason news==null");
         }
+    }
+
+    private void setCustomColor() {
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.share.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.back.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.share.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
     }
 
     @Override
@@ -68,9 +73,9 @@ public class NewsActivity extends AppCompatActivity implements AppBarLayout.OnOf
         binding.recycler.setAdapter(new ProductsNewMenuSquareImageAdapter(this, products));
     }
 
-    private void binding(NewNews news) {
+    private void binding(News news) {
         String body = news.getDescription();
-        Logging.logDebug( "body" + body);
+        Logging.logDebug("body" + body);
         String data = "<!DOCTYPE html>" +
                 "<html>" +
                 "<head>" +

@@ -20,7 +20,7 @@ import yelm.io.raccoon.loader.model.UserLoginResponse;
 import yelm.io.raccoon.main.categories.CategoriesPOJO;
 import yelm.io.raccoon.main.model.CategoriesWithProductsClass;
 import yelm.io.raccoon.main.model.Item;
-import yelm.io.raccoon.main.news.NewNews;
+import yelm.io.raccoon.main.news.News;
 import yelm.io.raccoon.order.model.PriceConverterResponse;
 import yelm.io.raccoon.order.model.PromoCodeClass;
 import yelm.io.raccoon.order.model.UserOrderPOJO;
@@ -83,7 +83,7 @@ public interface RestAPI {
             @Field("login") String login);
 
     @GET("news?")
-    Call<NewNews> getNewsByID(
+    Call<News> getNewsByID(
             @Query("version") String version,
             @Query("platform") String platform,
             @Query("language_code") String languageCode,
@@ -118,7 +118,7 @@ public interface RestAPI {
     );
 
     @GET("all-news?")
-    Call<ArrayList<NewNews>> getNews(
+    Call<ArrayList<News>> getNews(
             @Query("version") String version,
             @Query("language_code") String languageCode,
             @Query("region_code") String regionCode,
@@ -126,7 +126,7 @@ public interface RestAPI {
     );
 
     @GET("news-item?")
-    Call<ArrayList<NewNews>> getItemByNewsID(
+    Call<ArrayList<News>> getItemByNewsID(
             @Query("id") String id,
             @Query("version") String version,
             @Query("language_code") String languageCode,

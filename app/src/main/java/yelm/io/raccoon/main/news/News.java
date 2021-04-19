@@ -10,7 +10,7 @@ import java.util.List;
 
 import yelm.io.raccoon.main.model.Item;
 
-public class NewNews implements Parcelable {
+public class News implements Parcelable {
     @SerializedName("id")
     @Expose
     private String id;
@@ -48,7 +48,7 @@ public class NewNews implements Parcelable {
     @Expose
     private String updatedAt;
 
-    protected NewNews(Parcel in) {
+    protected News(Parcel in) {
         id = in.readString();
         title = in.readString();
         subtitle = in.readString();
@@ -63,36 +63,15 @@ public class NewNews implements Parcelable {
         updatedAt = in.readString();
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(title);
-        dest.writeString(subtitle);
-        dest.writeString(theme);
-        dest.writeString(description);
-        dest.writeString(status);
-        dest.writeString(image);
-        dest.writeString(previewImage);
-        dest.writeTypedList(items);
-        dest.writeString(platform);
-        dest.writeString(createdAt);
-        dest.writeString(updatedAt);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<NewNews> CREATOR = new Creator<NewNews>() {
+    public static final Creator<News> CREATOR = new Creator<News>() {
         @Override
-        public NewNews createFromParcel(Parcel in) {
-            return new NewNews(in);
+        public News createFromParcel(Parcel in) {
+            return new News(in);
         }
 
         @Override
-        public NewNews[] newArray(int size) {
-            return new NewNews[size];
+        public News[] newArray(int size) {
+            return new News[size];
         }
     };
 
@@ -190,5 +169,26 @@ public class NewNews implements Parcelable {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(subtitle);
+        dest.writeString(theme);
+        dest.writeString(description);
+        dest.writeString(status);
+        dest.writeString(image);
+        dest.writeString(previewImage);
+        dest.writeTypedList(items);
+        dest.writeString(platform);
+        dest.writeString(createdAt);
+        dest.writeString(updatedAt);
     }
 }

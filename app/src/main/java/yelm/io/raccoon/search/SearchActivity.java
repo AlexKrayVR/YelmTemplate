@@ -51,7 +51,6 @@ public class SearchActivity extends AppCompatActivity {
         binding.recyclerProducts.addItemDecoration(new ItemOffsetDecorationBottom((int) getResources().getDimension(R.dimen.dimen_70dp)));
         setCustomColor();
 
-
         getAllProducts();
 
         binding.back.setOnClickListener(v -> finish());

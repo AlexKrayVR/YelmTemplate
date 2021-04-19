@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -51,16 +53,12 @@ public class ProductsByCategoriesActivity extends AppCompatActivity {
         binding = ActivityProductsByCategoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-        binding.basket.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-        binding.progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
-
+        setCustomColor();
 
         Bundle args = getIntent().getExtras();
         if (args != null) {
             Logging.logDebug("args.getString(catalogID): " + args.getString("catalogID"));
             Logging.logDebug("args.getString(catalogName): " + args.getString("catalogName"));
-
             getProductByCategory(args.getString("catalogID"));
             binding.title.setText(args.getString("catalogName"));
         }
@@ -81,6 +79,22 @@ public class ProductsByCategoriesActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void setCustomColor() {
+        binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.basket.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
+        binding.basket.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        for (Drawable drawable : binding.basket.getCompoundDrawablesRelative()) {
+            if (drawable != null) {
+                drawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)), PorterDuff.Mode.SRC_IN));
+            }
+        }
+        binding.back.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.progress.getIndeterminateDrawable()
+                .setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
+
     }
 
     private void getProductByCategory(String categoryID) {

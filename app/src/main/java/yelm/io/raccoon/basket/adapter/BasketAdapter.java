@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
@@ -20,7 +19,6 @@ import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.databinding.BasketCartItemBinding;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Modifier;
 
 public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketHolder> {
@@ -35,9 +33,6 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketHold
 
     @Override
     public void onBindViewHolder(@NonNull final BasketAdapter.BasketHolder holder, final int position) {
-
-        holder.binding.removeProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-        holder.binding.addProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
 
         BasketCart current = basket.get(position);
         holder.binding.description.setText(String.format("%s\n%s %s / %s %s",
@@ -112,7 +107,12 @@ public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketHold
     @NonNull
     @Override
     public BasketAdapter.BasketHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new BasketAdapter.BasketHolder(BasketCartItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        BasketHolder basketHolder = new BasketHolder(BasketCartItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        basketHolder.binding.removeProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        basketHolder.binding.addProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        basketHolder.binding.removeProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        basketHolder.binding.addProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        return basketHolder;
     }
 
     @Override

@@ -29,14 +29,14 @@
 
     <!--for coordinator layout in NewsActivity -->
     <style name="CollapsingTextAppearance" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
-    <item name="android:textSize">22sp</item>
-    <item name="android:textStyle">bold</item>
-    <item name="android:theme">@style/ProDisplayTextStyle</item>
-    <item name="android:fontFamily">@font/sf_prodisplay_regular</item>
-    <item name="android:textColor">@color/mainThemeColor</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:theme">@style/ProDisplayTextStyle</item>
+        <item name="android:fontFamily">@font/sf_prodisplay_regular</item>
+        <item name="android:textColor">@color/mainThemeColor</item>
     </style>
 
-    <style name="CollapsingTextAppearance.Inverse" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title" >
+    <style name="CollapsingTextAppearance.Inverse" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textSize">22sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:theme">@style/ProDisplayTextStyle</item>
@@ -48,7 +48,7 @@
         <item name="colorAccent">@color/whiteColor</item>
     </style>
 
-    <style name="ToolBarWithNavigationBack" >
+    <style name="ToolBarWithNavigationBack">
         <item name="navigationIcon">@drawable/ic_arrow_back_24</item>
     </style>
 
@@ -58,9 +58,10 @@
         <item name="colorControlActivated">#FDCD02</item>
     </style>
 
-    <style name="AppBottomSheetDialogTheme"  parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AddressesBottomSheetRoundedStyle</item>
     </style>
+
     <style name="AddressesBottomSheetRoundedStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/rounded_bottom_sheet_addresses</item>
     </style>
@@ -88,17 +89,16 @@
         <item name="colorAccent">@color/mainThemeColor</item>
     </style>
 
-    <style name="SplashTheme" parent="@style/AppTheme">
+    <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splashscreen_bg</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
-        <item name="colorPrimaryDark">@color/mainThemeColor</item>
         <item name="android:statusBarColor">@color/mainThemeColor</item>
 
-<!--        //for full screen activity-->
-<!--                <item name="windowNoTitle">true</item>-->
-<!--                <item name="windowActionBar">false</item>-->
-<!--                <item name="android:windowFullscreen">true</item>-->
-<!--                <item name="android:windowContentOverlay">@null</item>-->
+        //for full screen activity
+<!--        <item name="windowNoTitle">true</item>-->
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="android:windowFullscreen">true</item>-->
+<!--        <item name="android:windowContentOverlay">@null</item>-->
 
     </style>
 

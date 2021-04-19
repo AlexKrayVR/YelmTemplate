@@ -11,7 +11,7 @@
 
     <item>
         <bitmap
-            android:src="@drawable/raccoon_splash"
+            android:src="@drawable/splash"
             android:gravity="center"/>
     </item>
 </layer-list>

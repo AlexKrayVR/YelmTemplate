@@ -109,7 +109,6 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
             for (BasketCart basketCart : listBasketCartByItemID) {
                 countOfAllProducts = countOfAllProducts.add(new BigInteger(basketCart.count));
             }
-
             holder.binding.countItemInCart.setText(String.format("%s", countOfAllProducts));
             holder.binding.removeProduct.setVisibility(View.VISIBLE);
             holder.binding.countItemsLayout.setVisibility(View.VISIBLE);

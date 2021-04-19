@@ -51,8 +51,12 @@ public class AddressesBottomSheet extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = AdressesBottomSheepDialogBinding.inflate(inflater, container, false);
         binding.addressesDone.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        binding.addressesDone.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+
+
         binding.addressesDone.setOnClickListener(v -> this.dismiss());
         binding.addNewAddress.setOnClickListener(v -> startActivityForResult(new Intent(getContext(), AddressChooseActivity.class), USER_ADDRESS_CHOOSE_REQUEST_CODE));
+
         binding.recyclerUserAddresses.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         userAddressesAdapter = new UserAddressesAdapter(getContext(), Common.userAddressesRepository.getUserAddressesList());
         userAddressesAdapter.setListener(() -> {
