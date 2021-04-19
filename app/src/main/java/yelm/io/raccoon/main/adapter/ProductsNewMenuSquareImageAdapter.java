@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +12,12 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
@@ -37,10 +34,10 @@ import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.databinding.NewMenuProductItemSquareImageBinding;
 import yelm.io.raccoon.item.ItemActivity;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.model.Modifier;
 import yelm.io.raccoon.item.ProductModifierAdapter;
+import yelm.io.raccoon.notification.CustomToast;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.support_stuff.ScreenDimensions;
@@ -162,28 +159,32 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
             } else {
                 holder.binding.countItemsLayout.setVisibility(View.VISIBLE);
                 List<BasketCart> listCartsByID = Common.basketCartRepository.getListBasketCartByItemID(current.getId());
-                if (listCartsByID != null && listCartsByID.size() != 0) {
-                    BigDecimal countOfAllProducts = new BigDecimal("0");
-                    for (BasketCart basketCart : listCartsByID) {
-                        countOfAllProducts = countOfAllProducts.add(new BigDecimal(basketCart.count));
-                    }
 
-                    if (countOfAllProducts.compareTo(new BigDecimal(listCartsByID.get(0).quantity)) >= 0) {
-                        showToast(context.getString(R.string.productsNotAvailable) +
-                                " " + listCartsByID.get(0).quantity + " " + context.getString(R.string.basketActivityPC));
-                        return;
-                    }
+                BigDecimal countOfAllProducts = new BigDecimal("0");
+                for (BasketCart basketCart : listCartsByID) {
+                    countOfAllProducts = countOfAllProducts.add(new BigDecimal(basketCart.count));
+                }
+                if (countOfAllProducts.add(new BigDecimal("1")).compareTo(new BigDecimal(current.getQuantity())) >= 0) {
+                    holder.binding.addProduct.setVisibility(View.GONE);
+                }
+                if (countOfAllProducts.compareTo(new BigDecimal(current.getQuantity())) >= 0) {
+                    CustomToast.showStatus(context,context.getString(R.string.productsNotAvailable) +
+                            " " + listCartsByID.get(0).quantity + " " + context.getString(R.string.basketActivityPC));
+                    return;
+                }
 
+                if (listCartsByID.size() != 0) {
                     for (BasketCart basketCart : listCartsByID) {
                         if (basketCart.modifier.equals(current.getModifier())) {
                             basketCart.count = new BigDecimal(basketCart.count).add(new BigDecimal("1")).toString();
                             holder.binding.countItemInCart.setText(String.format("%s", countOfAllProducts.add(new BigDecimal("1"))));
                             Common.basketCartRepository.updateBasketCart(basketCart);
-                            Logging.logDebug("Method add BasketCart to Basket. No modifiers - listCartsByID !=null:  " + basketCart.toString());
+                            Logging.logDebug("Method add BasketCart to Basket. No modifiers - listCartsByID was not empty:  " + basketCart.toString());
                             return;
                         }
                     }
                 }
+
                 holder.binding.removeProduct.setVisibility(View.VISIBLE);
                 holder.binding.countItemInCart.setText("1");
                 BasketCart cartItem = new BasketCart();
@@ -202,15 +203,26 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
                 cartItem.isExist = true;
                 cartItem.quantityType = current.getUnitType();
                 Common.basketCartRepository.insertToBasketCart(cartItem);
-                Logging.logDebug("Method add BasketCart to Basket. No modifiers - listCartsByID == null:  " + cartItem.toString());
+                Logging.logDebug("Method add BasketCart to Basket. No modifiers - listCartsByID was empty:  " + cartItem.toString());
             }
         });
 
         //remove product from basket
         holder.binding.removeProduct.setOnClickListener(v -> {
             List<BasketCart> listCartsByID = Common.basketCartRepository.getListBasketCartByItemID(current.getId());
-            if (listCartsByID != null && listCartsByID.size() != 0) {
+
+            BigInteger countOfAllProducts = new BigInteger("0");
+            for (BasketCart basketCart : listCartsByID) {
+                countOfAllProducts = countOfAllProducts.add(new BigInteger(basketCart.count));
+            }
+
+            if (countOfAllProducts.compareTo(new BigInteger(current.getQuantity())) <= 0) {
+                holder.binding.addProduct.setVisibility(View.VISIBLE);
+            }
+
+            if (listCartsByID.size() != 0) {
                 if (listCartsByID.size() == 1) {
+
                     BasketCart cartItem = listCartsByID.get(0);
                     BigInteger countOfProduct = new BigInteger(cartItem.count);
                     if (countOfProduct.equals(new BigInteger("1"))) {
@@ -224,10 +236,7 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
                         Common.basketCartRepository.updateBasketCart(cartItem);
                     }
                 } else {
-                    BigInteger countOfAllProducts = new BigInteger("0");
-                    for (BasketCart basketCart : listCartsByID) {
-                        countOfAllProducts = countOfAllProducts.add(new BigInteger(basketCart.count));
-                    }
+
                     BasketCart cartItem = listCartsByID.get(listCartsByID.size() - 1);
                     BigInteger countOfProduct = new BigInteger(cartItem.count);
                     if (countOfProduct.equals(new BigInteger("1"))) {
@@ -397,11 +406,5 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
         }
     }
 
-
-    private void showToast(String message) {
-        Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
 
 }

@@ -155,16 +155,21 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
             } else {
                 holder.binding.countItemsLayout.setVisibility(View.VISIBLE);
                 List<BasketCart> listCartsByID = Common.basketCartRepository.getListBasketCartByItemID(current.getId());
-                if (listCartsByID != null && listCartsByID.size() != 0) {
-                    BigDecimal countOfAllProducts = new BigDecimal("0");
-                    for (BasketCart basketCart : listCartsByID) {
-                        countOfAllProducts = countOfAllProducts.add(new BigDecimal(basketCart.count));
-                    }
-                    if (countOfAllProducts.compareTo(new BigDecimal(listCartsByID.get(0).quantity)) >= 0) {
-                        showToast(context.getString(R.string.productsNotAvailable) +
-                                " " + listCartsByID.get(0).quantity +" "+ context.getString(R.string.basketActivityPC));
-                        return;
-                    }
+
+                BigDecimal countOfAllProducts = new BigDecimal("0");
+                for (BasketCart basketCart : listCartsByID) {
+                    countOfAllProducts = countOfAllProducts.add(new BigDecimal(basketCart.count));
+                }
+                if (countOfAllProducts.add(new BigDecimal("1")).compareTo(new BigDecimal(current.getQuantity())) >= 0) {
+                    holder.binding.addProduct.setVisibility(View.GONE);
+                }
+                if (countOfAllProducts.compareTo(new BigDecimal(current.getQuantity())) >= 0) {
+                    showToast(context.getString(R.string.productsNotAvailable) +
+                            " " + listCartsByID.get(0).quantity +" "+ context.getString(R.string.basketActivityPC));
+                    return;
+                }
+
+                if (listCartsByID.size() != 0) {
                     for (BasketCart basketCart : listCartsByID) {
                         if (basketCart.modifier.equals(current.getModifier())) {
                             basketCart.count = new BigDecimal(basketCart.count).add(new BigDecimal("1")).toString();
@@ -200,8 +205,18 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
         //remove product from basket
         holder.binding.removeProduct.setOnClickListener(v -> {
             List<BasketCart> listCartsByID = Common.basketCartRepository.getListBasketCartByItemID(current.getId());
-            if (listCartsByID != null && listCartsByID.size() != 0) {
+            BigInteger countOfAllProducts = new BigInteger("0");
+            for (BasketCart basketCart : listCartsByID) {
+                countOfAllProducts = countOfAllProducts.add(new BigInteger(basketCart.count));
+            }
+
+            if (countOfAllProducts.compareTo(new BigInteger(current.getQuantity())) <= 0) {
+                holder.binding.addProduct.setVisibility(View.VISIBLE);
+            }
+
+            if ( listCartsByID.size() != 0) {
                 if (listCartsByID.size() == 1) {
+
                     BasketCart cartItem = listCartsByID.get(0);
                     BigInteger countOfProduct = new BigInteger(cartItem.count);
                     if (countOfProduct.equals(new BigInteger("1"))) {
@@ -215,10 +230,7 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
                         Common.basketCartRepository.updateBasketCart(cartItem);
                     }
                 } else {
-                    BigInteger countOfAllProducts = new BigInteger("0");
-                    for (BasketCart basketCart : listCartsByID) {
-                        countOfAllProducts = countOfAllProducts.add(new BigInteger(basketCart.count));
-                    }
+
                     BasketCart cartItem = listCartsByID.get(listCartsByID.size() - 1);
                     BigInteger countOfProduct = new BigInteger(cartItem.count);
                     if (countOfProduct.equals(new BigInteger("1"))) {

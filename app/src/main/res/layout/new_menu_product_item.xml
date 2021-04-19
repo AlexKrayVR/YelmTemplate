@@ -129,7 +129,8 @@
                 android:background="@drawable/address_back_view_blue"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingStart="6dp">
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp">
 
                 <ImageButton
                     android:id="@+id/removeProduct"
@@ -143,9 +144,10 @@
                     android:id="@+id/priceFinal"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
                     android:drawableTint="@color/whiteColor"
                     android:gravity="center_vertical"
-                    android:paddingStart="4dp"
                     android:singleLine="true"
                     android:textColor="@color/whiteColor"
                     android:textSize="14sp"
@@ -154,7 +156,7 @@
 
                 <ImageButton
                     android:id="@+id/addProduct"
-                    android:layout_width="30dp"
+                    android:layout_width="24dp"
                     android:layout_height="30dp"
                     android:background="@android:color/transparent"
                     android:visibility="visible"
