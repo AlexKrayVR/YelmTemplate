@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/address_back_view_blue"
+        android:background="@drawable/back_view"
         android:drawableStart="@drawable/ic_basket_24"
         android:drawablePadding="4dp"
         android:drawableTint="@color/whiteColor"

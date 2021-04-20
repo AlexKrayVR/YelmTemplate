@@ -5,12 +5,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,9 +18,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -50,8 +41,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import yelm.io.raccoon.basket.controller.BasketActivity;
-import yelm.io.raccoon.item.ItemFromNotificationActivity;
+import yelm.io.raccoon.item.controller.ItemFromNotificationActivity;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
+import yelm.io.raccoon.main.adapter.MainItemsAdapter;
 import yelm.io.raccoon.main.categories.CategoriesAdapter;
 import yelm.io.raccoon.main.categories.CategoriesPOJO;
 import yelm.io.raccoon.main.news.News;
@@ -91,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
 
     private final CompositeDisposable compositeDisposableBasket = new CompositeDisposable();
 
-    private boolean allowUpdateUI = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +97,7 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
         getLocationPermission();
         Bundle args = getIntent().getExtras();
         if (args != null) {
-            Logging.logDebug("MainActivity - Notification data: " + args.getString("id"));
-            Logging.logDebug("MainActivity - Notification data: " + args.getString("name"));
+            Logging.logDebug("MainActivity - Notification data: " + args.toString());
             if (Objects.equals(args.getString("name"), "news")) {
                 Intent intent = new Intent(MainActivity.this, NewsFromNotificationActivity.class);
                 intent.putExtra("id", args.getString("id"));
@@ -123,12 +112,15 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
         }
     }
 
+    /**
+     * set user chosen colors
+     */
     private void setCustomColor() {
         binding.addressLayout.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.categoryExpand.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.basket.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.userCurrentAddress.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
-       binding.basket.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        binding.basket.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         for (Drawable drawable : binding.basket.getCompoundDrawablesRelative()) {
             if (drawable != null) {
                 drawable.setColorFilter(new PorterDuffColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)), PorterDuff.Mode.SRC_IN));
@@ -137,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
         binding.progress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)), PorterDuff.Mode.SRC_IN);
         binding.categoryExpand.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
     }
-
 
     private void checkIfGPSEnabled() {
         if (!StaticRepository.isLocationEnabled(this)) {
@@ -152,17 +143,12 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
 
     private void binding() {
         binding.chat.setOnClickListener(v -> startActivity(new Intent(this, ChatActivity.class)));
-        binding.recyclerCards.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.recyclerCards.setHasFixedSize(false);
         binding.recyclerCards.addItemDecoration(new ItemOffsetDecorationRight((int) getResources().getDimension(R.dimen.dimens_16dp)));
         binding.addressLayout.setOnClickListener(v -> callAddressesBottomSheet());
         binding.userCurrentAddress.setOnClickListener(v -> callAddressesBottomSheet());
         binding.search.setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
         binding.basket.setOnClickListener(v -> startActivity(new Intent(this, BasketActivity.class)));
-
-        binding.recyclerCategories.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayout.VERTICAL));
-        binding.recyclerCategories.setHasFixedSize(false);
-
         binding.categoryExpand.setOnClickListener(v -> {
             if (binding.recyclerCategories.getVisibility() == View.VISIBLE) {
                 binding.recyclerCategories.setVisibility(View.GONE);
@@ -252,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(100); //interval in which we want to get location
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        //locationRequest.setNumUpdates(1);
         locationRequest.setFastestInterval(100);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             performIfNoLocationPermission();
@@ -375,7 +360,6 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                         if (response.isSuccessful()) {
                             if (response.body() != null) {
                                 CategoriesAdapter categoriesAdapter = new CategoriesAdapter(MainActivity.this, response.body());
-
                                 binding.recyclerCategories.setAdapter(categoriesAdapter);
                             } else {
                                 Logging.logError("Method getCategories() - by some reason response is null!");
@@ -427,11 +411,10 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                     public void onResponse(@NotNull Call<ArrayList<News>> call, @NotNull final Response<ArrayList<News>> response) {
                         if (response.isSuccessful()) {
                             if (response.body() != null) {
-                                List<News> newsList = response.body();
-                                binding.recyclerCards.setAdapter(new NewsAdapter(MainActivity.this, newsList));
                                 if (response.body().size() > 0) {
                                     binding.newsTitle.setVisibility(View.VISIBLE);
                                 }
+                                binding.recyclerCards.setAdapter(new NewsAdapter(MainActivity.this, response.body()));
                             } else {
                                 Logging.logError("Method initNews() - by some reason response is null!");
                             }
@@ -463,12 +446,8 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
     @Override
     protected void onStart() {
         super.onStart();
-        Logging.logDebug("allowUpdateUI: " + allowUpdateUI);
         updateCost();
-        if (allowUpdateUI) {
-            redrawProducts();
-        }
-        allowUpdateUI = true;
+        redrawProducts();
     }
 
     private void updateCost() {
@@ -501,27 +480,8 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                 }));
     }
 
-    @Override
-    protected void onSaveInstanceState(@NotNull Bundle outState) {
-        //No call for super(). Bug on API Level > 11.
-        super.onSaveInstanceState(outState);
-    }
-
     synchronized private void redrawProducts() {
+        binding.recyclerMainItems.setAdapter(new MainItemsAdapter(this, catalogsWithProductsList));
         Logging.logDebug("Method redrawProducts()");
-        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-            if (!Objects.equals(fragment.getTag(), "addressBottomSheet")) {
-                getSupportFragmentManager().beginTransaction().remove(fragment).commitAllowingStateLoss();
-            }
-        }
-        binding.storeFragments.removeAllViews();
-        for (int i = 0; i < catalogsWithProductsList.size(); i++) {
-            FrameLayout frameLayout = new FrameLayout(MainActivity.this);
-            frameLayout.setId(View.generateViewId());
-            CategoryFragment categoryFragment = new CategoryFragment(catalogsWithProductsList.get(i));
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(frameLayout.getId(), categoryFragment, "fragment: " + i).commitAllowingStateLoss();
-            binding.storeFragments.addView(frameLayout);
-        }
     }
 }

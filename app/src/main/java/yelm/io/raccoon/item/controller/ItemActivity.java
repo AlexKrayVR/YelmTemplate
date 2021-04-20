@@ -1,11 +1,11 @@
-package yelm.io.raccoon.item;
+package yelm.io.raccoon.item.controller;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +13,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.decoder.DecoderFactory;
@@ -34,6 +33,9 @@ import yelm.io.raccoon.R;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.databinding.ActivityItemBinding;
+import yelm.io.raccoon.item.adapter.PicturesAdapter;
+import yelm.io.raccoon.item.adapter.ProductModifierAdapter;
+import yelm.io.raccoon.item.adapter.ProductSpecificationsAdapter;
 import yelm.io.raccoon.item.decoder.PicassoDecoder;
 import yelm.io.raccoon.item.decoder.PicassoRegionDecoder;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
@@ -41,6 +43,8 @@ import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.model.Modifier;
 import yelm.io.raccoon.notification.CustomToast;
 import yelm.io.raccoon.rest.query.RestMethods;
+import yelm.io.raccoon.support_stuff.ItemOffsetDecorationRight;
+import yelm.io.raccoon.support_stuff.ItemOffsetDecorationStartEnd;
 import yelm.io.raccoon.support_stuff.Logging;
 
 public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
@@ -50,6 +54,7 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
     private boolean isImageHidden;
     ProductSpecificationsAdapter productSpecificationsAdapter;
     ProductModifierAdapter productModifierAdapter;
+    PicturesAdapter picturesAdapter;
 
     HashMap<String, String> modifiers = new HashMap<>();
 
@@ -102,27 +107,45 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
         binding.addProduct.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.addToCart.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
-
         binding.addToCart.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         binding.back.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         binding.share.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         binding.removeProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         binding.addProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
-
-
+        binding.imageDiscount.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
     }
 
-
     private void binding(Item item) {
-        if (item.getModifier() != null && item.getModifier().size() == 0) {
+        if (item.getModifier().size() == 0) {
             binding.modifierTitle.setVisibility(View.GONE);
         }
-        if (item.getSpecification() != null && item.getSpecification().size() == 0) {
+        if (item.getSpecification().size() == 0) {
             binding.specificationsTitle.setVisibility(View.GONE);
         }
 
+        binding.countItems.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+
+        if (new BigInteger(item.getQuantity()).compareTo(new BigInteger("5")) < 0) {
+            binding.countItems.setText(getString(R.string.itemActivityFew));
+        } else {
+            binding.countItems.setText(getString(R.string.itemActivityMany));
+        }
+
+        if (item.getDiscount().equals("0")) {
+            binding.imageDiscount.setVisibility(View.GONE);
+            binding.discount.setVisibility(View.GONE);
+        } else {
+            binding.discount.setText(String.format("%s %s %%", getText(R.string.product_discount), item.getDiscount()));
+        }
+
+        picturesAdapter = new PicturesAdapter(this, item.getImages());
+        binding.recyclerPictures.setAdapter(picturesAdapter);
+        picturesAdapter.setListener(this::showImage);
+        binding.recyclerPictures.addItemDecoration(new ItemOffsetDecorationStartEnd(
+                (int) getResources().getDimension(R.dimen.dimens_8dp),
+                (int) getResources().getDimension(R.dimen.dimens_16dp)));
+
         productSpecificationsAdapter = new ProductSpecificationsAdapter(this, item.getSpecification());
-        binding.recyclerSpecifications.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerSpecifications.setAdapter(productSpecificationsAdapter);
 
         productModifierAdapter = new ProductModifierAdapter(this, item.getModifier());
@@ -141,8 +164,8 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
             binding.cost.setText(String.format("%s %s", costCurrent.toString(),
                     SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         });
-        binding.recyclerModifier.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerModifier.setAdapter(productModifierAdapter);
+
 
         binding.back.setOnClickListener(v -> finish());
         binding.collapsingToolbar.setTitle(item.getName());
@@ -156,13 +179,7 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
         }
 
         binding.description.setText(item.getDescription());
-        binding.discount.setText(String.format("%s %s %%", getText(R.string.product_discount), item.getDiscount()));
         binding.ratingBar.setRating(Float.parseFloat(item.getRating()));
-
-        binding.lotti.playAnimation();
-        binding.image.setOnClickListener(v -> {
-            showImage(item.getImages().get(0));
-        });
 
         Picasso.get()
                 .load(item.getImages().get(0))
@@ -181,10 +198,10 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
 
         com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView image = view.findViewById(R.id.imageView);
         ProgressBar progressBar = view.findViewById(R.id.progressBar);
+        progressBar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
         android.app.AlertDialog alertDialog = builder.create();
 
         image.setMinimumDpi(60);
-
         image.setBitmapDecoderFactory(new DecoderFactory<ImageDecoder>() {
             @NonNull
             public ImageDecoder make() {

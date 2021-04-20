@@ -1,11 +1,10 @@
-package yelm.io.raccoon.item;
+package yelm.io.raccoon.item.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,12 +24,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import yelm.io.raccoon.R;
+import yelm.io.raccoon.item.adapter.ProductModifierAdapter;
+import yelm.io.raccoon.item.adapter.ProductSpecificationsAdapter;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.databinding.ActivityItemFromNotificationBinding;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.model.Modifier;
 import yelm.io.raccoon.rest.rest_api.RestAPI;

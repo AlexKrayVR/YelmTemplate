@@ -1,4 +1,4 @@
-package yelm.io.raccoon.item;
+package yelm.io.raccoon.item.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;

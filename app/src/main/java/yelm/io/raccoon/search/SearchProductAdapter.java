@@ -2,6 +2,7 @@ package yelm.io.raccoon.search;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +20,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import yelm.io.raccoon.item.ItemActivity;
+import yelm.io.raccoon.item.controller.ItemActivity;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.databinding.ProductItemSearcheableBinding;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
 
 public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdapter.ProductHolder> implements Filterable {
 
@@ -54,7 +54,7 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
             } else {
                 for (Item product : products) {
                     if (product.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
-                        Logging.logDebug( "Filter - request string: " + product.getName().toLowerCase());
+                        Logging.logDebug("Filter - request string: " + product.getName().toLowerCase());
                         filtered.add(product);
                     }
                 }
@@ -73,7 +73,6 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
         }
     };
 
-
     @Override
     public void onBindViewHolder(@NonNull final SearchProductAdapter.ProductHolder holder, final int position) {
         Item current = productsSort.get(position);
@@ -88,16 +87,17 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
             }
         }
 
-        if (!current.getDiscount().equals("0")){
+        if (!current.getDiscount().equals("0")) {
             holder.binding.discountProcent.setText(String.format("- %s %%", current.getDiscount()));
             holder.binding.discountProcent.setVisibility(View.VISIBLE);
+        } else {
+            holder.binding.discountProcent.setVisibility(View.GONE);
         }
 
         holder.binding.priceFinal.setText(String.format("%s %s", bd.toString(),
                 SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
 
         holder.binding.description.setText(current.getName());
-
         holder.binding.weight.setText(String.format("%s / %s", current.getUnitType(), current.getType()));
 
         holder.binding.containerProduct.setOnClickListener(v -> {
@@ -106,7 +106,6 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
             intent.putExtra("item", current);
             context.startActivity(intent);
         });
-
         holder.binding.imageHolder.setAlpha(0f);
         Picasso.get()
                 .load(current.getPreviewImage())
@@ -129,7 +128,9 @@ public class SearchProductAdapter extends RecyclerView.Adapter<SearchProductAdap
     @NonNull
     @Override
     public SearchProductAdapter.ProductHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new SearchProductAdapter.ProductHolder(ProductItemSearcheableBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        ProductHolder productHolder = new ProductHolder(ProductItemSearcheableBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        productHolder.binding.discountProcent.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
+        return productHolder;
     }
 
     @Override

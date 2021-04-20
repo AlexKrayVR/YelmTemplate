@@ -1,7 +1,6 @@
-package yelm.io.raccoon.item;
+package yelm.io.raccoon.item.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -11,7 +10,6 @@ import java.util.List;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.support_stuff.Logging;
 import yelm.io.raccoon.databinding.ModifierProductItemBinding;
-import yelm.io.raccoon.loader.controller.LoaderActivity;
 import yelm.io.raccoon.main.model.Modifier;
 
 public class ProductModifierAdapter extends RecyclerView.Adapter<ProductModifierAdapter.ProductHolder> {

@@ -28,7 +28,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="yelm.io.raccoon.item.ItemFromNotificationActivity"
+            android:name="yelm.io.raccoon.item.controller.ItemFromNotificationActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="yelm.io.raccoon.order.controller.OrderByIDActivity"
@@ -41,10 +41,10 @@
             android:name="yelm.io.raccoon.basket.controller.BasketActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="yelm.io.raccoon.item.ItemsOfOneCategoryActivity"
+            android:name="yelm.io.raccoon.item.controller.ItemsOfOneCategoryActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="yelm.io.raccoon.item.ItemActivity"
+            android:name="yelm.io.raccoon.item.controller.ItemActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="yelm.io.raccoon.main.news.NewsActivity"

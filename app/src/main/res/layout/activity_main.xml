@@ -111,6 +111,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <TextView
                 android:id="@+id/newsTitle"
                 android:layout_width="match_parent"
@@ -127,13 +128,18 @@
                 android:id="@+id/recyclerCards"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="horizontal"
+                 />
 
-            <LinearLayout
-                android:id="@+id/storeFragments"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerMainItems"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_height="wrap_content" />
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -178,9 +184,13 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:visibility="visible"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/title" />
+                    android:orientation="vertical"
+
+                    app:layout_constraintTop_toBottomOf="@+id/title"
+                    app:spanCount="2" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -199,7 +209,7 @@
             android:id="@+id/basket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/address_back_view_blue"
+            android:background="@drawable/back_view"
             android:drawableStart="@drawable/ic_basket_24"
             android:drawablePadding="4dp"
             android:drawableTint="@color/whiteColor"

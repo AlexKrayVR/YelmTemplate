@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import yelm.io.raccoon.R;
 import yelm.io.raccoon.databinding.FragmentProductsByCategoryBinding;
-import yelm.io.raccoon.item.ItemsOfOneCategoryActivity;
+import yelm.io.raccoon.item.controller.ItemsOfOneCategoryActivity;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.adapter.ProductsNewMenuAdapter;
 import yelm.io.raccoon.main.adapter.ProductsNewMenuSquareImageAdapter;

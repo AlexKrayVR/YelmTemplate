@@ -11,12 +11,15 @@
     <string name="product_specifications">Характеристики</string>
     <string name="product_modifier">Дополнения:</string>
     <string name="button_to_basket">В корзину</string>
+    <string name="itemActivityMany">Много</string>
+    <string name="itemActivityFew">Мало</string>
     <string name="productNewActivityAddedMulti">добавлены</string>
     <string name="productNewActivityAddedToBasket">в корзину</string>
     <string name="productNewActivityAddedOne">добавлен</string>
     <string name="productNewActivity">добавлены</string>
     <string name="productNewActivityPC">шт.</string>
     <string name="productActivityAddToCart">Добавить в корзину</string>
+    <string name="itemActivityPictures">Фотографии</string>
 
     <!-- AddressPickupChooseActivity -->
     <string name="AddressPickupChooseActivitySelectPickupPoint">Выберите пункт выдачи</string>
@@ -46,7 +49,7 @@
 
     <!-- SearchActivity -->
     <string name="product_search">Поиск товаров</string>
-    <string name="product_search_hint">Поиск...</string>
+    <string name="product_search_hint">Поиск…</string>
 
     <!-- NewsActivity -->
     <string name="newsActivityShare">Поделиться</string>

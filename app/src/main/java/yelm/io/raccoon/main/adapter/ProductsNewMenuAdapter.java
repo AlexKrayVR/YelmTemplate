@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import yelm.io.raccoon.item.ItemActivity;
+import yelm.io.raccoon.item.controller.ItemActivity;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.Logging;
@@ -40,7 +40,7 @@ import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.databinding.NewMenuProductItemBinding;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.model.Modifier;
-import yelm.io.raccoon.item.ProductModifierAdapter;
+import yelm.io.raccoon.item.adapter.ProductModifierAdapter;
 
 public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenuAdapter.ProductHolder> implements Filterable {
     private Context context;
@@ -95,13 +95,13 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
         productHolder.binding.priceFinal.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         productHolder.binding.removeProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         productHolder.binding.addProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        productHolder.binding.discountProcent.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         return productHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ProductsNewMenuAdapter.ProductHolder holder, final int position) {
         Item current = productsSort.get(position);
-
         //set count of item in basket into layout
         List<BasketCart> listBasketCartByItemID = Common.basketCartRepository.getListBasketCartByItemID(current.getId());
         if (listBasketCartByItemID != null && listBasketCartByItemID.size() != 0) {
@@ -127,6 +127,7 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
             holder.binding.priceFinal.setText(String.format("%s %s", bd.toString(),
                     SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
             holder.binding.priceStart.setVisibility(View.GONE);
+            holder.binding.discountProcent.setVisibility(View.GONE);
         } else {
             holder.binding.discountProcent.setVisibility(View.VISIBLE);
             holder.binding.discountProcent.setText(String.format("- %s %%", current.getDiscount()));
@@ -165,7 +166,7 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
                 }
                 if (countOfAllProducts.compareTo(new BigDecimal(current.getQuantity())) >= 0) {
                     showToast(context.getString(R.string.productsNotAvailable) +
-                            " " + listCartsByID.get(0).quantity +" "+ context.getString(R.string.basketActivityPC));
+                            " " + listCartsByID.get(0).quantity + " " + context.getString(R.string.basketActivityPC));
                     return;
                 }
 
@@ -175,7 +176,7 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
                             basketCart.count = new BigDecimal(basketCart.count).add(new BigDecimal("1")).toString();
                             holder.binding.countItemInCart.setText(String.format("%s", countOfAllProducts.add(new BigDecimal("1"))));
                             Common.basketCartRepository.updateBasketCart(basketCart);
-                            Logging.logDebug( "Method add BasketCart to Basket. No modifiers - listCartsByID !=null:  " + basketCart.toString());
+                            Logging.logDebug("Method add BasketCart to Basket. No modifiers - listCartsByID !=null:  " + basketCart.toString());
                             return;
                         }
                     }
@@ -198,7 +199,7 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
                 cartItem.isExist = true;
                 cartItem.quantityType = current.getUnitType();
                 Common.basketCartRepository.insertToBasketCart(cartItem);
-                Logging.logDebug( "Method add BasketCart to Basket. No modifiers - listCartsByID == null:  " + cartItem.toString());
+                Logging.logDebug("Method add BasketCart to Basket. No modifiers - listCartsByID == null:  " + cartItem.toString());
             }
         });
 
@@ -214,7 +215,7 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
                 holder.binding.addProduct.setVisibility(View.VISIBLE);
             }
 
-            if ( listCartsByID.size() != 0) {
+            if (listCartsByID.size() != 0) {
                 if (listCartsByID.size() == 1) {
 
                     BasketCart cartItem = listCartsByID.get(0);
@@ -282,7 +283,7 @@ public class ProductsNewMenuAdapter extends RecyclerView.Adapter<ProductsNewMenu
             } else {
                 modifiers.remove(modifier.getName());
             }
-            Logging.logDebug( "modifiers: " + modifiers.toString());
+            Logging.logDebug("modifiers: " + modifiers.toString());
 
             BigDecimal costCurrent = new BigDecimal(bd.toString());
             for (Map.Entry<String, String> modifierEntry : modifiers.entrySet()) {

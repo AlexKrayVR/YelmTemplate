@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".item.ItemsOfOneCategoryActivity">
+    tools:context=".item.controller.ItemsOfOneCategoryActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutTitle"
@@ -19,7 +19,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/address_back_view_blue"
+            android:background="@drawable/back_view"
             android:padding="6dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -69,7 +69,7 @@
         android:id="@+id/basket"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/address_back_view_blue"
+        android:background="@drawable/back_view"
         android:drawableStart="@drawable/ic_basket_24"
         android:drawablePadding="4dp"
         android:drawableTint="@color/whiteColor"

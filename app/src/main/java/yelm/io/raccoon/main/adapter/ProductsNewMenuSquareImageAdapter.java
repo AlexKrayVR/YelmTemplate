@@ -32,11 +32,11 @@ import yelm.io.raccoon.R;
 import yelm.io.raccoon.database_new.basket_new.BasketCart;
 import yelm.io.raccoon.database_new.Common;
 import yelm.io.raccoon.databinding.NewMenuProductItemSquareImageBinding;
-import yelm.io.raccoon.item.ItemActivity;
+import yelm.io.raccoon.item.controller.ItemActivity;
 import yelm.io.raccoon.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.raccoon.main.model.Item;
 import yelm.io.raccoon.main.model.Modifier;
-import yelm.io.raccoon.item.ProductModifierAdapter;
+import yelm.io.raccoon.item.adapter.ProductModifierAdapter;
 import yelm.io.raccoon.notification.CustomToast;
 import yelm.io.raccoon.rest.query.RestMethods;
 import yelm.io.raccoon.support_stuff.Logging;
@@ -98,6 +98,7 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
         productHolder.binding.priceFinal.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         productHolder.binding.removeProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         productHolder.binding.addProduct.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
+        productHolder.binding.discountProcent.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         return productHolder;
     }
 
@@ -131,6 +132,7 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
             holder.binding.priceFinal.setText(String.format("%s %s", bd.toString(),
                     SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
             holder.binding.priceStart.setVisibility(View.GONE);
+            holder.binding.discountProcent.setVisibility(View.GONE);
         } else {
             holder.binding.discountProcent.setVisibility(View.VISIBLE);
             holder.binding.discountProcent.setText(String.format("- %s %%", current.getDiscount()));
@@ -168,7 +170,7 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
                     holder.binding.addProduct.setVisibility(View.GONE);
                 }
                 if (countOfAllProducts.compareTo(new BigDecimal(current.getQuantity())) >= 0) {
-                    CustomToast.showStatus(context,context.getString(R.string.productsNotAvailable) +
+                    CustomToast.showStatus(context, context.getString(R.string.productsNotAvailable) +
                             " " + listCartsByID.get(0).quantity + " " + context.getString(R.string.basketActivityPC));
                     return;
                 }
@@ -250,7 +252,6 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
                 }
             }
         });
-
 
         Picasso.get()
                 .load(current.getPreviewImage())
@@ -405,6 +406,4 @@ public class ProductsNewMenuSquareImageAdapter extends RecyclerView.Adapter<Prod
             this.binding = binding;
         }
     }
-
-
 }

@@ -1,4 +1,4 @@
-package yelm.io.raccoon.item;
+package yelm.io.raccoon.item.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -30,10 +30,6 @@ public class ProductSpecificationsAdapter extends RecyclerView.Adapter<ProductSp
         Specification current = specifications.get(position);
         holder.binding.name.setText(current.getName());
         holder.binding.value.setText(current.getValue());
-
-
-
-
 
     }
 
