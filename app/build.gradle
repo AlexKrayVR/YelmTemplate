@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "yelm.io.raccoon"
+        applicationId "yelm.io.extra_delicate"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
@@ -25,6 +25,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+
 
     buildTypes {
         release {

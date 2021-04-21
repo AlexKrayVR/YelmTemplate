@@ -1,33 +1,34 @@
 {
   "project_info": {
-    "project_number": "414625349088",
-    "project_id": "raccoon-f60b4",
-    "storage_bucket": "raccoon-f60b4.appspot.com"
+    "project_number": "949396352534",
+    "firebase_url": "https://extra-delicate.firebaseio.com",
+    "project_id": "extra-delicate",
+    "storage_bucket": "extra-delicate.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:414625349088:android:c00ef197f4700af89c7f85",
+        "mobilesdk_app_id": "1:949396352534:android:1832f591c7cdee44c80f37",
         "android_client_info": {
-          "package_name": "yelm.io.raccoon"
+          "package_name": "yelm.io.extra_delicate"
         }
       },
       "oauth_client": [
         {
-          "client_id": "414625349088-o4l0qb0hjrt75a3q9amltsjk3sn8i2c5.apps.googleusercontent.com",
+          "client_id": "949396352534-f8d1ud6ova0ge0cskh5u58q8bboh2eqe.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCilI5FxIvmtJJOrzA7Hqp7NbFyqxszm1Y"
+          "current_key": "AIzaSyATsjIhrWbMdx8_Ddqgv5ia10yif-2hm4s"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "414625349088-o4l0qb0hjrt75a3q9amltsjk3sn8i2c5.apps.googleusercontent.com",
+              "client_id": "949396352534-f8d1ud6ova0ge0cskh5u58q8bboh2eqe.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

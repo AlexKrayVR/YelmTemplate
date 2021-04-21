@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp">
 
-        <yelm.io.raccoon.support_stuff.ImageCornerRadius
+        <yelm.io.extra_delicate.support_stuff.ImageCornerRadius
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="0dp"
