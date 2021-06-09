@@ -6,6 +6,15 @@
 
     <string name="errorConnectedToServer">Ошибка соединения с сервером. Попробуйте позже</string>
 
+    <!-- Account-->
+    <string name="myAccount">Мой аккаунт</string>
+    <string name="phoneNumber">Номер телефона</string>
+    <string name="loginContinue">Продолжить</string>
+    <string name="accountEnter">Войти</string>
+    <string name="loginDescription">Мы отправим Вам смс код, чтобы подтвердить Ваш аккаунт. После авторизации Вам будут доступны все функции программы лояльности.</string>
+    <string name="enterCorrectPhoneNumber">Введите корректный номер телефона</string>
+    <string name="verificationDescription">Мы отправили Вам смс код, на указанный Вами номер телефона. Введите данный код в поле ввода ниже. Никому не сообщайте данный код.</string>
+
     <!-- ItemActivity -->
     <string name="product_discount">Скидка</string>
     <string name="product_specifications">Характеристики</string>
@@ -321,5 +330,7 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -69,7 +69,6 @@ import yelm.io.extra_delicate.rest.rest_api.RestApiChat;
 import yelm.io.extra_delicate.rest.client.RetrofitClientChat;
 import yelm.io.extra_delicate.support_stuff.Logging;
 
-
 public class ChatActivity extends AppCompatActivity implements PickImageBottomSheet.BottomSheetShopListener, PickImageBottomSheet.CameraListener {
 
     ActivityChatBinding binding;
@@ -141,14 +140,14 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
         public void call(final Object... args) {
             ChatActivity.this.runOnUiThread(() -> {
                 JSONObject data = (JSONObject) args[0];
-                Logging.logDebug( "data: " + data.toString());
+                Logging.logDebug("data: " + data.toString());
 
                 if (data.has("role")) {
                     try {
                         String role = data.getString("role");
-                        Logging.logDebug( "role: " + role);
+                        Logging.logDebug("role: " + role);
                         String type = data.getString("type");
-                        Logging.logDebug( "type: " + type);
+                        Logging.logDebug("type: " + type);
                         if (data.getString("type").equals("connected")) {
                             binding.chatStatus.setText(getText(R.string.chatActivityOnline));
                             binding.chatStatus.setTextColor(getResources().getColor(R.color.colorAcceptOrder));
@@ -158,7 +157,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Logging.logDebug( "JSONException: " + e.getMessage());
+                        Logging.logDebug("JSONException: " + e.getMessage());
                     }
                     return;
                 }
@@ -225,30 +224,31 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Logging.logDebug( "JSONException: " + e.getMessage());
+                    Logging.logDebug("JSONException: " + e.getMessage());
                 }
             });
         }
     };
 
     private String ConvertingImageToBase64(Bitmap bitmap) {
-        Logging.logDebug( "ConvertingImageToBase64()");
+        Logging.logDebug("ConvertingImageToBase64()");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 40, baos);
         byte[] imageBytes = baos.toByteArray();
         bitmap.recycle();
-        Logging.logDebug( "imageBytes - length " + imageBytes.length);
+        Logging.logDebug("imageBytes - length " + imageBytes.length);
         String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        Logging.logDebug( "Base64.encodeToString - imageString.length " + imageString.length());
-
-        //byte[] byteArray = Base64.decode(imageString, Base64.DEFAULT);
-        //Log.d(Logging.debug, "Arrays.toString(byteArray) " + Arrays.toString(byteArray));
-        //byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
-        //Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        // binding.imageView.setImageBitmap(decodedByte);
-
+        Logging.logDebug("Base64.encodeToString - imageString.length " + imageString.length());
         return imageString;
     }
+
+
+    //byte[] byteArray = Base64.decode(imageString, Base64.DEFAULT);
+    //Log.d(Logging.debug, "Arrays.toString(byteArray) " + Arrays.toString(byteArray));
+    //byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
+    //Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    // binding.imageView.setImageBitmap(decodedByte);
+
 
     private void getChatHistory() {
         RetrofitClientChat.
@@ -484,6 +484,9 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             if (data != null) {
+                if (data.getExtras() == null) {
+                    return;
+                }
                 Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                 Logging.logDebug("Bitmap: " + bitmap.getByteCount());
                 new Thread(() -> socketSendPhoto(bitmap)).start();
@@ -491,7 +494,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
-                String fileName = String.format(Locale.getDefault(),"IMG_%d.jpg", System.currentTimeMillis());
+                String fileName = String.format(Locale.getDefault(), "IMG_%d.jpg", System.currentTimeMillis());
                 File outFile = new File(dir, fileName);
                 FileOutputStream fileOutputStream = null;
                 try {
@@ -539,8 +542,8 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
     public void onSendPictures(HashMap<Integer, String> picturesMap) {
         Logging.logDebug("onSendPictures()");
         for (Map.Entry<Integer, String> picture : picturesMap.entrySet()) {
-            Logging.logDebug( "picture.getKey(): " + picture.getKey());
-            Logging.logDebug( "picture.getValue(): " + picture.getValue());
+            Logging.logDebug("picture.getKey(): " + picture.getKey());
+            Logging.logDebug("picture.getValue(): " + picture.getValue());
             Calendar current = GregorianCalendar.getInstance();
             chatContentList.add(new ChatContent(
                     SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID),
@@ -571,7 +574,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
             picturesArray.put(pictureObject);
             jsonObjectItem.put("room_id", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID));
             jsonObjectItem.put("from_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID));
-            jsonObjectItem.put("to_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID) );
+            jsonObjectItem.put("to_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID));
             jsonObjectItem.put("message", "");
             jsonObjectItem.put("items", "{}");
             jsonObjectItem.put("type", "images");
@@ -593,7 +596,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
             picturesArray.put(pictureObject);
             jsonObjectItem.put("room_id", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID));
             jsonObjectItem.put("from_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID));
-            jsonObjectItem.put("to_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID) );
+            jsonObjectItem.put("to_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID));
             jsonObjectItem.put("message", "");
             jsonObjectItem.put("items", "{}");
             jsonObjectItem.put("type", "images");//"type"-"images/message"
@@ -611,7 +614,7 @@ public class ChatActivity extends AppCompatActivity implements PickImageBottomSh
         try {
             jsonObjectItem.put("room_id", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.ROOM_CHAT_ID));
             jsonObjectItem.put("from_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CLIENT_CHAT_ID));
-            jsonObjectItem.put("to_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID) );
+            jsonObjectItem.put("to_whom", SharedPreferencesSetting.getDataString(SharedPreferencesSetting.SHOP_CHAT_ID));
             jsonObjectItem.put("message", message);
             jsonObjectItem.put("type", "message");//"type"-"images/message"
             jsonObjectItem.put("platform", RestAPI.PLATFORM_NUMBER);

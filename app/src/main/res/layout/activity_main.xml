@@ -90,12 +90,29 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="2dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="10dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_chat" />
+
+        <ImageButton
+            android:id="@+id/userLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginEnd="2dp"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:padding="10dp"
+            android:paddingStart="5dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="8dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_chat" />
+            app:srcCompat="@drawable/ic_person_24" />
 
     </LinearLayout>
 

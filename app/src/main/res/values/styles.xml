@@ -27,6 +27,14 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+    <style name="TextStyleCode" parent="">
+    <item name="android:fontFamily">@font/sf_prodisplay_regular</item>
+    <item name="android:includeFontPadding">false</item>
+    <item name="android:textColor">@color/colorText</item>
+    <item name="android:textSize">16sp</item>
+    </style>
+
+
     <!--for coordinator layout in NewsActivity -->
     <style name="CollapsingTextAppearance" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textSize">22sp</item>

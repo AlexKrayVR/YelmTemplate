@@ -68,6 +68,7 @@ import yelm.io.extra_delicate.R;
 import yelm.io.extra_delicate.database.Common;
 import yelm.io.extra_delicate.main.news.NewsAdapter;
 import yelm.io.extra_delicate.support_stuff.ItemOffsetDecorationRight;
+import yelm.io.extra_delicate.user_login.LoginHostActivity;
 
 public class MainActivity extends AppCompatActivity implements AddressesBottomSheet.AddressesBottomSheetListener {
 
@@ -160,6 +161,9 @@ public class MainActivity extends AppCompatActivity implements AddressesBottomSh
                 binding.categoryExpand.setRotation(90);
             }
         });
+
+        binding.userLogin.setOnClickListener(v -> startActivity(new Intent(this, LoginHostActivity.class)));
+
     }
 
     private void callAddressesBottomSheet() {

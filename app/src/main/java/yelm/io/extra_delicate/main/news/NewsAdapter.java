@@ -36,23 +36,23 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     @Override
     public void onBindViewHolder(@NonNull NewsAdapter.NewsHolder holder, int position) {
         News currentNews = news.get(position);
-        holder.binding.name.setText(currentNews.getTitle());
-        if (currentNews.getTitle().trim().isEmpty()) {
+        //holder.binding.name.setText(currentNews.getTitle());
+       // if (currentNews.getTitle().trim().isEmpty()) {
             Picasso.get()
                     .load(currentNews.getPreviewImage())
                     .noPlaceholder()
                     .centerCrop()
                     .resize(400, 0)
                     .into(holder.binding.image);
-        } else {
-            Picasso.get()
-                    .load(currentNews.getPreviewImage())
-                    .noPlaceholder()
-                    .centerCrop()
-                    .resize(400, 0)
-                    .transform(new GradientTransformation(context))
-                    .into(holder.binding.image);
-        }
+//        } else {
+//            Picasso.get()
+//                    .load(currentNews.getPreviewImage())
+//                    .noPlaceholder()
+//                    .centerCrop()
+//                    .resize(400, 0)
+//                    .transform(new GradientTransformation(context))
+//                    .into(holder.binding.image);
+//        }
 
         holder.binding.image.setOnClickListener(v -> {
             RestMethods.sendStatistic("open_news");

@@ -143,7 +143,9 @@ public class ItemActivity extends AppCompatActivity implements AppBarLayout.OnOf
 
         picturesAdapter = new PicturesAdapter(this, item.getImages());
         binding.recyclerPictures.setAdapter(picturesAdapter);
-        picturesAdapter.setListener(this::showImage);
+        picturesAdapter.setListener((String imageUrl) -> {
+            showImage(imageUrl);
+        });
         binding.recyclerPictures.addItemDecoration(new ItemOffsetDecorationStartEnd(
                 (int) getResources().getDimension(R.dimen.dimens_8dp),
                 (int) getResources().getDimension(R.dimen.dimens_16dp)));

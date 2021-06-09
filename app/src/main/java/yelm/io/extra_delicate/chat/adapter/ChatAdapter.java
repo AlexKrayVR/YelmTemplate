@@ -49,6 +49,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import yelm.io.extra_delicate.R;
 import yelm.io.extra_delicate.chat.model.ChatContent;
@@ -535,7 +536,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             Logging.logDebug("dir.getAbsolutePath()" + dir.getAbsolutePath());
 
-            String fileName = String.format("IMG_%d.jpg", System.currentTimeMillis());
+            String fileName = String.format(Locale.getDefault(),"IMG_%d.jpg", System.currentTimeMillis());
             File outFile = new File(dir, fileName);
 
             try {

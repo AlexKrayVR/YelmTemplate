@@ -45,6 +45,7 @@
             android:visibility="gone" />
     </LinearLayout>
 
+
     <View
         android:id="@+id/separator"
         android:layout_width="0dp"
@@ -53,7 +54,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
     <androidx.cardview.widget.CardView
         android:id="@+id/imageCard"

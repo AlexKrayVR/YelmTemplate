@@ -24,12 +24,12 @@ import yelm.io.extra_delicate.main.news.News;
 import yelm.io.extra_delicate.order.model.PriceConverterResponse;
 import yelm.io.extra_delicate.order.model.PromoCodeClass;
 import yelm.io.extra_delicate.order.model.UserOrderPOJO;
+import yelm.io.extra_delicate.user_login.model.UserAuth;
 
 public interface RestAPI {
 
     String URL_API_MAIN = "https://rest.yelm.io/api/mobile/";
-    String PLATFORM_NUMBER = "5f86b4672f0dc9.24104173"; //extra delicate
-    //String PLATFORM_NUMBER = "5f914074cfffa1.42845512"; //поваренок
+    String PLATFORM_NUMBER = "60855ea61f7ec0.37350146";
 
     @FormUrlEncoded
     @POST("user?")
@@ -204,4 +204,14 @@ public interface RestAPI {
             @Field("login") String login,
             @Field("type") String type
     );
+
+    @FormUrlEncoded
+    @POST("auth?")
+    Call<UserAuth> auth(
+            @Field("platform") String platform,
+            @Field("login") String login,
+            @Field("phone") String phone
+    );
+
+
 }
