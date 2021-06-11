@@ -92,7 +92,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private String transactionID = "-1";
     private String order = "";
-    private String userID = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME);
+    private String userID = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN);
     private String currency = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY);
     private String countCutlery = "1";
     private static final String ENTRANCE = "ENTRANCE";
@@ -191,7 +191,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                     .create(RestAPI.class)
                     .getPromoCode(binding.promoCode.getText().toString().trim(),
                             RestAPI.PLATFORM_NUMBER,
-                            SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME)
+                            SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN)
                     ).enqueue(new Callback<PromoCodeClass>() {
                 @Override
                 public void onResponse(@NotNull Call<PromoCodeClass> call, @NotNull Response<PromoCodeClass> response) {

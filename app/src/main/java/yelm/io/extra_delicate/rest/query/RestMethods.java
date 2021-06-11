@@ -20,7 +20,7 @@ public class RestMethods {
                 create(RestAPI.class).
                 sendStatistic(
                         RestAPI.PLATFORM_NUMBER,
-                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN),
                         type).
                 enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -39,7 +39,7 @@ public class RestMethods {
     }
 
     public static void sendRegistrationToServer(String s) {
-        String user = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME);
+        String user = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN);
         Logging.logDebug("Method sendRegistrationToServer()");
         RetrofitClient
                 .getClient(RestAPI.URL_API_MAIN)

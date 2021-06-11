@@ -1,6 +1,6 @@
-package yelm.io.extra_delicate.user_login;
+package yelm.io.extra_delicate.user_account;
 
-import yelm.io.extra_delicate.user_login.model.UserAuth;
+import yelm.io.extra_delicate.user_account.model.UserAuth;
 
 public interface HostLogin {
 
@@ -8,7 +8,7 @@ public interface HostLogin {
 
     void openVerificationFragment(UserAuth userAuth);
 
-    void openUserFragment();
+    void openAccountFragment();
 
     void showToast(int message);
     void back();

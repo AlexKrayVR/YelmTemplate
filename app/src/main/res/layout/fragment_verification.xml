@@ -92,10 +92,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/verification"
+        android:id="@+id/enter"
         style="@style/ProDisplayTextStyle"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/main_button_selector"
@@ -104,7 +104,6 @@
         android:text="@string/accountEnter"
         android:textColor="@color/whiteColor"
         android:textSize="18sp"
-        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideLine"
         app:layout_constraintTop_toBottomOf="@+id/codeLayout" />

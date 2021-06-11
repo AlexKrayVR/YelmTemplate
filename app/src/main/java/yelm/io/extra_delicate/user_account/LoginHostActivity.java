@@ -1,18 +1,23 @@
-package yelm.io.extra_delicate.user_login;
+package yelm.io.extra_delicate.user_account;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import java.util.List;
 
 import yelm.io.extra_delicate.databinding.ActivityLoginHostBinding;
-import yelm.io.extra_delicate.item.controller.ItemActivity;
-import yelm.io.extra_delicate.user_login.model.UserAuth;
+import yelm.io.extra_delicate.loader.app_settings.SharedPreferencesSetting;
+import yelm.io.extra_delicate.user_account.account.AccountFragment;
+import yelm.io.extra_delicate.user_account.login.LoginFragment;
+import yelm.io.extra_delicate.user_account.model.UserAuth;
+import yelm.io.extra_delicate.user_account.verification.VerificationFragment;
 
 public class LoginHostActivity extends AppCompatActivity implements HostLogin {
 
@@ -25,7 +30,18 @@ public class LoginHostActivity extends AppCompatActivity implements HostLogin {
         binding = ActivityLoginHostBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        openLoginFragment();
+        if (SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME).isEmpty()) {
+            openLoginFragment();
+            receiveSMSPermission();
+        } else {
+            openAccountFragment();
+        }
+    }
+
+     void receiveSMSPermission(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, 5);
+        }
     }
 
     @Override
@@ -38,13 +54,15 @@ public class LoginHostActivity extends AppCompatActivity implements HostLogin {
         }
     }
 
-
     @Override
     public void openLoginFragment() {
         LoginFragment fragment = LoginFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        transaction.add(binding.container.getId(), fragment).commit();
+        transaction.
+                add(binding.container.getId(), fragment)
+                .addToBackStack("login")
+                .commit();
     }
 
     @Override
@@ -52,12 +70,20 @@ public class LoginHostActivity extends AppCompatActivity implements HostLogin {
         VerificationFragment fragment = VerificationFragment.newInstance(userAuth);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        transaction.add(binding.container.getId(), fragment).commit();
+        transaction.add(binding.container.getId(), fragment)
+                .addToBackStack("verification")
+                .commit();
     }
 
     @Override
-    public void openUserFragment() {
-
+    public void openAccountFragment() {
+        AccountFragment fragment = AccountFragment.newInstance();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.
+                add(binding.container.getId(), fragment)
+                .addToBackStack("account")
+                .commit();
     }
 
     @Override
@@ -74,5 +100,9 @@ public class LoginHostActivity extends AppCompatActivity implements HostLogin {
         onBackPressed();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
 }

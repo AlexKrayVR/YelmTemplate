@@ -1,4 +1,4 @@
-package yelm.io.extra_delicate.user_login.model;
+package yelm.io.extra_delicate.user_account.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

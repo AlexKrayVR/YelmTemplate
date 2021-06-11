@@ -24,7 +24,7 @@ public class PayApi {
         args.setCardCryptogramPacket(cardCryptogramPacket); // Криптограмма платежных данных (Обязательный)
         args.setInvoiceId(""); // Номер счета или заказа в вашей системе (необязательный)
         args.setDescription(""); // Описание оплаты в свободной форме (необязательный)
-        args.setAccountId(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME)); // Идентификатор пользователя в вашей системе (необязательный)
+        args.setAccountId(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN)); // Идентификатор пользователя в вашей системе (необязательный)
         args.setJsonData(order); // Любые другие данные, которые будут связаны с транзакцией (необязательный)
         args.setType(type); // Payment Type
 
@@ -47,7 +47,7 @@ public class PayApi {
 
         args.setInvoiceId(""); // Номер счета или заказа в вашей системе (необязательный)
         args.setDescription(""); // Описание оплаты в свободной форме (необязательный)
-        args.setAccountId(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME)); // Идентификатор пользователя в вашей системе (необязательный)
+        args.setAccountId(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN)); // Идентификатор пользователя в вашей системе (необязательный)
         args.setJsonData(order); // Любые другие данные, которые будут связаны с транзакцией (необязательный)
         args.setType(type); // Payment Type
 

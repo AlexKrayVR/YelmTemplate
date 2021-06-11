@@ -24,12 +24,30 @@ import yelm.io.extra_delicate.main.news.News;
 import yelm.io.extra_delicate.order.model.PriceConverterResponse;
 import yelm.io.extra_delicate.order.model.PromoCodeClass;
 import yelm.io.extra_delicate.order.model.UserOrderPOJO;
-import yelm.io.extra_delicate.user_login.model.UserAuth;
+import yelm.io.extra_delicate.user_account.model.UserAuth;
 
 public interface RestAPI {
 
     String URL_API_MAIN = "https://rest.yelm.io/api/mobile/";
     String PLATFORM_NUMBER = "60855ea61f7ec0.37350146";
+
+
+    //TODO api???
+    @FormUrlEncoded
+    @POST("user-data ?")
+    Call<ResponseBody> notificationsOnOff(
+            @Query("login") String login,
+            @Query("platform") String platform,
+            @Field("name") String name,
+            @Field("notification") String notification);
+
+    //TODO api???
+    @GET("user?")
+    Call<ResponseBody> getUserData(@Query("platform") String platform,
+                                             @Query("language_code") String languageCode,
+                                             @Query("region_code") String regionCode
+    );
+
 
     @FormUrlEncoded
     @POST("user?")

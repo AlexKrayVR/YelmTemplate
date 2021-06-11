@@ -1,4 +1,4 @@
-package yelm.io.extra_delicate.user_login;
+package yelm.io.extra_delicate.user_account.login;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -25,7 +25,8 @@ import yelm.io.extra_delicate.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.extra_delicate.rest.client.RetrofitClient;
 import yelm.io.extra_delicate.rest.rest_api.RestAPI;
 import yelm.io.extra_delicate.support_stuff.Logging;
-import yelm.io.extra_delicate.user_login.model.UserAuth;
+import yelm.io.extra_delicate.user_account.HostLogin;
+import yelm.io.extra_delicate.user_account.model.UserAuth;
 
 
 public class LoginFragment extends Fragment {
@@ -44,8 +45,6 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(getLayoutInflater(), container, false);
-
-
         return binding.getRoot();
     }
 
@@ -54,7 +53,6 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setCustomColor();
-
 
         Picasso.get()
                 .load(R.drawable.app_icon)
@@ -80,7 +78,7 @@ public class LoginFragment extends Fragment {
                 create(RestAPI.class).
                 auth(
                         RestAPI.PLATFORM_NUMBER,
-                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME),
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN),
                         phone).
                 enqueue(new Callback<UserAuth>() {
                     @Override
@@ -89,6 +87,7 @@ public class LoginFragment extends Fragment {
                         if (!response.isSuccessful()) {
                             Logging.logError("Method userAuth() - response is not successful." +
                                     "Code: " + response.code() + "Message: " + response.message());
+
                         } else {
                             hostLogin.openVerificationFragment(response.body());
                         }
@@ -109,7 +108,6 @@ public class LoginFragment extends Fragment {
     private void showLoading() {
         binding.progress.setVisibility(View.VISIBLE);
     }
-
 
     private void setCustomColor() {
         binding.back.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));

@@ -84,7 +84,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
     private String order = "";
     private String discountType = "";
 
-    private String userID = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME);
+    private String userID = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN);
     private String currency = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY);
     private String transactionID = "0";
     UserAddress currentAddress;

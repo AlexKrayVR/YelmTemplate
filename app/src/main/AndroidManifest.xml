@@ -16,8 +16,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <uses-feature android:name="android.hardware.camera.any" />
+
 
     <application
         android:allowBackup="true"
@@ -29,7 +31,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".user_login.LoginHostActivity"
+            android:name=".user_account.LoginHostActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".item.controller.ItemFromNotificationActivity"
@@ -104,6 +106,9 @@
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
+
+
+
     </application>
 
 </manifest>

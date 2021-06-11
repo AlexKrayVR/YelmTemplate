@@ -68,7 +68,7 @@ import yelm.io.extra_delicate.R;
 import yelm.io.extra_delicate.database.Common;
 import yelm.io.extra_delicate.main.news.NewsAdapter;
 import yelm.io.extra_delicate.support_stuff.ItemOffsetDecorationRight;
-import yelm.io.extra_delicate.user_login.LoginHostActivity;
+import yelm.io.extra_delicate.user_account.LoginHostActivity;
 
 public class MainActivity extends AppCompatActivity implements AddressesBottomSheet.AddressesBottomSheetListener {
 

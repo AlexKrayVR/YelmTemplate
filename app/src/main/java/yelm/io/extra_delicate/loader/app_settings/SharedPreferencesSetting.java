@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 
 public class SharedPreferencesSetting {
 
+    public static final String USER_LOGIN = "USER_LOGIN";
     public static final String USER_NAME = "USER_NAME";
+    public static final String USER_BALANCE = "USER_BALANCE";
 
     //app settings
     public static final String MIN_PRICE_FOR_FREE_DELIVERY = "MIN_PRICE_FOR_FREE_DELIVERY";

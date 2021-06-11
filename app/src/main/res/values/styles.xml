@@ -110,6 +110,22 @@
 
     </style>
 
+
+<!--    <style name="NotificationsSwitch" parent="Theme.AppCompat.Light">-->
+<!--        &lt;!&ndash; активное состояние (30% прозрачности для фона) &ndash;&gt;-->
+<!--        <item name="colorControlActivated">@color/mainThemeColor</item>-->
+<!--<item name="android:fontFamily"-->
+<!--        &lt;!&ndash; неактивное состояние ползунка &ndash;&gt;-->
+<!--        <item name="colorSwitchThumbNormal">@color/white</item>-->
+<!--        &lt;!&ndash;        <item name="colorAccent">#e91e63</item>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;        <item name="trackTint">@color/color26DF252C</item>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;         цвет дорожки для неактивного состояния (30% прозрачности)&ndash;&gt;-->
+<!--        <item name="android:colorForeground">@color/mainThemeColor</item>-->
+<!--    </style>-->
+
+
     <style name="newsCardStyle" parent="Theme.MaterialComponents.Light">
         <item name="cardCornerRadius">12dp</item>
         <item name="cardElevation">6dp</item>

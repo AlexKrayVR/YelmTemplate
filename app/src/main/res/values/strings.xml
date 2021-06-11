@@ -6,6 +6,7 @@
 
     <string name="errorConnectedToServer">Ошибка соединения с сервером. Попробуйте позже</string>
 
+
     <!-- Account-->
     <string name="myAccount">Мой аккаунт</string>
     <string name="phoneNumber">Номер телефона</string>
@@ -14,6 +15,21 @@
     <string name="loginDescription">Мы отправим Вам смс код, чтобы подтвердить Ваш аккаунт. После авторизации Вам будут доступны все функции программы лояльности.</string>
     <string name="enterCorrectPhoneNumber">Введите корректный номер телефона</string>
     <string name="verificationDescription">Мы отправили Вам смс код, на указанный Вами номер телефона. Введите данный код в поле ввода ниже. Никому не сообщайте данный код.</string>
+    <string name="codeIncorrect">Код неверен</string>
+    <string name="enterCode">Введите код</string>
+    <string name="userStatus">Аккаунт проверен</string>
+    <string name="user">Пользователь</string>
+    <string name="shop">Магазин</string>
+    <string name="howSpendMoney">Как потратить бонусы?</string>
+    <string name="supportChat">Чат с поддержкой</string>
+    <string name="myOffers">Мои заказы</string>
+    <string name="signOut">Выйти из аккаунта</string>
+    <string name="notifications">Уведомления</string>
+    <string name="changeName">Изменить имя</string>
+    <string name="saveName">Сохранить</string>
+    <string name="yourName">Имя</string>
+    <string name="serverError">Ошиба соединения с сервером, повторите попытку позже</string>
+
 
     <!-- ItemActivity -->
     <string name="product_discount">Скидка</string>
@@ -332,5 +348,10 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- ContentDescription -->
+    <string name="contentDescriptionBack">Назад</string>
+
+
 
 </resources>

@@ -6,7 +6,7 @@
 
     <color name="colorButtonPressed">#373737</color>
 
-    <color name="mainThemeColor">#000000</color>
+    <color name="mainThemeColor">#299316</color>
 
     <color name="colorSeparatorLogistic">#D1D1D1</color>
 
@@ -49,5 +49,10 @@
     <color name="redColor">#EB5757</color>
 
     <color name="colorBottomSheetTopDecorator">#BCBABA</color>
+
+
+    <color name="gradientAccountStart">#C6E9D0</color>
+    <color name="gradientAccountEnd">#C6E4DC</color>
+
 
 </resources>

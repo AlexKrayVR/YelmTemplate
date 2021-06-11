@@ -60,11 +60,11 @@ public class LoaderActivity extends AppCompatActivity {
      * at the first start of app we check if user exist - if not we create user by pull request, otherwise continue collect app info
      */
     private void checkUser() {
-        if (SharedPreferencesSetting.getSettings().contains(SharedPreferencesSetting.USER_NAME)) {
+        if (SharedPreferencesSetting.getSettings().contains(SharedPreferencesSetting.USER_LOGIN)) {
             Logging.logDebug("Method checkUser() - user exist: "
-                    + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME));
+                    + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN));
             getApplicationSettings();
-            getChatSettings(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_NAME));
+            getChatSettings(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN));
         } else {
             RetrofitClient.
                     getClient(RestAPI.URL_API_MAIN)
@@ -79,7 +79,7 @@ public class LoaderActivity extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 if (response.body() != null) {
                                     Logging.logDebug("Method checkUser() - created user: " + response.body().getLogin());
-                                    SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_NAME, response.body().getLogin());
+                                    SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_LOGIN, response.body().getLogin());
                                     getChatSettings(response.body().getLogin());
                                     getApplicationSettings();
                                 } else {
