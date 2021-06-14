@@ -68,6 +68,7 @@ import yelm.io.extra_delicate.database.user_addresses.UserAddress;
 import yelm.io.extra_delicate.databinding.ActivityOrderNewBinding;
 import yelm.io.extra_delicate.payment.googleplay.PaymentsUtil;
 import yelm.io.extra_delicate.support_stuff.PhoneTextFormatter;
+import yelm.io.extra_delicate.user_account.model.UserAuth;
 
 public class OrderActivity extends AppCompatActivity implements ThreeDSDialogListener {
     ActivityOrderNewBinding binding;
@@ -89,11 +90,11 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     UserAddress currentAddress;
 
     private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 991;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private String transactionID = "-1";
     private String order = "";
-    private String userID = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN);
-    private String currency = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY);
+    private final String userID = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN);
+    private final String currency = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.CURRENCY);
     private String countCutlery = "1";
     private static final String ENTRANCE = "ENTRANCE";
     private static final String FLOOR = "FLOOR";
@@ -146,18 +147,11 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         binding.paymentCash.getBackground().setTint(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)));
         binding.progress.getIndeterminateDrawable()
                 .setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_COLOR)), PorterDuff.Mode.SRC_IN);
-
         binding.back.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
-
         binding.applyPromocode.setColorFilter(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
-
-
         binding.paymentCash.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
         binding.paymentCard.setTextColor(Color.parseColor("#" + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.APP_TEXT_COLOR)));
-
-
     }
-
 
     private void checkEditText() {
         binding.entrance.addTextChangedListener(new CustomTextWatcher(binding.entrance, this));
@@ -173,7 +167,6 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         Logging.logDebug("type: " + type);
         Logging.logDebug("amount: " + amount);
         Logging.logDebug("name: " + name);
-
         if (type != null) {
             if (!type.isEmpty()) {
                 setPromoCode(type, amount, name);

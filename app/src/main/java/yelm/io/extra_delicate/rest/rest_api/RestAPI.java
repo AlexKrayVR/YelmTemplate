@@ -32,20 +32,26 @@ public interface RestAPI {
     String PLATFORM_NUMBER = "60855ea61f7ec0.37350146";
 
 
-    //TODO api???
     @FormUrlEncoded
-    @POST("user-data ?")
-    Call<ResponseBody> notificationsOnOff(
-            @Query("login") String login,
-            @Query("platform") String platform,
+    @PUT("user-data?")
+    Call<ResponseBody> setUserData(
+            @Field("login") String login,
+            @Field("platform") String platform,
             @Field("name") String name,
             @Field("notification") String notification);
 
-    //TODO api???
+
     @GET("user?")
-    Call<ResponseBody> getUserData(@Query("platform") String platform,
-                                             @Query("language_code") String languageCode,
-                                             @Query("region_code") String regionCode
+    Call<UserAuth> getUserData(@Query("platform") String platform,
+                               @Query("login") String login
+    );
+
+    @FormUrlEncoded
+    @POST("auth?")
+    Call<UserAuth> auth(
+            @Field("platform") String platform,
+            @Field("login") String login,
+            @Field("phone") String phone
     );
 
 
@@ -221,14 +227,6 @@ public interface RestAPI {
             @Field("platform") String platform,
             @Field("login") String login,
             @Field("type") String type
-    );
-
-    @FormUrlEncoded
-    @POST("auth?")
-    Call<UserAuth> auth(
-            @Field("platform") String platform,
-            @Field("login") String login,
-            @Field("phone") String phone
     );
 
 

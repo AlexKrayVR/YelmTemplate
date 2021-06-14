@@ -28,7 +28,9 @@
     <string name="changeName">Изменить имя</string>
     <string name="saveName">Сохранить</string>
     <string name="yourName">Имя</string>
+    <string name="ccountVerified">Аккаунт проверен</string>
     <string name="serverError">Ошиба соединения с сервером, повторите попытку позже</string>
+    <string name="dataUpdatedSuccessfully">Ваши данные успешно обновлены</string>
 
 
     <!-- ItemActivity -->
@@ -268,6 +270,7 @@
     <string name="overview">Обзор</string>
 
     <string name="my_orders">Мои заказы</string>
+    <string name="yourBalance">Ваши бонусы:</string>
 
     <string name="description_product">Описание</string>
     <string name="specifications_product">Характеристики</string>

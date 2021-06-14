@@ -120,7 +120,7 @@ public class VerificationFragment extends Fragment implements VerificationView {
             if (isCodeFulled()) {
                 presenter.compareSHA2(Arrays.toString(codeArray).replaceAll("\\D", ""),
                         ((UserAuth) getArguments().getSerializable(UserAuth.class.getName())).getHash());
-            }else {
+            } else {
                 hostLogin.showToast(R.string.enterCode);
             }
         });
@@ -184,12 +184,14 @@ public class VerificationFragment extends Fragment implements VerificationView {
 
     @Override
     public void codeIsCorrect() {
-
         SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_BALANCE,
                 ((UserAuth) getArguments().getSerializable(UserAuth.class.getName())).getUser().getInfo().getBalance());
 
         SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_NAME,
                 ((UserAuth) getArguments().getSerializable(UserAuth.class.getName())).getUser().getInfo().getName());
+
+        SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_NOTIFICATION,
+                ((UserAuth) getArguments().getSerializable(UserAuth.class.getName())).getUser().getNotification().equals(true) ? "1" : "0");
 
         hostLogin.openAccountFragment();
     }

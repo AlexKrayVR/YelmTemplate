@@ -36,6 +36,7 @@ import yelm.io.extra_delicate.payment.Constants;
 import yelm.io.extra_delicate.rest.rest_api.RestAPI;
 import yelm.io.extra_delicate.rest.client.RetrofitClient;
 import yelm.io.extra_delicate.support_stuff.StaticRepository;
+import yelm.io.extra_delicate.user_account.model.UserAuth;
 
 public class LoaderActivity extends AppCompatActivity {
 
@@ -63,8 +64,9 @@ public class LoaderActivity extends AppCompatActivity {
         if (SharedPreferencesSetting.getSettings().contains(SharedPreferencesSetting.USER_LOGIN)) {
             Logging.logDebug("Method checkUser() - user exist: "
                     + SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN));
-            getApplicationSettings();
             getChatSettings(SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN));
+            getApplicationSettings();
+            getUserBalance();
         } else {
             RetrofitClient.
                     getClient(RestAPI.URL_API_MAIN)
@@ -80,6 +82,7 @@ public class LoaderActivity extends AppCompatActivity {
                                 if (response.body() != null) {
                                     Logging.logDebug("Method checkUser() - created user: " + response.body().getLogin());
                                     SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_LOGIN, response.body().getLogin());
+                                    getUserBalance();
                                     getChatSettings(response.body().getLogin());
                                     getApplicationSettings();
                                 } else {
@@ -184,6 +187,47 @@ public class LoaderActivity extends AppCompatActivity {
         Common.userAddressesRepository = UserAddressesRepository.getInstance(UserAddressesDataSource.getInstance(Common.sDatabase.addressesDao()));
     }
 
+    private void getUserBalance() {
+        RetrofitClient.
+                getClient(RestAPI.URL_API_MAIN).
+                create(RestAPI.class).
+                getUserData(
+                        RestAPI.PLATFORM_NUMBER,
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN)
+                ).
+                enqueue(new Callback<UserAuth>() {
+                    @Override
+                    public void onResponse(@NotNull Call<UserAuth> call, @NotNull final Response<UserAuth> response) {
+                        if (!response.isSuccessful()) {
+                            Logging.logError("Method getUserBalance() - response is not successful." +
+                                    "Code: " + response.code() + "Message: " + response.message());
+
+                        } else {
+                            if (response.body() != null) {
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_BALANCE,
+                                        response.body().getUser().getInfo().getBalance());
+
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_NAME,
+                                        response.body().getUser().getInfo().getName());
+
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_NOTIFICATION,
+                                        response.body().getUser().getNotification().equals(true) ? "1" : "0");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull Call<UserAuth> call, @NotNull Throwable t) {
+                        Logging.logError("Method getUserBalance() - failure: " + t.toString());
+                    }
+                });
+    }
+
+
+    /**
+     * check network connection - if exist launch
+     * otherwise show snack-bar with note about turn on network
+     */
     private void init() {
         if (StaticRepository.isNetworkConnected(this)) {
             RestMethods.sendStatistic("open_app");

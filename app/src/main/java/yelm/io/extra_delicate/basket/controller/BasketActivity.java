@@ -44,6 +44,7 @@ import yelm.io.extra_delicate.order.controller.OrderActivity;
 import yelm.io.extra_delicate.rest.rest_api.RestAPI;
 import yelm.io.extra_delicate.rest.client.RetrofitClient;
 import yelm.io.extra_delicate.support_stuff.Logging;
+import yelm.io.extra_delicate.user_account.model.UserAuth;
 
 public class BasketActivity extends AppCompatActivity {
 
@@ -318,6 +319,8 @@ public class BasketActivity extends AppCompatActivity {
         }
         if (requestCode == PAYMENT_SUCCESS) {
             Common.basketCartRepository.emptyBasketCart();
+            getUserBalance();
+
             Logging.logDebug("PAYMENT_SUCCESS " + data.getStringExtra("success"));
             if (Objects.equals(data.getStringExtra("success"), "card")) {
                 binding.paymentResultText.setText(getText(R.string.order_is_accepted_by_card));
@@ -345,6 +348,41 @@ public class BasketActivity extends AppCompatActivity {
         toast.show();
     }
 
+    private void getUserBalance() {
+        RetrofitClient.
+                getClient(RestAPI.URL_API_MAIN).
+                create(RestAPI.class).
+                getUserData(
+                        RestAPI.PLATFORM_NUMBER,
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN)
+                ).
+                enqueue(new Callback<UserAuth>() {
+                    @Override
+                    public void onResponse(@NotNull Call<UserAuth> call, @NotNull final Response<UserAuth> response) {
+                        if (!response.isSuccessful()) {
+                            Logging.logError("Method getUserBalance() - response is not successful." +
+                                    "Code: " + response.code() + "Message: " + response.message());
+
+                        } else {
+                            if (response.body() != null) {
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_BALANCE,
+                                        response.body().getUser().getInfo().getBalance());
+
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_NAME,
+                                        response.body().getUser().getInfo().getName());
+
+                                SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_NOTIFICATION,
+                                        response.body().getUser().getNotification().equals(true) ? "1" : "0");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull Call<UserAuth> call, @NotNull Throwable t) {
+                        Logging.logError("Method getUserBalance() - failure: " + t.toString());
+                    }
+                });
+    }
 
     @Override
     protected void onDestroy() {

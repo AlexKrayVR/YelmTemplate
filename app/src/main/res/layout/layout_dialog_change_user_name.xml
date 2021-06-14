@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName"
+            android:id="@+id/userName"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
@@ -59,8 +59,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/button_dialog_confirm_background"
-            android:gravity="center"
 
+            android:gravity="center"
             android:text="@string/saveName"
             android:textColor="@color/whiteColor"
             android:textSize="18sp"
@@ -68,7 +68,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+            app:layout_constraintTop_toBottomOf="@+id/userName" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

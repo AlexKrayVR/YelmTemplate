@@ -25,9 +25,9 @@ import yelm.io.extra_delicate.loader.app_settings.SharedPreferencesSetting;
 import yelm.io.extra_delicate.rest.client.RetrofitClient;
 import yelm.io.extra_delicate.rest.rest_api.RestAPI;
 import yelm.io.extra_delicate.support_stuff.Logging;
+import yelm.io.extra_delicate.support_stuff.PhoneTextFormatter;
 import yelm.io.extra_delicate.user_account.HostLogin;
 import yelm.io.extra_delicate.user_account.model.UserAuth;
-
 
 public class LoginFragment extends Fragment {
 
@@ -48,7 +48,7 @@ public class LoginFragment extends Fragment {
         return binding.getRoot();
     }
 
-
+    //
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -61,8 +61,10 @@ public class LoginFragment extends Fragment {
                 .resize(300, 300)
                 .into(binding.icon);
 
+        binding.phoneNumber.addTextChangedListener(new PhoneTextFormatter(binding.phoneNumber, "+# (###) ###-##-##"));
         binding.login.setOnClickListener(v -> {
-            if (binding.phoneNumber.getText().toString().trim().length() != 11) {
+            String phoneNumber = binding.phoneNumber.getText().toString().replaceAll("\\D", "");
+            if (phoneNumber.length() != 11) {
                 hostLogin.showToast(R.string.enterCorrectPhoneNumber);
             } else {
                 userAuth(binding.phoneNumber.getText().toString().trim());

@@ -38,7 +38,7 @@ public class LoginHostActivity extends AppCompatActivity implements HostLogin {
         }
     }
 
-     void receiveSMSPermission(){
+    void receiveSMSPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, 5);
         }
@@ -47,6 +47,12 @@ public class LoginHostActivity extends AppCompatActivity implements HostLogin {
     @Override
     public void onBackPressed() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fr : fragments) {
+            if (fr.getTag() != null && fr.getTag().equals("account")) {
+                finish();
+            }
+        }
+
         if (fragments.size() == 1) {
             finish();
         } else {
