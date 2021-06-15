@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +81,9 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
     private BigDecimal startCost = new BigDecimal("0");
     private BigDecimal finalCost = new BigDecimal("0");//without delivery cost
     private BigDecimal paymentCost = new BigDecimal("0");
+    private BigDecimal paymentCostAfterBonus = new BigDecimal("0");
+
+    private BigDecimal userBonus = new BigDecimal("0");
 
     private BigDecimal deliveryCostStart = new BigDecimal("0");
     private BigDecimal deliveryCostFinal = new BigDecimal("0");
@@ -117,6 +121,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
             deliveryCostStart = new BigDecimal(args.getString("deliveryCost"));
             deliveryCostFinal = deliveryCostStart;
             paymentCost = finalCost.add(deliveryCostStart);
+            paymentCostAfterBonus = paymentCost;
             deliveryTime = args.getString("deliveryTime");
             currentAddress = (UserAddress) args.getSerializable(UserAddress.class.getSimpleName());
             countCutlery = args.getString("countCutlery");
@@ -137,6 +142,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         bindingChosePaymentType();
         binding.applyPromocode.setOnClickListener(v -> getPromoCode());
         getPromoIfExist();
+        initSeekBar();
     }
 
     private void setCustomColor() {
@@ -190,11 +196,11 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 public void onResponse(@NotNull Call<PromoCodeClass> call, @NotNull Response<PromoCodeClass> response) {
                     if (response.isSuccessful()) {
                         if (response.body() != null) {
-                            Logging.logDebug(" " + Constants.ShopID);
                             if (response.body().getStatus().equals("200")) {
                                 setPromoCode(response.body().getPromocode().getType(),
                                         response.body().getPromocode().getAmount(),
                                         response.body().getPromocode().getName());
+                                initSeekBar();
                             }
                             showToast(response.body().getMessage());
                         } else {
@@ -261,7 +267,8 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 break;
         }
         paymentCost = finalCost.add(deliveryCostFinal);
-        binding.finalPrice.setText(String.format("%s %s", finalCost.add(deliveryCostFinal),
+        paymentCostAfterBonus = paymentCost;
+        binding.finalPrice.setText(String.format("%s %s", paymentCostAfterBonus,
                 SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
         Logging.logDebug("finalCost: " + finalCost);
         Logging.logDebug("paymentCost: " + paymentCost);
@@ -300,7 +307,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                         payment,
                         binding.floor.getText().toString(),
                         binding.entrance.getText().toString(),
-                        paymentCost.toString(),
+                        paymentCostAfterBonus.toString(),
                         binding.phone.getText().toString(),
                         binding.flat.getText().toString(),
                         "delivery",
@@ -309,7 +316,8 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                         currency,
                         Constants.ShopID,
                         discountType,
-                        countCutlery
+                        countCutlery,
+                        userBonus.toString()
                 ).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
@@ -469,6 +477,66 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
         }
     }
 
+    /**
+     * set settings of seek bar
+     * start/end value, change listener
+     */
+    private void initSeekBar() {
+        userBonus = new BigDecimal(0);
+
+        binding.startBonus.setText(String.format("%s %s",
+                0,
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
+
+        String bonus = SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_BALANCE);
+        if (bonus.isEmpty()) {
+            bonus = "0";
+        }
+
+        binding.yourBonus.setText(String.format("%s %s %s",
+                getString(R.string.yourBalance),
+                bonus,
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
+
+        BigDecimal maxBonus;
+        if (paymentCost.compareTo(new BigDecimal(bonus).add(new BigDecimal("1"))) > 0) {
+            maxBonus = new BigDecimal(bonus);
+        } else {
+            maxBonus = paymentCost.subtract(new BigDecimal("1"));
+        }
+
+        binding.endBonus.setText(String.format("%s %s",
+                0,
+                SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
+        binding.seekBar.setMax(Integer.parseInt(maxBonus.toString()));
+        binding.seekBar.setProgress(0);
+        binding.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Logging.logDebug("progress: " + progress);
+                binding.endBonus.setText(String.format("%s %s",
+                        progress,
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
+                userBonus = new BigDecimal(progress);
+                paymentCostAfterBonus = paymentCost;
+                paymentCostAfterBonus = paymentCostAfterBonus.subtract(userBonus);
+                binding.finalPrice.setText(String.format("%s %s", paymentCostAfterBonus,
+                        SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+    }
+
     private void binding() {
         binding.startPrice.setText(String.format("%s %s", startCost,
                 SharedPreferencesSetting.getDataString(SharedPreferencesSetting.PRICE_IN)));
@@ -503,6 +571,7 @@ public class OrderActivity extends AppCompatActivity implements ThreeDSDialogLis
                 intent.putExtra("flat", binding.flat.getText().toString());
                 intent.putExtra("discountType", discountType);
                 intent.putExtra("countCutlery", countCutlery);
+                intent.putExtra("userBonus", userBonus.toString());
                 intent.putExtra(UserAddress.class.getSimpleName(), currentAddress);
                 startActivityForResult(intent, PAYMENT_SUCCESS);
             }

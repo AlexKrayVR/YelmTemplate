@@ -42,9 +42,9 @@
 
                 <TextView
                     android:id="@+id/finalPrice"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
+                    android:gravity="center"
                     android:includeFontPadding="false"
                     android:textColor="@color/mainThemeColor"
                     android:textSize="18sp"
@@ -54,15 +54,16 @@
 
                 <TextView
                     android:id="@+id/totalText"
-                    android:gravity="center_horizontal" android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:includeFontPadding="false"
                     android:paddingTop="2dp"
                     android:text="@string/orderActivityTotal" />
 
                 <TextView
                     android:id="@+id/time"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:textColor="@color/colorTextGray"

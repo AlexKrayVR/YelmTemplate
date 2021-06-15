@@ -87,9 +87,7 @@ public class LoginFragment extends Fragment {
                     public void onResponse(@NotNull Call<UserAuth> call, @NotNull final Response<UserAuth> response) {
                         hideLoading();
                         if (!response.isSuccessful()) {
-                            Logging.logError("Method userAuth() - response is not successful." +
-                                    "Code: " + response.code() + "Message: " + response.message());
-
+                            hostLogin.showToast(R.string.serverError);
                         } else {
                             hostLogin.openVerificationFragment(response.body());
                         }
@@ -97,7 +95,7 @@ public class LoginFragment extends Fragment {
 
                     @Override
                     public void onFailure(@NotNull Call<UserAuth> call, @NotNull Throwable t) {
-                        Logging.logError("Method userAuth() - failure: " + t.toString());
+                        hostLogin.showToast(R.string.serverError);
                         hideLoading();
                     }
                 });

@@ -29,7 +29,7 @@ import yelm.io.extra_delicate.user_account.model.UserAuth;
 public interface RestAPI {
 
     String URL_API_MAIN = "https://rest.yelm.io/api/mobile/";
-    String PLATFORM_NUMBER = "60855ea61f7ec0.37350146";
+    String PLATFORM_NUMBER = "5f86b4672f0dc9.24104173";
 
 
     @FormUrlEncoded
@@ -212,7 +212,8 @@ public interface RestAPI {
             @Query("currency") String currency,
             @Query("shop_id") String shopID,
             @Query("discount_type") String discountType,
-            @Query("cutlery") String cutlery
+            @Query("cutlery") String cutlery,
+            @Query("total_bonus") String bonus
     );
 
     @FormUrlEncoded

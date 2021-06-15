@@ -6,11 +6,14 @@ public interface HostLogin {
 
     void openLoginFragment();
 
+    void openWebFragment(String url);
+
     void openVerificationFragment(UserAuth userAuth);
 
     void openAccountFragment();
 
     void showToast(int message);
+
     void back();
 
 }

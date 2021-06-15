@@ -203,7 +203,7 @@ public class LoaderActivity extends AppCompatActivity {
                                     "Code: " + response.code() + "Message: " + response.message());
 
                         } else {
-                            if (response.body() != null) {
+                            if (response.body() != null && response.body().getUser()!=null) {
                                 SharedPreferencesSetting.setData(SharedPreferencesSetting.USER_BALANCE,
                                         response.body().getUser().getInfo().getBalance());
 

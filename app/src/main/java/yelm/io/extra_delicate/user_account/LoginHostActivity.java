@@ -18,6 +18,7 @@ import yelm.io.extra_delicate.user_account.account.AccountFragment;
 import yelm.io.extra_delicate.user_account.login.LoginFragment;
 import yelm.io.extra_delicate.user_account.model.UserAuth;
 import yelm.io.extra_delicate.user_account.verification.VerificationFragment;
+import yelm.io.extra_delicate.user_account.web.WebFragment;
 
 public class LoginHostActivity extends AppCompatActivity implements HostLogin {
 
@@ -59,6 +60,18 @@ public class LoginHostActivity extends AppCompatActivity implements HostLogin {
             getSupportFragmentManager().popBackStack();
         }
     }
+
+    @Override
+    public void openWebFragment(String url) {
+        WebFragment fragment = WebFragment.newInstance(url);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.
+                add(binding.container.getId(), fragment)
+                .addToBackStack("web")
+                .commit();
+    }
+
 
     @Override
     public void openLoginFragment() {

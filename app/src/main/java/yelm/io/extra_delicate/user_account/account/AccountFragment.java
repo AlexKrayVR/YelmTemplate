@@ -57,6 +57,11 @@ public class AccountFragment extends Fragment {
         binding.myOffers.setOnClickListener(v -> {
             startActivity(new Intent(requireActivity(), ChatActivity.class));
         });
+        binding.supportChat.setOnClickListener(v -> {
+            startActivity(new Intent(requireActivity(), ChatActivity.class));
+        });
+
+
         binding.edit.setOnClickListener(v -> {
             showDialogChangeName();
         });
@@ -65,6 +70,16 @@ public class AccountFragment extends Fragment {
             requireActivity().finish();
         });
         binding.back.setOnClickListener(v -> hostLogin.back());
+
+        binding.howSpendMoney.setOnClickListener(v -> {
+            hostLogin.openWebFragment("https://yelm.io/bonus.html");
+        });
+
+        binding.qr.setOnClickListener(v -> {
+            hostLogin.openWebFragment("https://yelm.io/add_bonus?login=" +
+                    SharedPreferencesSetting.getDataString(SharedPreferencesSetting.USER_LOGIN) +
+                    "&platform=" + RestAPI.PLATFORM_NUMBER);
+        });
 
         setNotificationSettings();
     }

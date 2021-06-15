@@ -6,7 +6,8 @@
 
     <color name="colorButtonPressed">#373737</color>
 
-    <color name="mainThemeColor">#299316</color>
+    <color name="mainThemeColor">#DE000000</color>
+    <color name="plashBackColor">#DE000000</color>
 
     <color name="colorSeparatorLogistic">#D1D1D1</color>
 

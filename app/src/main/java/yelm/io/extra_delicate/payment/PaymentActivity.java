@@ -95,6 +95,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
     private String phone = "";
     private String countCutlery = "1";
     protected CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private BigDecimal userBonus = new BigDecimal("0");
 
     @BindView(R.id.text_total)
     TextView textViewTotal;
@@ -154,19 +155,19 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
 
         // Проверям номер карты.
         if (!CPCard.isValidNumber(cardNumber)) {
-            CustomToast.showStatus(this,getString(R.string.checkout_error_card_number));
+            CustomToast.showStatus(this, getString(R.string.checkout_error_card_number));
             return;
         }
 
         // Проверям срок действия карты.
         if (!CPCard.isValidExpDate(cardDate)) {
-            CustomToast.showStatus(this,getString(R.string.checkout_error_card_date));
+            CustomToast.showStatus(this, getString(R.string.checkout_error_card_date));
             return;
         }
 
         // Проверям cvc код карты.
         if (cardCVC.length() != 3) {
-            CustomToast.showStatus(this,getString(R.string.checkout_error_card_cvc));
+            CustomToast.showStatus(this, getString(R.string.checkout_error_card_cvc));
             return;
         }
 
@@ -253,9 +254,11 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
 
         Bundle args = getIntent().getExtras();
         if (args != null) {
+            userBonus = new BigDecimal(args.getString("userBonus"));
+
             startCost = new BigDecimal(args.getString("startCost"));
             deliveryCost = new BigDecimal(args.getString("deliveryCost"));
-            paymentCost = new BigDecimal(args.getString("finalPrice")).add(deliveryCost);
+            paymentCost = new BigDecimal(args.getString("finalPrice")).add(deliveryCost).subtract(userBonus);
             discountPromo = new BigDecimal(args.getString("discountPromo"));
             discountType = args.getString("discountType");
             floor = args.getString("floor");
@@ -264,6 +267,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
             flat = args.getString("flat");
             currentAddress = (UserAddress) args.getSerializable(UserAddress.class.getSimpleName());
             countCutlery = args.getString("countCutlery");
+
             Logging.logDebug("countCutlery: " + countCutlery);
             Logging.logDebug("startCost: " + startCost);
             Logging.logDebug("paymentCost: " + paymentCost);
@@ -275,6 +279,7 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
             Logging.logDebug("flat: " + flat);
             Logging.logDebug("discountType: " + discountType);
             Logging.logDebug("currentAddress: " + currentAddress.toString());
+            Logging.logDebug("userBonus: " + userBonus.toString());
         }
 
         textViewTotal.setText(new StringBuilder()
@@ -429,7 +434,8 @@ public class PaymentActivity extends AppCompatActivity implements ThreeDSDialogL
                         currency,
                         yelm.io.extra_delicate.constants.Constants.ShopID,
                         discountType,
-                        countCutlery
+                        countCutlery,
+                        userBonus.toString()
                 ).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
